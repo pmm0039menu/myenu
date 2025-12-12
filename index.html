@@ -66,7 +66,7 @@
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
         #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
         
-        /* استایل دکمه تمدید اشتراک */
+        /* دکمه تمدید اشتراک */
         .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s; }
         .renew-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
 
@@ -136,7 +136,7 @@
     <script>
         let products = [];
         let cart = {};
-        // متغیر اصلی که لینک را نگه می‌دارد
+        // اضافه شدن paymentLink به تنظیمات
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
@@ -150,7 +150,7 @@
             }
 
             try {
-                // کش باستر (t=Date.now()) برای اینکه همیشه دیتا تازه باشد
+                // این بخش برای جلوگیری از کش شدن اطلاعات است (همیشه دیتای تازه می‌گیرد)
                 const ts = Date.now();
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&t=${ts}`);
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&t=${ts}`);
@@ -169,13 +169,29 @@
             }
         }
 
+        // --- بخش خواندن تنظیمات (با قابلیت عیب‌یابی) ---
         function parseSettings(csv) {
             const rows = csvToArr(csv);
             let settingsMap = {};
+            
             // تبدیل CSV به دیکشنری
-            rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
+            rows.forEach(r => { 
+                let key = r[0].replace(/"/g,'').trim();
+                let val = r[1] ? r[1].replace(/"/g,'').trim() : "";
+                if(key) settingsMap[key] = val;
+            });
 
-            // 1. اطلاعات پایه
+            // --- 🛑 شروع بخش عیب‌یابی (Alert) ---
+            if(settingsMap['PaymentLink']) {
+                // اگر این پیام آمد، یعنی لینک پیدا شده است
+                alert("✅ موفقیت: لینک پرداخت پیدا شد!\n" + settingsMap['PaymentLink']);
+                config.paymentLink = settingsMap['PaymentLink'];
+            } else {
+                // اگر این پیام آمد، یعنی مشکل در فایل اکسل است
+                alert("❌ خطا: در فایل اکسل کلمه PaymentLink پیدا نشد.\nچیزهایی که اکسل فرستاد:\n" + Object.keys(settingsMap).join(", "));
+            }
+            // --- 🏁 پایان بخش عیب‌یابی ---
+
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -184,13 +200,6 @@
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             
-            // 2. لینک پرداخت (مهم)
-            if(settingsMap['PaymentLink']) {
-                config.paymentLink = settingsMap['PaymentLink'];
-                console.log("لینک پرداخت یافت شد:", config.paymentLink); // برای تست در کنسول
-            }
-            
-            // 3. وضعیت فروشگاه
             if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
                 config.isOpen = false;
                 document.getElementById('shopStatus').innerText = " بسته است";
@@ -201,7 +210,6 @@
                 document.getElementById('shopStatus').className = "status-badge open";
             }
 
-            // 4. تاریخ انقضا
             if (settingsMap['ExpireDate']) {
                 checkSubscription(settingsMap['ExpireDate']);
             }
