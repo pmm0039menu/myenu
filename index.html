@@ -8,21 +8,16 @@
         :root { --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:var(--bg); color:var(--text); padding-bottom:120px; user-select: none; }
-        
         header { background: var(--card); padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; }
         .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-top: 5px; }
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
-
-        /* روز شمار اشتراک */
         .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
         .sub-badge.danger { border-color: #e74c3c; color: #e74c3c; }
-
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; }
         .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
-
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; }
         .item.inactive { opacity: 0.6; filter: grayscale(1); pointer-events: none; }
@@ -30,13 +25,11 @@
         .info { flex: 1; }
         .info h3 { font-size: 1rem; margin-bottom: 4px; }
         .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
-        
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .qty-box { display: none; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
         .qty-box.show { display: flex; }
         .q-btn { width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
-
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
         .order-details.active { display: block; }
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -44,7 +37,6 @@
         .type-btn.selected { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
         .input-group { margin-bottom: 8px; }
         .input-group input, .input-group textarea { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
-        
         .invoice-box { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; padding: 0 5px; color: #ccc; }
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
@@ -52,75 +44,54 @@
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
         .disabled-btn { background: #555 !important; cursor: not-allowed; }
         .hidden { display: none !important; }
-
-        /* --- فوتر سازنده --- */
         .dev-footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; background: #0e0e12; }
-        .dev-title { margin-bottom: 10px; color: #888; }
         .dev-icons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a1a1a; border-radius: 50%; color: #aaa; border: 1px solid #333; transition: 0.3s; text-decoration: none; }
         .dev-icons a:hover { background: #d3ad7f; color: #000; border-color: #d3ad7f; transform: translateY(-3px); }
         .dev-icons svg { width: 18px; height: 18px; fill: currentColor; }
-
-        /* صفحه قفل (پایان اشتراک) */
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
         #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
-        
-        /* دکمه تمدید اشتراک */
         .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s; }
         .renew-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
-
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
-
     <div id="lockScreen">
         <h2>پایان اشتراک 🔒</h2>
         <p>مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
         <p>برای فعال‌سازی مجدد، از طریق دکمه زیر اقدام کنید:</p>
-        
         <a href="YOUR_SUBSCRIPTION_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین اشتراک</a>
-        
         <div class="dev-icons" style="margin-top:30px;">
              <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
         </div>
     </div>
-
     <div id="subBadge"></div>
-
     <header>
         <h1 id="shopName">...</h1>
         <div id="shopStatus" class="status-badge">بررسی وضعیت...</div>
     </header>
-
     <div class="cat-scroll" id="cats"></div>
-
     <div class="menu-list" id="list">
         <p style="text-align:center; color:#666; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
     </div>
-
     <div class="dev-footer">
         <p class="dev-title">مجری طرح: گروه نرم‌افزاری مَجد</p>
         <div class="dev-icons">
             <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
-            <a href="https://wa.me/989123456789"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
         </div>
     </div>
-
     <div class="order-details" id="orderDetails">
         <div class="type-selector">
             <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table"> سالن</div>
             <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery"> بیرون‌بر</div>
         </div>
-
         <div class="invoice-box">
             <div class="invoice-row"><span>جمع اقلام:</span><span id="itemsTotal">0</span></div>
             <div class="invoice-row" id="deliveryRow" style="display: none;"><span>هزینه پیک:</span><span id="deliveryPriceDisplay">0</span></div>
             <div class="invoice-row highlight"><span>قابل پرداخت:</span><span id="finalPayable">0</span></div>
         </div>
-
         <div class="input-group"><textarea id="userNote" placeholder="توضیحات (اختیاری)"></textarea></div>
         <div id="form-table" class="input-group"><input type="number" id="tableNum" placeholder="شماره میز"></div>
         <div id="form-delivery" class="hidden">
@@ -128,7 +99,6 @@
             <div class="input-group"><textarea id="address" placeholder="آدرس دقیق"></textarea></div>
         </div>
     </div>
-
     <div class="cart-bar" id="cartBar" style="display:none">
         <div class="final-btn" id="actionBtn" onclick="processOrder()">تکمیل سفارش</div>
     </div>
@@ -136,7 +106,6 @@
     <script>
         let products = [];
         let cart = {};
-        // اضافه شدن paymentLink به تنظیمات
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
@@ -148,12 +117,11 @@
                 document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c"> خطا: شناسه فروشگاه وارد نشده است.</div>`;
                 return;
             }
-
             try {
-                // این بخش برای جلوگیری از کش شدن اطلاعات است (همیشه دیتای تازه می‌گیرد)
+                // پارامتر headers=0 را اضافه کردم که گوگل چیزی را سانسور نکند
                 const ts = Date.now();
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&t=${ts}`);
-                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&t=${ts}`);
+                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&headers=0&t=${ts}`);
                 
                 if (!menuResp.ok || !settingsResp.ok) throw new Error("Error");
 
@@ -169,28 +137,37 @@
             }
         }
 
-        // --- بخش خواندن تنظیمات (با قابلیت عیب‌یابی) ---
+        // --- بخش خواندن تنظیمات (نسخه هوشمند) ---
         function parseSettings(csv) {
             const rows = csvToArr(csv);
             let settingsMap = {};
             
-            // تبدیل CSV به دیکشنری
             rows.forEach(r => { 
                 let key = r[0].replace(/"/g,'').trim();
-                let val = r[1] ? r[1].replace(/"/g,'').trim() : "";
+                let val = "";
+                
+                // جستجوی هوشمند: اگر کلید PaymentLink است، کل ردیف را بگرد دنبال چیزی که http دارد
+                if (key === "PaymentLink") {
+                    // تمام ستون‌های این ردیف را چک کن
+                    const linkFound = r.find(cell => cell.includes("http"));
+                    if (linkFound) {
+                        val = linkFound.replace(/"/g,'').trim();
+                    }
+                } else {
+                    val = r[1] ? r[1].replace(/"/g,'').trim() : "";
+                }
+                
                 if(key) settingsMap[key] = val;
             });
 
-            // --- 🛑 شروع بخش عیب‌یابی (Alert) ---
+            // --- عیب‌یابی نهایی ---
             if(settingsMap['PaymentLink']) {
-                // اگر این پیام آمد، یعنی لینک پیدا شده است
-                alert("✅ موفقیت: لینک پرداخت پیدا شد!\n" + settingsMap['PaymentLink']);
+                alert("✅ بالاخره درست شد!\nلینک پیدا شد: " + settingsMap['PaymentLink']);
                 config.paymentLink = settingsMap['PaymentLink'];
             } else {
-                // اگر این پیام آمد، یعنی مشکل در فایل اکسل است
-                alert("❌ خطا: در فایل اکسل کلمه PaymentLink پیدا نشد.\nچیزهایی که اکسل فرستاد:\n" + Object.keys(settingsMap).join(", "));
+                // اگر باز هم نشد، پیام نده و بگذار کاربر کارش را بکند (ولی در کنسول بنویس)
+                console.log("❌ هنوز لینک دریافت نشده است.");
             }
-            // --- 🏁 پایان بخش عیب‌یابی ---
 
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
@@ -221,7 +198,6 @@
                 const now = new Date();
                 const diffTime = expire - now;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-
                 if (diffDays <= 0) {
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
@@ -230,23 +206,18 @@
                     badge.innerHTML = ` اعتبار: ${diffDays} روز`;
                     badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
                 }
-            } catch (e) {
-                console.error("خطا در فرمت تاریخ", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         function parseMenu(csv) {
             const rows = csvToArr(csv);
             let tempCats = new Set();
-            
             for(let i=1; i<rows.length; i++) { 
                 const r = rows[i];
                 if(r.length < 3) continue;
-
                 const isActive = (r[4] && r[4].toUpperCase().includes('FALSE')) ? false : true;
                 const cat = r[0].replace(/"/g, '').trim();
                 tempCats.add(cat);
-                
                 products.push({
                     id: i, c: cat, t: r[1].replace(/"/g, '').trim(),
                     p: parseInt(r[2].replace(/,/g, '').trim()) || 0,
@@ -254,7 +225,6 @@
                     active: isActive
                 });
             }
-
             let catHtml = `<div class="cat-btn active" onclick="filter('all', this)">همه</div>`;
             tempCats.forEach(c => { catHtml += `<div class="cat-btn" onclick="filter('${c}', this)">${c}</div>`; });
             document.getElementById('cats').innerHTML = catHtml;
@@ -282,15 +252,12 @@
             const list = document.getElementById('list');
             list.innerHTML = '';
             const items = cat === 'all' ? products : products.filter(x => x.c === cat);
-            
             if(items.length === 0) { list.innerHTML = '<p style="text-align:center; color:#666; margin-top:30px">موردی یافت نشد.</p>'; return; }
-
             items.forEach(x => {
                 const count = cart[x.id] || 0;
                 let btnHtml = !x.active ? `<span style="color:#e74c3c; border:1px solid; padding:3px;">ناموجود</span>` 
                     : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">افزودن</div>` 
                     : `<div class="qty-box show"><div class="q-btn" onclick="upd(${x.id}, 1)">+</div><div class="q-num">${count}</div><div class="q-btn" onclick="upd(${x.id}, -1)">-</div></div>`);
-                
                 list.innerHTML += `
                 <div class="item ${!x.active ? 'inactive' : ''}">
                     <img src="${x.i}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1170/1170576.png'">
@@ -322,11 +289,9 @@
             let total = 0, count = 0;
             for(let id in cart) { const p = products.find(x=>x.id==id); if(p) { total += p.p * cart[id]; count += cart[id]; } }
             let final = orderType === 'delivery' ? total + config.deliveryPrice : total;
-            
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + ' تومان';
-            
             const bar = document.getElementById('cartBar');
             const details = document.getElementById('orderDetails');
             if(count>0) { bar.style.display='flex'; details.classList.add('active'); }
@@ -367,7 +332,6 @@
                     total += p.p * cart[id];
                 } 
             }
-            
             let finalPrice = total;
             if(orderType === 'delivery') finalPrice += config.deliveryPrice;
 
@@ -378,7 +342,6 @@
 
             const note = document.getElementById('userNote').value;
             if(note) desc += `\nپیام: ${note}`;
-            
             let url = "";
 
             if(orderType === 'table') {
@@ -392,14 +355,13 @@
                 url = `https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`;
             }
 
-            // نمایش هشدار پرداخت (اگر لینک وجود داشت)
+            // نمایش هشدار پرداخت فقط اگر لینک واقعاً وجود دارد
             if(config.paymentLink && config.paymentLink.length > 5) {
                 alert("سفارش شما ساخته شد.\n\nلطفاً در پیام واتساپ، روی لینک پرداخت کلیک کرده و پس از واریز، عکس فیش را ارسال نمایید.");
             }
 
             window.open(url);
         };
-
         startApp();
     </script>
 </body>
