@@ -7,7 +7,7 @@
     <style>
         :root { --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --input-bg: #2a2a35; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background:var(--bg); color:var(--text); padding-bottom:150px; user-select: none; }
+        body { background:var(--bg); color:var(--text); padding-bottom:120px; user-select: none; }
         
         header { background: var(--card); padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; }
@@ -49,16 +49,19 @@
         .disabled-btn { background: #555 !important; cursor: not-allowed; }
         .hidden { display: none !important; }
 
-        /* استایل جعبه سیاه عیب‌یابی */
-        #debugBox {
-            background: #000; color: #0f0; padding: 10px; font-size: 12px; font-family: monospace;
-            border-top: 2px solid #333; margin-top: 20px; text-align: left; direction: ltr;
-            white-space: pre-wrap; word-break: break-all;
-        }
-
+        /* صفحه قفل */
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
-        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; }
+        #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
+        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s; }
+
+        .dev-footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; background: #0e0e12; }
+        .dev-icons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a1a1a; border-radius: 50%; color: #aaa; border: 1px solid #333; transition: 0.3s; text-decoration: none; }
+        .dev-icons svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
+        .sub-badge.danger { border-color: #e74c3c; color: #e74c3c; }
 
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
@@ -67,9 +70,15 @@
 
     <div id="lockScreen">
         <h2>پایان اشتراک 🔒</h2>
-        <p style="color:#fff; margin-bottom:20px;">مهلت استفاده به پایان رسیده است.</p>
-        <a href="YOUR_SUBSCRIPTION_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین</a>
+        <p>مهلت استفاده به پایان رسیده است.</p>
+        <p>برای تمدید روی دکمه زیر کلیک کنید:</p>
+        <a href="YOUR_SUBSCRIPTION_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین اشتراک</a>
+        <div class="dev-icons" style="margin-top:30px;">
+             <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+        </div>
     </div>
+
+    <div id="subBadge"></div>
 
     <header>
         <h1 id="shopName">...</h1>
@@ -82,7 +91,12 @@
         <p style="text-align:center; color:#666; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
     </div>
 
-    <div id="debugBox">Initializing...</div>
+    <div class="dev-footer">
+        <p class="dev-title">مجری طرح: گروه نرم‌افزاری مَجد</p>
+        <div class="dev-icons">
+            <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+        </div>
+    </div>
 
     <div class="order-details" id="orderDetails">
         <div class="type-selector">
@@ -109,18 +123,11 @@
     <script>
         let products = [];
         let cart = {};
-        // اضافه شدن paymentLink به تنظیمات
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
-        const debugBox = document.getElementById('debugBox');
 
         const urlParams = new URLSearchParams(window.location.search);
         const sheetId = urlParams.get('id');
-
-        function log(msg) {
-            console.log(msg);
-            debugBox.innerHTML += "\n" + msg;
-        }
 
         async function startApp() {
             if (!sheetId) {
@@ -129,26 +136,26 @@
             }
 
             try {
+                // پارامترهای ضد کش برای دریافت لحظه‌ای
                 const ts = Date.now();
-                // اضافه کردن هدرهای ضد کش
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&t=${ts}`, {cache: "no-store"});
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&t=${ts}`, {cache: "no-store"});
                 
-                if (!menuResp.ok || !settingsResp.ok) throw new Error("Fetch Error");
+                if (!menuResp.ok || !settingsResp.ok) throw new Error("Connection Error");
 
                 const menuCsv = await menuResp.text();
                 const settingsCsv = await settingsResp.text();
 
-                log("Data fetched. Parsing...");
                 parseSettings(settingsCsv);
                 parseMenu(menuCsv);
 
             } catch (err) {
-                log("ERROR: " + err.message);
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در بارگذاری اطلاعات.</div>`;
+                console.error(err);
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در دریافت اطلاعات.<br>اتصال اینترنت را بررسی کنید.</div>`;
             }
         }
 
+        // --- اسکنر پیشرفته تنظیمات ---
         function parseSettings(csv) {
             const rows = csvToArr(csv);
             let settingsMap = {};
@@ -156,27 +163,27 @@
             rows.forEach(r => { 
                 let keyOriginal = r[0].replace(/"/g,'').trim();
                 let keyLower = keyOriginal.toLowerCase();
-                let val = r[1] ? r[1].replace(/"/g,'').trim() : "";
-                
-                // جستجوی بسیار ساده: اگر ستون اول شامل کلمه payment بود، لینک را بردار
+                let val = "";
+
+                // اگر این ردیف مربوط به لینک پرداخت است
                 if (keyLower.indexOf("payment") !== -1) {
-                    log("Found 'Payment' row. Checking value: " + val);
-                    config.paymentLink = val;
+                    // تمام سلول‌های این ردیف را بگرد (ستون 1 تا 10)
+                    // هر جا که http دید، یعنی لینک اینجاست!
+                    for (let i = 0; i < r.length; i++) {
+                        let cellData = r[i].replace(/"/g,'').trim();
+                        if (cellData.includes("http")) {
+                            config.paymentLink = cellData;
+                            break; // لینک پیدا شد، حلقه را متوقف کن
+                        }
+                    }
                 }
 
+                // خواندن مقادیر معمولی (مثل اسم و تلفن)
+                val = r[1] ? r[1].replace(/"/g,'').trim() : "";
                 if(keyOriginal) settingsMap[keyOriginal] = val;
             });
 
-            // چاپ نتیجه نهایی در جعبه سیاه
-            log("----------------");
-            if (config.paymentLink) {
-                log("✅ FINAL LINK: " + config.paymentLink);
-            } else {
-                log("❌ NO LINK FOUND IN EXCEL.");
-                log("Keys found: " + Object.keys(settingsMap).join(", "));
-            }
-            log("----------------");
-
+            // تنظیمات عمومی
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -194,7 +201,10 @@
                 document.getElementById('shopStatus').innerText = " باز است";
                 document.getElementById('shopStatus').className = "status-badge open";
             }
-             if (settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
+
+            if (settingsMap['ExpireDate']) {
+                checkSubscription(settingsMap['ExpireDate']);
+            }
         }
 
         function checkSubscription(dateStr) {
@@ -206,6 +216,10 @@
                 if (diffDays <= 0) {
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
+                } else {
+                    const badge = document.getElementById('subBadge');
+                    badge.innerHTML = ` اعتبار: ${diffDays} روز`;
+                    badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
                 }
             } catch (e) { console.error(e); }
         }
@@ -336,10 +350,10 @@
             let finalPrice = total;
             if(orderType === 'delivery') finalPrice += config.deliveryPrice;
 
-            // منطق اصلی پرداخت
+            // ساخت لینک و متن پرداخت
             let hasLink = false;
-            // بررسی می‌کنیم آیا لینک معتبر (شامل http) وجود دارد؟
-            if(config.paymentLink && config.paymentLink.length > 5 && config.paymentLink.includes("http")) {
+            // بررسی قوی: آیا لینکی پیدا شده است؟
+            if(config.paymentLink && config.paymentLink.includes("http")) {
                 hasLink = true;
                 desc += `\n------------------\n💳 مبلغ کل: ${finalPrice.toLocaleString()} تومان\n🔗 لینک پرداخت: ${config.paymentLink}\n(لطفاً پس از پرداخت، تصویر رسید را ارسال کنید)\n------------------\n`;
             }
@@ -359,9 +373,12 @@
                 url = `https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`;
             }
 
-            // فقط اگر لینک معتبر داشتیم هشدار بده
+            // نمایش هشدار پرداخت قبل از باز شدن واتساپ
             if(hasLink) {
-                alert("توجه:\nسفارش شما ساخته شد.\nلینک پرداخت در متن پیام واتساپ قرار دارد. لطفاً پس از واریز، فیش را ارسال کنید.");
+                // استفاده از confirm که کاربر باید حتما تایید کند
+                if(!confirm("سفارش شما آماده ارسال است.\n\nیک لینک پرداخت برای شما شناسایی شد. لطفاً در واتساپ روی آن کلیک کرده و رسید را ارسال کنید.\n\nآیا ادامه می‌دهید؟")) {
+                    return; // اگر کاربر کنسل کرد، واتساپ باز نشود
+                }
             }
 
             window.open(url);
