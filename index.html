@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>منوی آنلاین</title>
     <style>
-        :root { --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; }
+        :root { --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --input-bg: #2a2a35; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background:var(--bg); color:var(--text); padding-bottom:120px; user-select: none; }
+        body { background:var(--bg); color:var(--text); padding-bottom:150px; user-select: none; }
+        
         header { background: var(--card); padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; }
         .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-top: 5px; }
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
-        .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
-        .sub-badge.danger { border-color: #e74c3c; color: #e74c3c; }
+
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; }
         .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
+
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; }
         .item.inactive { opacity: 0.6; filter: grayscale(1); pointer-events: none; }
@@ -25,11 +26,13 @@
         .info { flex: 1; }
         .info h3 { font-size: 1rem; margin-bottom: 4px; }
         .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
+        
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .qty-box { display: none; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
         .qty-box.show { display: flex; }
         .q-btn { width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
+
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
         .order-details.active { display: block; }
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -37,6 +40,7 @@
         .type-btn.selected { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
         .input-group { margin-bottom: 8px; }
         .input-group input, .input-group textarea { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
+        
         .invoice-box { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; padding: 0 5px; color: #ccc; }
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
@@ -44,44 +48,42 @@
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
         .disabled-btn { background: #555 !important; cursor: not-allowed; }
         .hidden { display: none !important; }
-        .dev-footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; background: #0e0e12; }
-        .dev-icons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #1a1a1a; border-radius: 50%; color: #aaa; border: 1px solid #333; transition: 0.3s; text-decoration: none; }
-        .dev-icons a:hover { background: #d3ad7f; color: #000; border-color: #d3ad7f; transform: translateY(-3px); }
-        .dev-icons svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* استایل جعبه سیاه عیب‌یابی */
+        #debugBox {
+            background: #000; color: #0f0; padding: 10px; font-size: 12px; font-family: monospace;
+            border-top: 2px solid #333; margin-top: 20px; text-align: left; direction: ltr;
+            white-space: pre-wrap; word-break: break-all;
+        }
+
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
-        #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
-        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s; }
-        .renew-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
+        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; }
+
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
+
     <div id="lockScreen">
         <h2>پایان اشتراک 🔒</h2>
-        <p>مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
-        <p>برای فعال‌سازی مجدد، از طریق دکمه زیر اقدام کنید:</p>
-        <a href="YOUR_SUBSCRIPTION_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین اشتراک</a>
-        <div class="dev-icons" style="margin-top:30px;">
-             <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-        </div>
+        <p style="color:#fff; margin-bottom:20px;">مهلت استفاده به پایان رسیده است.</p>
+        <a href="YOUR_SUBSCRIPTION_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین</a>
     </div>
-    <div id="subBadge"></div>
+
     <header>
         <h1 id="shopName">...</h1>
         <div id="shopStatus" class="status-badge">بررسی وضعیت...</div>
     </header>
+
     <div class="cat-scroll" id="cats"></div>
+
     <div class="menu-list" id="list">
         <p style="text-align:center; color:#666; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
     </div>
-    <div class="dev-footer">
-        <p class="dev-title">مجری طرح: گروه نرم‌افزاری مَجد</p>
-        <div class="dev-icons">
-            <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-        </div>
-    </div>
+
+    <div id="debugBox">Initializing...</div>
+
     <div class="order-details" id="orderDetails">
         <div class="type-selector">
             <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table"> سالن</div>
@@ -99,6 +101,7 @@
             <div class="input-group"><textarea id="address" placeholder="آدرس دقیق"></textarea></div>
         </div>
     </div>
+
     <div class="cart-bar" id="cartBar" style="display:none">
         <div class="final-btn" id="actionBtn" onclick="processOrder()">تکمیل سفارش</div>
     </div>
@@ -109,61 +112,71 @@
         // اضافه شدن paymentLink به تنظیمات
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
+        const debugBox = document.getElementById('debugBox');
 
         const urlParams = new URLSearchParams(window.location.search);
         const sheetId = urlParams.get('id');
+
+        function log(msg) {
+            console.log(msg);
+            debugBox.innerHTML += "\n" + msg;
+        }
 
         async function startApp() {
             if (!sheetId) {
                 document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c"> خطا: شناسه فروشگاه وارد نشده است.</div>`;
                 return;
             }
+
             try {
                 const ts = Date.now();
-                // استفاده از پارامترهای استاندارد
-                const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&t=${ts}`);
-                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&t=${ts}`);
+                // اضافه کردن هدرهای ضد کش
+                const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&t=${ts}`, {cache: "no-store"});
+                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&t=${ts}`, {cache: "no-store"});
                 
-                if (!menuResp.ok || !settingsResp.ok) throw new Error("Error");
+                if (!menuResp.ok || !settingsResp.ok) throw new Error("Fetch Error");
 
                 const menuCsv = await menuResp.text();
                 const settingsCsv = await settingsResp.text();
 
+                log("Data fetched. Parsing...");
                 parseSettings(settingsCsv);
                 parseMenu(menuCsv);
 
             } catch (err) {
-                console.error(err);
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در بارگذاری اطلاعات.<br>لینک و تنظیمات اکسل را بررسی کنید.</div>`;
+                log("ERROR: " + err.message);
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در بارگذاری اطلاعات.</div>`;
             }
         }
 
-        // --- بخش فوق‌العاده دقیق خواندن تنظیمات ---
         function parseSettings(csv) {
             const rows = csvToArr(csv);
             let settingsMap = {};
             
             rows.forEach(r => { 
-                // همه چیز را کوچک می‌کنیم تا به حروف بزرگ و کوچک حساس نباشد
                 let keyOriginal = r[0].replace(/"/g,'').trim();
                 let keyLower = keyOriginal.toLowerCase();
-                let val = "";
-
-                // جستجوی هوشمند برای لینک پرداخت
-                if (keyLower.includes("payment") || keyLower.includes("link")) {
-                    // اگر در ستون اول کلمه payment دید، در کل آن ردیف دنبال لینک می‌گردد
-                    const linkFound = r.find(cell => cell.includes("http"));
-                    if (linkFound) {
-                        config.paymentLink = linkFound.replace(/"/g,'').trim();
-                    }
+                let val = r[1] ? r[1].replace(/"/g,'').trim() : "";
+                
+                // جستجوی بسیار ساده: اگر ستون اول شامل کلمه payment بود، لینک را بردار
+                if (keyLower.indexOf("payment") !== -1) {
+                    log("Found 'Payment' row. Checking value: " + val);
+                    config.paymentLink = val;
                 }
 
-                // خواندن مقادیر معمولی
-                val = r[1] ? r[1].replace(/"/g,'').trim() : "";
                 if(keyOriginal) settingsMap[keyOriginal] = val;
             });
 
-            // تنظیم نام و تلفن (با نام‌های دقیق)
+            // چاپ نتیجه نهایی در جعبه سیاه
+            log("----------------");
+            if (config.paymentLink) {
+                log("✅ FINAL LINK: " + config.paymentLink);
+            } else {
+                log("❌ NO LINK FOUND IN EXCEL.");
+                log("Keys found: " + Object.keys(settingsMap).join(", "));
+            }
+            log("----------------");
+
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -181,10 +194,7 @@
                 document.getElementById('shopStatus').innerText = " باز است";
                 document.getElementById('shopStatus').className = "status-badge open";
             }
-
-            if (settingsMap['ExpireDate']) {
-                checkSubscription(settingsMap['ExpireDate']);
-            }
+             if (settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
         }
 
         function checkSubscription(dateStr) {
@@ -196,10 +206,6 @@
                 if (diffDays <= 0) {
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
-                } else {
-                    const badge = document.getElementById('subBadge');
-                    badge.innerHTML = ` اعتبار: ${diffDays} روز`;
-                    badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
                 }
             } catch (e) { console.error(e); }
         }
@@ -330,9 +336,11 @@
             let finalPrice = total;
             if(orderType === 'delivery') finalPrice += config.deliveryPrice;
 
-            // ساخت لینک و متن پرداخت
-            // شرط را ساده کردم که اگر هر چیزی پیدا کرد، کار کند
-            if(config.paymentLink) {
+            // منطق اصلی پرداخت
+            let hasLink = false;
+            // بررسی می‌کنیم آیا لینک معتبر (شامل http) وجود دارد؟
+            if(config.paymentLink && config.paymentLink.length > 5 && config.paymentLink.includes("http")) {
+                hasLink = true;
                 desc += `\n------------------\n💳 مبلغ کل: ${finalPrice.toLocaleString()} تومان\n🔗 لینک پرداخت: ${config.paymentLink}\n(لطفاً پس از پرداخت، تصویر رسید را ارسال کنید)\n------------------\n`;
             }
 
@@ -351,10 +359,9 @@
                 url = `https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`;
             }
 
-            // نمایش هشدار پرداخت
-            // اینجا شرط طول رشته را برداشتم تا حتی اگر لینک کوتاه بود هم کار کند
-            if(config.paymentLink) {
-                alert("سفارش شما آماده ارسال است.\n\nلطفاً در پیام واتساپ، روی لینک پرداخت کلیک کرده و پس از واریز، عکس فیش را ارسال نمایید.");
+            // فقط اگر لینک معتبر داشتیم هشدار بده
+            if(hasLink) {
+                alert("توجه:\nسفارش شما ساخته شد.\nلینک پرداخت در متن پیام واتساپ قرار دارد. لطفاً پس از واریز، فیش را ارسال کنید.");
             }
 
             window.open(url);
