@@ -65,7 +65,9 @@
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
         #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
-        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; }
+        /* استایل دکمه جدید تمدید */
+        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s; }
+        .renew-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
 
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
@@ -73,10 +75,13 @@
 <body>
 
     <div id="lockScreen">
-        <h2>پایان اشتراک ⚠️</h2>
+        <h2>پایان اشتراک 🔒</h2>
         <p>مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
-        <p>جهت تمدید اشتراک با پشتیبانی تماس بگیرید.</p>
-        <div class="dev-icons" style="margin-top:20px;">
+        <p>برای فعال‌سازی مجدد، از طریق دکمه زیر اقدام کنید:</p>
+        
+        <a href="YOUR_PAYMENT_LINK_HERE" target="_blank" class="renew-btn">تمدید آنلاین اشتراک</a>
+        
+        <div class="dev-icons" style="margin-top:30px;">
              <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
         </div>
     </div>
@@ -97,16 +102,16 @@
     <div class="dev-footer">
         <p class="dev-title">مجری طرح: گروه نرم‌افزاری مَجد</p>
         <div class="dev-icons">
-            <a href="tel:09105710039"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="https://t.me/pmm0039"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
-            <a href="https://wa.me/989105710039"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
+            <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+            <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="https://wa.me/989123456789"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
         </div>
     </div>
 
     <div class="order-details" id="orderDetails">
         <div class="type-selector">
-            <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table">🍽️ سالن</div>
-            <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery">🛵 بیرون‌بر</div>
+            <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table"> سالن</div>
+            <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery"> بیرون‌بر</div>
         </div>
 
         <div class="invoice-box">
@@ -130,7 +135,8 @@
     <script>
         let products = [];
         let cart = {};
-        let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true };
+        // اضافه شدن paymentLink به تنظیمات پیش‌فرض
+        let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -138,7 +144,7 @@
 
         async function startApp() {
             if (!sheetId) {
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">⛔ خطا: شناسه فروشگاه وارد نشده است.</div>`;
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c"> خطا: شناسه فروشگاه وارد نشده است.</div>`;
                 return;
             }
 
@@ -164,7 +170,6 @@
             let settingsMap = {};
             rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
 
-            // نام و تلفن
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -173,18 +178,19 @@
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             
-            // وضعیت باز/بسته
+            // دریافت لینک پرداخت مشتری از اکسل
+            if(settingsMap['PaymentLink']) config.paymentLink = settingsMap['PaymentLink'];
+            
             if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
                 config.isOpen = false;
-                document.getElementById('shopStatus').innerText = "⛔ بسته است";
+                document.getElementById('shopStatus').innerText = " بسته است";
                 document.getElementById('shopStatus').className = "status-badge closed";
                 document.getElementById('actionBtn').classList.add('disabled-btn');
             } else {
-                document.getElementById('shopStatus').innerText = "✅ باز است";
+                document.getElementById('shopStatus').innerText = " باز است";
                 document.getElementById('shopStatus').className = "status-badge open";
             }
 
-            // === بررسی اشتراک ===
             if (settingsMap['ExpireDate']) {
                 checkSubscription(settingsMap['ExpireDate']);
             }
@@ -198,13 +204,11 @@
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
                 if (diffDays <= 0) {
-                    // قفل کردن سایت
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
                 } else {
-                    // نمایش روز شمار
                     const badge = document.getElementById('subBadge');
-                    badge.innerHTML = `📅 اعتبار: ${diffDays} روز`;
+                    badge.innerHTML = ` اعتبار: ${diffDays} روز`;
                     badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
                 }
             } catch (e) {
@@ -336,20 +340,45 @@
         window.processOrder = () => {
             if(!config.isOpen) return;
             let desc = "";
-            for(let id in cart) { const p = products.find(x=>x.id==id); if(p) { desc += `${p.t}(${cart[id]}) - `; } }
+            let total = 0;
+            for(let id in cart) { 
+                const p = products.find(x=>x.id==id); 
+                if(p) { 
+                    desc += `${p.t} (${cart[id]}) - `; 
+                    total += p.p * cart[id];
+                } 
+            }
+            
+            let finalPrice = total;
+            if(orderType === 'delivery') finalPrice += config.deliveryPrice;
+
+            // اضافه کردن اطلاعات پرداخت به متن پیام
+            if(config.paymentLink) {
+                desc += `\n------------------\n💳 مبلغ قابل پرداخت: ${finalPrice.toLocaleString()} تومان\n🔗 لینک پرداخت: ${config.paymentLink}\n(لطفاً پس از پرداخت، تصویر رسید را ارسال کنید)\n------------------\n`;
+            }
+
             const note = document.getElementById('userNote').value;
             if(note) desc += `\nپیام: ${note}`;
             
+            let url = "";
+
             if(orderType === 'table') {
                 const tNum = document.getElementById('tableNum').value;
                 if(!tNum) return alert('شماره میز را وارد کنید');
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`);
+                url = `https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`;
             } else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
                 if(!ph || !ad) return alert('شماره و آدرس الزامی است');
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`);
+                url = `https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`;
             }
+
+            // اگر لینک پرداخت دارد، قبل از رفتن به واتساپ هشدار بده
+            if(config.paymentLink) {
+                alert("سفارش شما آماده ارسال است.\nلطفاً در پیام واتساپ، از طریق لینک پرداخت مبلغ را واریز کرده و عکس فیش را ارسال نمایید.");
+            }
+
+            window.open(url);
         };
 
         startApp();
