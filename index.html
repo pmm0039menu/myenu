@@ -128,9 +128,12 @@
     </div>
 
     <script>
+        // اگر نمی‌خواهید لینک را از اکسل بگیرید، لینک خود را اینجا وارد کنید:
+        const hardcodedPaymentLink = ""; // مثال: "https://idpay.ir/my-shop"
+
         let products = [];
         let cart = {};
-        let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true };
+        let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -173,6 +176,13 @@
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             
+            // دریافت لینک پرداخت از اکسل یا کد
+            if(hardcodedPaymentLink) {
+                config.paymentLink = hardcodedPaymentLink;
+            } else if(settingsMap['PaymentLink']) {
+                config.paymentLink = settingsMap['PaymentLink'];
+            }
+
             // وضعیت باز/بسته
             if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
                 config.isOpen = false;
@@ -330,25 +340,58 @@
 
         function updateBtn(price) {
             const btn = document.getElementById('actionBtn');
-            if(config.isOpen) btn.innerHTML = orderType === 'delivery' ? `تکمیل خرید (${price.toLocaleString()})` : `ثبت سفارش سالن`;
+            if(config.isOpen) btn.innerHTML = orderType === 'delivery' ? `پرداخت آنلاین (${price.toLocaleString()})` : `ثبت سفارش سالن`;
         }
 
         window.processOrder = () => {
             if(!config.isOpen) return;
+            
             let desc = "";
             for(let id in cart) { const p = products.find(x=>x.id==id); if(p) { desc += `${p.t}(${cart[id]}) - `; } }
             const note = document.getElementById('userNote').value;
             if(note) desc += `\nپیام: ${note}`;
             
+            // === حالت سالن (واتس‌اپ) ===
             if(orderType === 'table') {
                 const tNum = document.getElementById('tableNum').value;
                 if(!tNum) return alert('شماره میز را وارد کنید');
                 window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`);
+            
+            // === حالت بیرون‌بر (درگاه پرداخت) ===
             } else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
-                if(!ph || !ad) return alert('شماره و آدرس الزامی است');
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش بیرون‌بر\nتلفن: ${ph}\nآدرس: ${ad}\n${desc}`)}`);
+                if(!ph || !ad) return alert('برای ارسال پیک، شماره تماس و آدرس الزامی است.');
+
+                // محاسبه مجدد مبلغ
+                let total = 0;
+                for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
+                const finalAmount = total + config.deliveryPrice;
+
+                // بررسی وجود لینک پرداخت
+                if(!config.paymentLink) {
+                    alert('خطا: لینک درگاه پرداخت در تنظیمات وارد نشده است.');
+                    return;
+                }
+
+                // پیام هشدار برای اسکرین‌شات
+                const confirmMsg = `مبلغ قابل پرداخت: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
+
+                if(confirm(confirmMsg)) {
+                    // ساخت لینک پرداخت
+                    let payUrl = config.paymentLink;
+                    
+                    // اگر لینک آیدی پی باشد، مبلغ را به ریال (x10) به لینک اضافه می‌کنیم
+                    if(payUrl.includes('idpay.ir')) {
+                        // فرمت آیدی‌پی: ?amount=ریال
+                        // چک می‌کنیم اگر علامت سوال ندارد اضافه کنیم
+                        const separator = payUrl.includes('?') ? '&' : '?';
+                        payUrl += `${separator}amount=${finalAmount}0`; 
+                    }
+                    
+                    // هدایت کاربر
+                    window.location.href = payUrl;
+                }
             }
         };
 
