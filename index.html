@@ -146,8 +146,9 @@
             }
 
             try {
-                const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu`);
-                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings`);
+                // *** تغییر اصلی اینجاست: اضافه کردن کد ضد کش (Date.now) ***
+                const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
+                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
                 
                 if (!menuResp.ok || !settingsResp.ok) throw new Error("Error");
 
