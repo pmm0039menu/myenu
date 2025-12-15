@@ -132,22 +132,21 @@
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
-        // *** بازگشت به حالت پویا (برای فروش به همه) ***
+        // *** تغییر مهم و نهایی: هم خدا را داریم هم خرما! ***
+        // 1. اول سعی میکنه شناسه رو از لینک بگیره (برای مشتری ها)
+        // 2. اگه نبود، از شناسه پیش فرض شما استفاده میکنه (برای شما و دسکتاپ)
         const urlParams = new URLSearchParams(window.location.search);
-        const sheetId = urlParams.get('id');
+        const sheetId = urlParams.get('id') || "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
 
         async function startApp() {
             if (!sheetId) {
-                // اگر شناسه نبود، پیام می‌دهد (برای دسکتاپ یا لینک ناقص)
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">
-                    ⛔ خطای شناسه<br>
-                    <span style="font-size:0.8rem; color:#888;">لینک وارد شده ناقص است یا شناسه فروشگاه ندارد.</span>
-                </div>`;
+                // این قسمت عملا دیگه اجرا نمیشه چون همیشه یه آیدی داریم
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">⛔ خطای شناسه</div>`;
                 return;
             }
 
             try {
-                // *** ضد کش (Date.now) حفظ شده است ***
+                // کد ضد کش هم سرجاشه
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
                 
