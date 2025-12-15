@@ -15,7 +15,6 @@
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
 
-        /* روز شمار اشتراک */
         .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
         .sub-badge.danger { border-color: #e74c3c; color: #e74c3c; }
 
@@ -53,7 +52,6 @@
         .disabled-btn { background: #555 !important; cursor: not-allowed; }
         .hidden { display: none !important; }
 
-        /* --- فوتر سازنده --- */
         .dev-footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; background: #0e0e12; }
         .dev-title { margin-bottom: 10px; color: #888; }
         .dev-icons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
@@ -61,7 +59,6 @@
         .dev-icons a:hover { background: #d3ad7f; color: #000; border-color: #d3ad7f; transform: translateY(-3px); }
         .dev-icons svg { width: 18px; height: 18px; fill: currentColor; }
 
-        /* صفحه قفل (پایان اشتراک) */
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
         #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
@@ -128,7 +125,6 @@
     </div>
 
     <script>
-        // === لینک تست در اینجا قرار گرفت ===
         const hardcodedPaymentLink = "https://idpay.ir"; 
 
         let products = [];
@@ -136,17 +132,22 @@
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
 
+        // *** بازگشت به حالت پویا (برای فروش به همه) ***
         const urlParams = new URLSearchParams(window.location.search);
         const sheetId = urlParams.get('id');
 
         async function startApp() {
             if (!sheetId) {
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">⛔ خطا: شناسه فروشگاه وارد نشده است.</div>`;
+                // اگر شناسه نبود، پیام می‌دهد (برای دسکتاپ یا لینک ناقص)
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">
+                    ⛔ خطای شناسه<br>
+                    <span style="font-size:0.8rem; color:#888;">لینک وارد شده ناقص است یا شناسه فروشگاه ندارد.</span>
+                </div>`;
                 return;
             }
 
             try {
-                // *** تغییر اصلی اینجاست: اضافه کردن کد ضد کش (Date.now) ***
+                // *** ضد کش (Date.now) حفظ شده است ***
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
                 
@@ -159,7 +160,7 @@
                 parseMenu(menuCsv);
 
             } catch (err) {
-                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در بارگذاری اطلاعات.<br>لینک و تنظیمات اکسل را بررسی کنید.</div>`;
+                document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در اتصال به سرور.<br>لطفا اینترنت را بررسی کنید.</div>`;
             }
         }
 
@@ -168,7 +169,6 @@
             let settingsMap = {};
             rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
 
-            // نام و تلفن
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -177,14 +177,12 @@
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             
-            // دریافت لینک پرداخت از اکسل یا کد
             if(hardcodedPaymentLink) {
                 config.paymentLink = hardcodedPaymentLink;
             } else if(settingsMap['PaymentLink']) {
                 config.paymentLink = settingsMap['PaymentLink'];
             }
 
-            // وضعیت باز/بسته
             if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
                 config.isOpen = false;
                 document.getElementById('shopStatus').innerText = "⛔ بسته است";
@@ -195,7 +193,6 @@
                 document.getElementById('shopStatus').className = "status-badge open";
             }
 
-            // === بررسی اشتراک ===
             if (settingsMap['ExpireDate']) {
                 checkSubscription(settingsMap['ExpireDate']);
             }
@@ -209,11 +206,9 @@
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
                 if (diffDays <= 0) {
-                    // قفل کردن سایت
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
                 } else {
-                    // نمایش روز شمار
                     const badge = document.getElementById('subBadge');
                     badge.innerHTML = `📅 اعتبار: ${diffDays} روز`;
                     badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
@@ -352,45 +347,32 @@
             const note = document.getElementById('userNote').value;
             if(note) desc += `\nپیام: ${note}`;
             
-            // === حالت سالن (واتس‌اپ) ===
             if(orderType === 'table') {
                 const tNum = document.getElementById('tableNum').value;
                 if(!tNum) return alert('شماره میز را وارد کنید');
                 window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`);
-            
-            // === حالت بیرون‌بر (درگاه پرداخت) ===
             } else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
                 if(!ph || !ad) return alert('برای ارسال پیک، شماره تماس و آدرس الزامی است.');
 
-                // محاسبه مجدد مبلغ
                 let total = 0;
                 for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
                 const finalAmount = total + config.deliveryPrice;
 
-                // بررسی وجود لینک پرداخت
                 if(!config.paymentLink) {
                     alert('خطا: لینک درگاه پرداخت در تنظیمات وارد نشده است.');
                     return;
                 }
 
-                // پیام هشدار برای اسکرین‌شات
                 const confirmMsg = `مبلغ قابل پرداخت: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
 
                 if(confirm(confirmMsg)) {
-                    // ساخت لینک پرداخت
                     let payUrl = config.paymentLink;
-                    
-                    // اگر لینک آیدی پی باشد، مبلغ را به ریال (x10) به لینک اضافه می‌کنیم
                     if(payUrl.includes('idpay.ir')) {
-                        // فرمت آیدی‌پی: ?amount=ریال
-                        // چک می‌کنیم اگر علامت سوال ندارد اضافه کنیم
                         const separator = payUrl.includes('?') ? '&' : '?';
                         payUrl += `${separator}amount=${finalAmount}0`; 
                     }
-                    
-                    // هدایت کاربر
                     window.location.href = payUrl;
                 }
             }
