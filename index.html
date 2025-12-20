@@ -18,12 +18,11 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background:var(--bg); color:var(--text); padding-bottom:120px; user-select: none; }
         
-        /* ۱. هدر بسیار پهن‌تر */
         header { 
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), var(--header-img);
             background-size: cover;
             background-position: center;
-            height: 320px; /* پهن‌تر از قبل */
+            height: 320px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -32,13 +31,20 @@
             border-bottom: 5px solid var(--primary); 
             position: relative; 
             z-index: 100; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.8); 
         }
         header h1 { font-size: 2.2rem; color: #fff; text-shadow: 2px 2px 15px #000; margin-bottom: 8px; font-weight: bold; }
         .status-badge { font-size: 0.9rem; padding: 5px 18px; border-radius: 25px; display: inline-block; backdrop-filter: blur(8px); font-weight: bold; }
         .open { background: rgba(39, 174, 96, 0.9); color: #fff; }
 
-        .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; }
+        /* ۱. بنر خوش‌آمدگویی */
+        .welcome-banner {
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #1e1e24 0%, #13131a 100%);
+            border-bottom: 1px solid #333;
+        }
+        .welcome-banner h2 { color: var(--primary); margin-bottom: 15px; font-size: 1.5rem; }
+        .welcome-banner p { line-height: 1.8; color: #ccc; max-width: 500px; margin: 0 auto; font-size: 0.95rem; }
 
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; position: sticky; top: 0; z-index: 99; border-bottom: 1px solid #222; scrollbar-width: none; }
         .cat-scroll::-webkit-scrollbar { display: none; }
@@ -52,76 +58,49 @@
             display: grid; 
             grid-template-columns: 1fr 1fr; 
             gap: 15px; 
+            display: none; /* در ابتدا مخفی تا دسته‌ای انتخاب شود */
         }
-        .item { 
-            background: var(--card); 
-            border-radius: 18px; 
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid #2a2a35; 
-            animation: fadeIn 0.5s; 
-            position: relative; 
-            overflow: hidden;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-        }
+        .item { background: var(--card); border-radius: 18px; display: flex; flex-direction: column; border: 1px solid #2a2a35; animation: fadeIn 0.5s; overflow: hidden; }
         .item img { width: 100%; height: 130px; object-fit: cover; border-bottom: 2px solid var(--primary); }
-        .info { padding: 12px; width: 100%; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .info h3 { font-size: 0.95rem; margin-bottom: 8px; min-height: 38px; color: #fff; }
-        .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; display: block; margin-bottom: 12px; }
+        .info { padding: 12px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .info h3 { font-size: 0.9rem; margin-bottom: 8px; color: #fff; }
+        .price { color: var(--primary); font-weight: bold; font-size: 1rem; margin-bottom: 10px; display: block; }
         
-        /* ۳. سیستم افزودن و کم کردن داخل همان دکمه */
-        .add-btn { background: var(--primary); color: #000; padding: 10px 0; border-radius: 10px; font-size: 0.9rem; cursor: pointer; font-weight: bold; width: 100%; }
+        .add-btn { background: var(--primary); color: #000; padding: 10px 0; border-radius: 10px; font-size: 0.85rem; cursor: pointer; font-weight: bold; }
         .qty-box { display: none; align-items: center; justify-content: space-between; background: #000; border-radius: 10px; border: 1px solid var(--primary); overflow: hidden; }
         .qty-box.show { display: flex; }
-        .q-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; cursor: pointer; background: #222; color: var(--primary); }
-        .q-num { flex: 1; text-align: center; font-weight: bold; font-size: 1.1rem; color: #fff; }
+        .q-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; background: #222; color: var(--primary); }
+        .q-num { flex: 1; text-align: center; font-weight: bold; color: #fff; }
 
-        /* دکمه شناور جدید برای تایید نهایی */
-        .floating-order-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 20px;
-            background: var(--green);
-            color: #fff;
-            padding: 15px 25px;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            z-index: 1001;
-            display: none; /* فقط وقتی سبد پر است نمایش داده شود */
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
+        .floating-order-btn { position: fixed; bottom: 25px; right: 20px; background: var(--green); color: #fff; padding: 15px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 1001; display: none; align-items: center; gap: 10px; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); }
 
-        .order-details { background: var(--card); padding: 18px; border-top: 3px solid var(--primary); position: fixed; bottom: 0; left: 0; right: 0; z-index: 1002; display: none; max-width: 600px; margin: 0 auto; border-radius: 20px 20px 0 0; box-shadow: 0 -8px 50px rgba(0,0,0,0.8); overflow-y: auto; max-height: 85vh; }
+        /* ۲. استایل لیست اقلام در فاکتور */
+        .cart-items-review { margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .review-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: #2a2a35; padding: 8px 12px; border-radius: 10px; }
+        .review-info { flex: 1; }
+        .review-info h4 { font-size: 0.9rem; color: #fff; }
+        .review-info span { font-size: 0.8rem; color: var(--primary); }
+        .review-controls { display: flex; align-items: center; gap: 10px; background: #000; border-radius: 8px; padding: 2px 8px; border: 1px solid #444; }
+
+        .order-details { background: var(--card); padding: 18px; border-top: 3px solid var(--primary); position: fixed; bottom: 0; left: 0; right: 0; z-index: 1002; display: none; max-width: 600px; margin: 0 auto; border-radius: 25px 25px 0 0; box-shadow: 0 -8px 50px rgba(0,0,0,0.8); overflow-y: auto; max-height: 90vh; }
         .order-details.active { display: block; }
-        .close-details { text-align: left; color: #888; margin-bottom: 10px; cursor: pointer; }
+        .close-details { text-align: left; color: #888; margin-bottom: 15px; cursor: pointer; font-size: 0.9rem; }
 
-        /* استایل‌های پایه فرم سفارش */
         .type-selector { display: flex; gap: 12px; margin-bottom: 18px; }
-        .type-btn { flex: 1; padding: 12px; background: #0b0b0f; border: 1px solid #333; color: #888; text-align: center; border-radius: 12px; cursor: pointer; font-weight: bold; }
-        .type-btn.selected { background: var(--primary); color: #000; border-color: var(--primary); }
+        .type-btn { flex: 1; padding: 12px; background: #0b0b0f; border: 1px solid #333; color: #888; text-align: center; border-radius: 12px; cursor: pointer; }
+        .type-btn.selected { background: var(--primary); color: #000; font-weight: bold; }
         .input-group { margin-bottom: 10px; }
         .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 10px; outline: none; }
-        .invoice-box { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; margin-bottom: 18px; border: 1px solid #222; }
+        .invoice-box { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; margin-bottom: 18px; }
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #bbb; }
-        .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 8px; margin-top: 8px; font-size: 1.15rem; }
-        .final-btn { background: var(--green); color: #fff; padding: 14px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 1.1rem; text-align: center; width: 100%; margin-top: 10px; }
+        .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 8px; font-size: 1.1rem; }
+        .final-btn { background: var(--green); color: #fff; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; text-align: center; width: 100%; }
         .hidden { display: none !important; }
-        
-        .dev-footer { text-align: center; margin-top: 40px; padding: 25px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; background: #0e0e12; }
-        #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 25px; }
+        .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
-
-    <div id="lockScreen">
-        <h2 style="color:#e74c3c;">پایان اشتراک ⚠️</h2>
-        <p>لطفاً با پشتیبانی تماس بگیرید.</p>
-    </div>
 
     <div id="subBadge"></div>
 
@@ -130,18 +109,26 @@
         <div id="shopStatus" class="status-badge">بررسی وضعیت...</div>
     </header>
 
+    <div class="welcome-banner" id="welcomeBanner">
+        <h2>به فست‌فود ما خوش آمدید</h2>
+        <p>بهترین کیفیت مواد اولیه، طعم‌های اصیل و ارسال سریع. برای مشاهده منو، یکی از دسته‌بندی‌های زیر را انتخاب کنید.</p>
+    </div>
+
     <div class="cat-scroll" id="cats"></div>
 
-    <div class="menu-list" id="list">
-        <p style="text-align:center; color:#666; margin-top:50px; grid-column: span 2;" id="loadingText">در حال دریافت منو...</p>
-    </div>
+    <div class="menu-list" id="list"></div>
 
     <div class="floating-order-btn" id="floatingOrderBtn" onclick="toggleOrderForm(true)">
         <span>🛒 مشاهده فاکتور و تایید</span>
     </div>
 
     <div class="order-details" id="orderDetails">
-        <div class="close-details" onclick="toggleOrderForm(false)">✖ بستن فاکتور</div>
+        <div class="close-details" onclick="toggleOrderForm(false)">✖ بازگشت به منو</div>
+        
+        <h3 style="margin-bottom:15px; color:var(--primary)">بررسی نهایی سفارش:</h3>
+        
+        <div id="cartReviewList" class="cart-items-review"></div>
+
         <div class="type-selector">
             <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table">🍽️ سالن</div>
             <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery">🛵 بیرون‌بر</div>
@@ -151,37 +138,32 @@
             <div class="invoice-row" id="deliveryRow" style="display: none;"><span>هزینه پیک:</span><span id="deliveryPriceDisplay">0</span></div>
             <div class="invoice-row highlight"><span>قابل پرداخت:</span><span id="finalPayable">0</span></div>
         </div>
-        <div class="input-group"><textarea id="userNote" placeholder="توضیحات سفارش شما"></textarea></div>
+        <div class="input-group"><textarea id="userNote" placeholder="توضیحات سفارش (مثلاً بدون سس)"></textarea></div>
         <div id="form-table" class="input-group"><input type="number" id="tableNum" placeholder="شماره میز"></div>
         <div id="form-delivery" class="hidden">
             <div class="input-group"><input type="tel" id="userPhone" placeholder="شماره تماس"></div>
-            <div class="input-group"><textarea id="address" placeholder="آدرس دقیق برای ارسال"></textarea></div>
+            <div class="input-group"><textarea id="address" placeholder="آدرس دقیق ارسال"></textarea></div>
         </div>
-        <div class="final-btn" id="actionBtn" onclick="processOrder()">تایید نهایی و پرداخت</div>
-    </div>
-
-    <div class="dev-footer">
-        <p class="dev-title">مجری طرح: گروه نرم‌افزاری مَجد</p>
+        <div class="final-btn" id="actionBtn" onclick="processOrder()">ثبت و پرداخت نهایی</div>
     </div>
 
     <script>
         const hardcodedPaymentLink = "https://idpay.ir"; 
         let products = [];
         let cart = {};
-        let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
+        let config = { name: "فست فود", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
         const urlParams = new URLSearchParams(window.location.search);
         const sheetId = urlParams.get('id') || "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
 
         async function startApp() {
-            if (!sheetId) return;
             try {
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
                 parseSettings(await settingsResp.text());
                 parseMenu(await menuResp.text());
             } catch (err) {
-                document.getElementById('list').innerHTML = `<p style="text-align:center; grid-column: span 2;">خطا در دریافت اطلاعات</p>`;
+                console.error(err);
             }
         }
 
@@ -189,30 +171,18 @@
             const rows = csvToArr(csv);
             let settingsMap = {};
             rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
-            if(settingsMap['ShopName']) document.getElementById('shopName').innerText = settingsMap['ShopName'];
+            document.getElementById('shopName').innerText = settingsMap['ShopName'] || "فست فود";
             config.phone = settingsMap['Phone'] || "";
             config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             config.paymentLink = hardcodedPaymentLink || settingsMap['PaymentLink'];
-            if(settingsMap['IsOpen'] === 'FALSE') {
-                config.isOpen = false;
-                document.getElementById('shopStatus').innerText = "⛔ بسته است";
-                document.getElementById('shopStatus').className = "status-badge closed";
-            } else {
-                document.getElementById('shopStatus').innerText = "✅ باز است";
-                document.getElementById('shopStatus').className = "status-badge open";
-            }
-            if (settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
+            if(settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
         }
 
         function checkSubscription(dateStr) {
             const expire = new Date(dateStr);
             const now = new Date();
             const diffDays = Math.ceil((expire - now) / (1000 * 60 * 60 * 24)); 
-            if (diffDays <= 0) document.getElementById('lockScreen').style.display = 'flex';
-            else {
-                const badge = document.getElementById('subBadge');
-                badge.innerHTML = `📅 اعتبار: ${diffDays} روز`;
-            }
+            if (diffDays > 0) document.getElementById('subBadge').innerHTML = `📅 اعتبار: ${diffDays} روز`;
         }
 
         function parseMenu(csv) {
@@ -224,16 +194,11 @@
                 tempCats.add(cat);
                 products.push({ id: i, c: cat, t: r[1].replace(/"/g, '').trim(), p: parseInt(r[2].replace(/,/g, '').trim()) || 0, i: r[3] ? r[3].replace(/"/g, '').trim() : '', active: r[4] !== 'FALSE' });
             }
-            
-            // ۲. حذف گزینه "همه" و انتخاب اولین دسته بندی
             let catHtml = "";
-            let firstCat = "";
-            tempCats.forEach((c, index) => { 
-                if(!firstCat) firstCat = c;
-                catHtml += `<div class="cat-btn ${index===0?'active':''}" onclick="filter('${c}', this)">${c}</div>`; 
+            tempCats.forEach((c) => { 
+                catHtml += `<div class="cat-btn" onclick="filter('${c}', this)">${c}</div>`; 
             });
             document.getElementById('cats').innerHTML = catHtml;
-            render(firstCat);
         }
 
         function csvToArr(str) {
@@ -250,11 +215,18 @@
             return rows;
         }
 
+        function filter(cat, el) {
+            document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('welcomeBanner').style.display = 'none';
+            document.getElementById('list').style.display = 'grid';
+            render(cat);
+        }
+
         function render(cat) {
             const list = document.getElementById('list');
             list.innerHTML = '';
-            const items = products.filter(x => x.c === cat);
-            items.forEach(x => {
+            products.filter(x => x.c === cat).forEach(x => {
                 const count = cart[x.id] || 0;
                 let btnHtml = !x.active ? `<span style="color:#e74c3c;">ناموجود</span>` 
                     : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">افزودن</div>` 
@@ -264,20 +236,14 @@
             updateFloatingBtn();
         }
 
-        window.filter = (cat, el) => {
-            document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active'));
-            el.classList.add('active'); render(cat);
-        };
-
-        window.upd = (id, n) => {
-            if(!config.isOpen) return alert('فروشگاه بسته است.');
+        function upd(id, n) {
             cart[id] = (cart[id] || 0) + n;
             if(cart[id] <= 0) delete cart[id];
-            
-            const activeCat = document.querySelector('.cat-btn.active').innerText;
-            render(activeCat);
+            const activeBtn = document.querySelector('.cat-btn.active');
+            if(activeBtn) render(activeBtn.innerText);
+            if(document.getElementById('orderDetails').classList.contains('active')) renderCartReview();
             calcTotal();
-        };
+        }
 
         function updateFloatingBtn() {
             let count = Object.values(cart).reduce((a, b) => a + b, 0);
@@ -286,6 +252,30 @@
 
         function toggleOrderForm(show) {
             document.getElementById('orderDetails').classList.toggle('active', show);
+            if(show) renderCartReview();
+        }
+
+        // ۲. رندر کردن لیست فاکتور برای مشاهده و ویرایش مشتری
+        function renderCartReview() {
+            const reviewList = document.getElementById('cartReviewList');
+            reviewList.innerHTML = '';
+            for(let id in cart) {
+                const p = products.find(x=>x.id==id);
+                if(p) {
+                    reviewList.innerHTML += `
+                        <div class="review-item">
+                            <div class="review-info">
+                                <h4>${p.t}</h4>
+                                <span>قیمت واحد: ${p.p.toLocaleString()}</span>
+                            </div>
+                            <div class="review-controls">
+                                <div style="color:var(--primary); font-size:1.2rem; cursor:pointer" onclick="upd(${id}, 1)">+</div>
+                                <div style="color:#fff; font-weight:bold">${cart[id]}</div>
+                                <div style="color:#e74c3c; font-size:1.5rem; cursor:pointer" onclick="upd(${id}, -1)">-</div>
+                            </div>
+                        </div>`;
+                }
+            }
         }
 
         function calcTotal() {
@@ -295,12 +285,10 @@
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + ' تومان';
-            
-            const btn = document.getElementById('actionBtn');
-            if(config.isOpen) btn.innerHTML = orderType === 'delivery' ? `پرداخت آنلاین (${final.toLocaleString()})` : `ثبت سفارش سالن`;
+            updateFloatingBtn();
         }
 
-        window.setOrderType = (type) => {
+        function setOrderType(type) {
             orderType = type;
             document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('btn-'+type).classList.add('selected');
@@ -308,9 +296,9 @@
             document.getElementById('form-delivery').classList.toggle('hidden', type === 'table');
             document.getElementById('deliveryRow').style.display = type === 'table' ? 'none' : 'flex';
             calcTotal();
-        };
+        }
 
-        window.processOrder = () => {
+        function processOrder() {
             let desc = "";
             for(let id in cart) { const p = products.find(x=>x.id==id); if(p) desc += `${p.t}(${cart[id]}) - `; }
             if(orderType === 'table') {
@@ -320,17 +308,16 @@
             } else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
-                if(!ph || !ad) return alert('شماره تماس و آدرس الزامی است.');
+                if(!ph || !ad) return alert('اطلاعات الزامی است.');
                 let total = 0; for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
                 const finalAmount = total + config.deliveryPrice;
-                const confirmMsg = `مبلغ: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی اسکرین‌شات بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.`;
-                if(confirm(confirmMsg)) {
+                if(confirm(`مبلغ نهایی: ${finalAmount.toLocaleString()} تومان\nآماده پرداخت هستید؟`)) {
                     let payUrl = config.paymentLink;
                     if(payUrl.includes('idpay.ir')) payUrl += (payUrl.includes('?') ? '&' : '?') + `amount=${finalAmount}0`;
                     window.location.href = payUrl;
                 }
             }
-        };
+        }
 
         startApp();
     </script>
