@@ -7,23 +7,45 @@
     <style>
         :root { --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background:var(--bg); color:var(--text); padding-bottom:120px; user-select: none; }
         
-        header { background: var(--card); padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; }
-        .status-badge { font-size: 0.8rem; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-top: 5px; }
+        /* تغییر بک‌گراند کل صفحه زیر هدر */
+        body { 
+            background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color:var(--text); 
+            padding-bottom:120px; 
+            user-select: none; 
+        }
+        
+        /* پهن کردن هدر و افزودن عکس پس‌زمینه */
+        header { 
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 50px 20px; /* پهن‌تر شدن هدر */
+            text-align: center; 
+            border-bottom: 3px solid var(--primary); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+        }
+        header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 5px; }
+        .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
 
         .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
         .sub-badge.danger { border-color: #e74c3c; color: #e74c3c; }
 
-        .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; }
+        .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: rgba(11, 11, 15, 0.8); backdrop-filter: blur(5px); }
         .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
 
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
-        .item { background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; }
+        .item { background: rgba(30, 30, 36, 0.9); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; backdrop-filter: blur(2px); }
         .item.inactive { opacity: 0.6; filter: grayscale(1); pointer-events: none; }
         .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); background: #000; }
         .info { flex: 1; }
@@ -39,7 +61,6 @@
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; position: relative; }
         .order-details.active { display: block; }
         
-        /* استایل دکمه بستن */
         .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; border: 1px solid var(--primary); z-index: 10; }
 
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; margin-top: 10px; }
@@ -56,7 +77,6 @@
         .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; }
         .summary-item span:first-child { flex: 2; }
         
-        /* استایل کنترل‌های داخل لیست تایید */
         .summary-controls { flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 8px; background: #000; border-radius: 6px; border: 1px solid #444; padding: 2px 5px; margin: 0 10px; }
         .s-btn { color: var(--primary); font-weight: bold; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
 
@@ -75,7 +95,6 @@
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
         #lockScreen p { color: #fff; margin-bottom: 20px; line-height: 1.6; }
-        .renew-btn { background: #27ae60; color: #fff; text-decoration: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; }
 
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
@@ -101,7 +120,7 @@
     <div class="cat-scroll" id="cats"></div>
 
     <div class="menu-list" id="list">
-        <p style="text-align:center; color:#666; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
+        <p style="text-align:center; color:#fff; margin-top:50px; text-shadow: 1px 1px 2px #000;" id="loadingText">در حال دریافت منو...</p>
     </div>
 
     <div class="dev-footer">
@@ -115,21 +134,17 @@
 
     <div class="order-details" id="orderDetails">
         <div class="close-details" onclick="closeDetails()">✕</div>
-        
         <h3 style="margin-bottom:10px; color:var(--primary); font-size:1rem; text-align:center;">📋 بازبینی سفارش</h3>
         <div id="summaryList" class="summary-list"></div>
-
         <div class="type-selector">
             <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table">🍽️ سالن</div>
             <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery">🛵 بیرون‌بر</div>
         </div>
-
         <div class="invoice-box">
             <div class="invoice-row"><span>جمع اقلام:</span><span id="itemsTotal">0</span></div>
             <div class="invoice-row" id="deliveryRow" style="display: none;"><span>هزینه پیک:</span><span id="deliveryPriceDisplay">0</span></div>
             <div class="invoice-row highlight"><span>قابل پرداخت:</span><span id="finalPayable">0</span></div>
         </div>
-
         <div class="input-group"><textarea id="userNote" placeholder="توضیحات (اختیاری)"></textarea></div>
         <div id="form-table" class="input-group"><input type="number" id="tableNum" placeholder="شماره میز"></div>
         <div id="form-delivery" class="hidden">
@@ -144,12 +159,10 @@
 
     <script>
         const hardcodedPaymentLink = "https://idpay.ir"; 
-
         let products = [];
         let cart = {};
         let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
-
         const urlParams = new URLSearchParams(window.location.search);
         const sheetId = urlParams.get('id') || "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
 
@@ -158,19 +171,14 @@
                 document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">⛔ خطای شناسه</div>`;
                 return;
             }
-
             try {
                 const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
-                
                 if (!menuResp.ok || !settingsResp.ok) throw new Error("Error");
-
                 const menuCsv = await menuResp.text();
                 const settingsCsv = await settingsResp.text();
-
                 parseSettings(settingsCsv);
                 parseMenu(menuCsv);
-
             } catch (err) {
                 document.getElementById('list').innerHTML = `<div style="text-align:center; padding:30px; color:#e74c3c">خطا در اتصال به سرور.<br>لطفا اینترنت را بررسی کنید.</div>`;
             }
@@ -180,7 +188,6 @@
             const rows = csvToArr(csv);
             let settingsMap = {};
             rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
-
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
@@ -188,13 +195,8 @@
             }
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
-            
-            if(hardcodedPaymentLink) {
-                config.paymentLink = hardcodedPaymentLink;
-            } else if(settingsMap['PaymentLink']) {
-                config.paymentLink = settingsMap['PaymentLink'];
-            }
-
+            if(hardcodedPaymentLink) config.paymentLink = hardcodedPaymentLink;
+            else if(settingsMap['PaymentLink']) config.paymentLink = settingsMap['PaymentLink'];
             if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
                 config.isOpen = false;
                 document.getElementById('shopStatus').innerText = "⛔ بسته است";
@@ -204,10 +206,7 @@
                 document.getElementById('shopStatus').innerText = "✅ باز است";
                 document.getElementById('shopStatus').className = "status-badge open";
             }
-
-            if (settingsMap['ExpireDate']) {
-                checkSubscription(settingsMap['ExpireDate']);
-            }
+            if (settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
         }
 
         function checkSubscription(dateStr) {
@@ -216,7 +215,6 @@
                 const now = new Date();
                 const diffTime = expire - now;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-
                 if (diffDays <= 0) {
                     document.getElementById('lockScreen').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
@@ -225,31 +223,20 @@
                     badge.innerHTML = `📅 اعتبار: ${diffDays} روز`;
                     badge.className = diffDays < 7 ? 'sub-badge danger' : 'sub-badge';
                 }
-            } catch (e) {
-                console.error("خطا در فرمت تاریخ", e);
-            }
+            } catch (e) { console.error("تاریخ خطا", e); }
         }
 
         function parseMenu(csv) {
             const rows = csvToArr(csv);
             let tempCats = new Set();
-            
             for(let i=1; i<rows.length; i++) { 
                 const r = rows[i];
                 if(r.length < 3) continue;
-
                 const isActive = (r[4] && r[4].toUpperCase().includes('FALSE')) ? false : true;
                 const cat = r[0].replace(/"/g, '').trim();
                 tempCats.add(cat);
-                
-                products.push({
-                    id: i, c: cat, t: r[1].replace(/"/g, '').trim(),
-                    p: parseInt(r[2].replace(/,/g, '').trim()) || 0,
-                    i: r[3] ? r[3].replace(/"/g, '').trim() : '',
-                    active: isActive
-                });
+                products.push({ id: i, c: cat, t: r[1].replace(/"/g, '').trim(), p: parseInt(r[2].replace(/,/g, '').trim()) || 0, i: r[3] ? r[3].replace(/"/g, '').trim() : '', active: isActive });
             }
-
             let catHtml = `<div class="cat-btn active" onclick="filter('all', this)">همه</div>`;
             tempCats.forEach(c => { catHtml += `<div class="cat-btn" onclick="filter('${c}', this)">${c}</div>`; });
             document.getElementById('cats').innerHTML = catHtml;
@@ -277,22 +264,13 @@
             const list = document.getElementById('list');
             list.innerHTML = '';
             const items = cat === 'all' ? products : products.filter(x => x.c === cat);
-            
-            if(items.length === 0) { list.innerHTML = '<p style="text-align:center; color:#666; margin-top:30px">موردی یافت نشد.</p>'; return; }
-
+            if(items.length === 0) { list.innerHTML = '<p style="text-align:center; color:#fff; margin-top:30px">موردی یافت نشد.</p>'; return; }
             items.forEach(x => {
                 const count = cart[x.id] || 0;
                 let btnHtml = !x.active ? `<span style="color:#e74c3c; border:1px solid; padding:3px;">ناموجود</span>` 
                     : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">افزودن</div>` 
                     : `<div class="qty-box show"><div class="q-btn" onclick="upd(${x.id}, 1)">+</div><div class="q-num">${count}</div><div class="q-btn" onclick="upd(${x.id}, -1)">-</div></div>`);
-                
-                list.innerHTML += `
-                <div class="item ${!x.active ? 'inactive' : ''}">
-                    <img src="${x.i}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1170/1170576.png'">
-                    <div class="info"><h3>${x.t}</h3>
-                        <div style="display:flex; justify-content:space-between; margin-top:5px; align-items:center;">
-                            <span class="price">${x.p.toLocaleString()}</span>${btnHtml}
-                        </div></div></div>`;
+                list.innerHTML += `<div class="item ${!x.active ? 'inactive' : ''}"><img src="${x.i}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1170/1170576.png'"><div class="info"><h3>${x.t}</h3><div style="display:flex; justify-content:space-between; margin-top:5px; align-items:center;"><span class="price">${x.p.toLocaleString()}</span>${btnHtml}</div></div></div>`;
             });
             calcTotal();
         }
@@ -324,36 +302,19 @@
             for(let id in cart) { 
                 const p = products.find(x=>x.id==id); 
                 if(p) { 
-                    total += p.p * cart[id]; 
-                    count += cart[id]; 
-                    summaryHtml += `
-                        <div class="summary-item">
-                            <span>${p.t}</span>
-                            <div class="summary-controls">
-                                <div class="s-btn" onclick="upd(${id}, -1)">-</div>
-                                <span>${cart[id]}</span>
-                                <div class="s-btn" onclick="upd(${id}, 1)">+</div>
-                            </div>
-                            <span>${(p.p * cart[id]).toLocaleString()}</span>
-                        </div>`;
+                    total += p.p * cart[id]; count += cart[id]; 
+                    summaryHtml += `<div class="summary-item"><span>${p.t}</span><div class="summary-controls"><div class="s-btn" onclick="upd(${id}, -1)">-</div><span>${cart[id]}</span><div class="s-btn" onclick="upd(${id}, 1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
                 } 
             }
             let final = orderType === 'delivery' ? total + config.deliveryPrice : total;
-            
             document.getElementById('summaryList').innerHTML = summaryHtml || '<p style="font-size:0.8rem; color:#888; text-align:center;">سبد خرید خالی است</p>';
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + ' تومان';
-            
             const bar = document.getElementById('cartBar');
             const details = document.getElementById('orderDetails');
-            if(count>0) { 
-                bar.style.display='flex'; 
-            } else { 
-                bar.style.display='none'; 
-                details.classList.remove('active');
-                document.getElementById('actionBtn').innerText = 'مشاهده سفارش و تایید';
-            }
+            if(count>0) bar.style.display='flex'; 
+            else { bar.style.display='none'; details.classList.remove('active'); document.getElementById('actionBtn').innerText = 'مشاهده سفارش و تایید'; }
         }
 
         window.setOrderType = (type) => {
@@ -371,27 +332,22 @@
                 document.getElementById('deliveryRow').style.display='flex';
             }
             calcTotal();
-            if(document.getElementById('orderDetails').classList.contains('active')) {
-                document.getElementById('actionBtn').innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
-            }
+            if(document.getElementById('orderDetails').classList.contains('active')) document.getElementById('actionBtn').innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
         };
 
         window.processOrder = () => {
             if(!config.isOpen) return;
             const details = document.getElementById('orderDetails');
             const btn = document.getElementById('actionBtn');
-
             if (!details.classList.contains('active')) {
                 details.classList.add('active');
                 btn.innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
                 return;
             }
-            
             let desc = "";
-            for(let id in cart) { const p = products.find(x=>x.id==id); if(p) { desc += `${p.t}(${cart[id]}) - `; } }
+            for(let id in cart) { const p = products.find(x=>x.id==id); if(p) desc += `${p.t}(${cart[id]}) - `; }
             const note = document.getElementById('userNote').value;
             if(note) desc += `\nپیام: ${note}`;
-            
             if(orderType === 'table') {
                 const tNum = document.getElementById('tableNum').value;
                 if(!tNum) return alert('شماره میز را وارد کنید');
@@ -399,25 +355,15 @@
             } else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
-                if(!ph || !ad) return alert('برای ارسال پیک، شماره تماس و آدرس الزامی است.');
-
+                if(!ph || !ad) return alert('شماره تماس و آدرس الزامی است.');
                 let total = 0;
                 for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
                 const finalAmount = total + config.deliveryPrice;
-
-                if(!config.paymentLink) {
-                    alert('خطا: لینک درگاه پرداخت در تنظیمات وارد نشده است.');
-                    return;
-                }
-
-                const confirmMsg = `مبلغ قابل پرداخت: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
-
+                if(!config.paymentLink) return alert('خطا: لینک درگاه پرداخت یافت نشد.');
+                const confirmMsg = `مبلغ: ${finalAmount.toLocaleString()} تومان\nآیا آماده پرداخت هستید؟`;
                 if(confirm(confirmMsg)) {
                     let payUrl = config.paymentLink;
-                    if(payUrl.includes('idpay.ir')) {
-                        const separator = payUrl.includes('?') ? '&' : '?';
-                        payUrl += `${separator}amount=${finalAmount}0`; 
-                    }
+                    if(payUrl.includes('idpay.ir')) payUrl += `${payUrl.includes('?') ? '&' : '?'}amount=${finalAmount}0`; 
                     window.location.href = payUrl;
                 }
             }
