@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" id="mainHtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -24,6 +24,17 @@
             padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); 
             position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
         }
+
+        /* استایل انتخابگر زبان */
+        .lang-switch {
+            position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101;
+        }
+        .lang-btn {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--primary); color: #fff;
+            padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; cursor: pointer;
+        }
+        .lang-btn.active { background: var(--primary); color: #000; }
+
         header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 5px; }
         .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; }
         .open { background: #27ae60; color: #fff; }
@@ -48,7 +59,6 @@
         .q-btn { width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
 
-        /* پنجره تایید سفارش */
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; position: relative; }
         .order-details.active { display: block; }
         .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; border: 1px solid var(--primary); z-index: 10; }
@@ -72,43 +82,11 @@
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
-        /* اصلاح استایل فوتر برای دیده شدن حتمی */
-.dev-footer { 
-    text-align: center; 
-    margin-top: 50px; 
-    padding: 30px 20px 100px 20px; /* فاصله از پایین زیاد شد تا پشت دکمه شناور نرود */
-    border-top: 1px solid rgba(211, 173, 127, 0.2); 
-    background: rgba(14, 14, 18, 0.95); 
-    position: relative; 
-    z-index: 10; /* قرار گرفتن روی لایه‌های پس‌زمینه */
-}
-
-.dev-icons { 
-    display: flex; 
-    justify-content: center; 
-    gap: 20px; 
-    margin-top: 15px; 
-}
-
-.dev-icons a { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 42px; /* کمی بزرگتر برای دیده شدن بهتر */
-    height: 42px; 
-    background: #1a1a1a; 
-    border-radius: 50%; 
-    color: var(--primary); /* رنگ طلایی آیکون‌ها */
-    border: 1px solid var(--primary); 
-    transition: 0.3s; 
-    text-decoration: none; 
-}
-
-.dev-icons svg { 
-    width: 22px; 
-    height: 22px; 
-    fill: currentColor; 
-}
+        .dev-footer { text-align: center; margin-top: 40px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
+        .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); transition: 0.3s; text-decoration: none; }
+        .dev-icons a:hover { background: #d3ad7f; color: #000; border-color: #d3ad7f; transform: translateY(-3px); }
+        .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
 
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
@@ -118,10 +96,16 @@
 </head>
 <body>
 
+    <div class="lang-switch">
+        <div class="lang-btn active" onclick="changeLang('fa')">FA</div>
+        <div class="lang-btn" onclick="changeLang('en')">EN</div>
+        <div class="lang-btn" onclick="changeLang('ar')">AR</div>
+    </div>
+
     <div id="lockScreen">
-        <h2 style="color:#e74c3c">پایان اشتراک ⚠️</h2>
-        <p>مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
-        <p>جهت تمدید اشتراک با پشتیبانی تماس بگیرید.</p>
+        <h2 id="lockTitle" style="color:#e74c3c">پایان اشتراک ⚠️</h2>
+        <p id="lockMsg1">مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
+        <p id="lockMsg2">جهت تمدید اشتراک با پشتیبانی تماس بگیرید.</p>
         <div class="dev-icons" style="margin-top:20px;">
              <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
         </div>
@@ -141,28 +125,17 @@
     </div>
 
     <div class="dev-footer">
-    <p class="dev-title" style="color: #fff; font-weight: bold;">مجری طرح: گروه نرم‌افزاری مَجد</p>
-    <div class="dev-icons">
-        <a href="tel:09123456789">
-            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-        </a>
-        
-        <a href="https://t.me/YOUR_ID">
-            <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg>
-        </a>
-
-        <a href="https://wa.me/989123456789">
-            <svg viewBox="0 0 24 24">
-                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/>
-            </svg>
-        </a>
+        <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">مجری طرح: گروه نرم‌افزاری مَجد</p>
+        <div class="dev-icons">
+            <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+            <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="https://wa.me/989123456789"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
+        </div>
     </div>
-</div>
 
     <div class="order-details" id="orderDetails">
         <div class="close-details" onclick="closeDetails()">✕</div>
-        <h3 style="margin-bottom:10px; color:var(--primary); font-size:1rem; text-align:center;">📋 بازبینی سفارش</h3>
-        
+        <h3 id="reviewTitle" style="margin-bottom:10px; color:var(--primary); font-size:1rem; text-align:center;">📋 بازبینی سفارش</h3>
         <div id="summaryList" class="summary-list"></div>
 
         <div class="type-selector">
@@ -171,15 +144,13 @@
         </div>
 
         <div class="invoice-box">
-            <div class="invoice-row"><span>جمع اقلام:</span><span id="itemsTotal">0</span></div>
-            <div class="invoice-row" id="deliveryRow" style="display: none;"><span>هزینه پیک:</span><span id="deliveryPriceDisplay">0</span></div>
-            <div class="invoice-row highlight"><span>قابل پرداخت:</span><span id="finalPayable">0</span></div>
+            <div class="invoice-row"><span id="txtItemsTotal">جمع اقلام:</span><span id="itemsTotal">0</span></div>
+            <div class="invoice-row" id="deliveryRow" style="display: none;"><span id="txtDelPrice">هزینه پیک:</span><span id="deliveryPriceDisplay">0</span></div>
+            <div class="invoice-row highlight"><span id="txtFinal">قابل پرداخت:</span><span id="finalPayable">0</span></div>
         </div>
 
         <div class="input-group"><textarea id="userNote" placeholder="توضیحات سفارش (اختیاری)"></textarea></div>
-        
         <div id="form-table" class="input-group"><input type="number" id="tableNum" placeholder="شماره میز"></div>
-        
         <div id="form-delivery" class="hidden">
             <div class="input-group"><input type="tel" id="userPhone" placeholder="شماره تماس"></div>
             <div class="input-group"><textarea id="address" placeholder="آدرس دقیق برای ارسال"></textarea></div>
@@ -191,6 +162,74 @@
     </div>
 
     <script>
+        const translations = {
+            fa: {
+                statusCheck: "بررسی وضعیت...", open: "✅ باز است", closed: "⛔ بسته است", loading: "در حال دریافت منو...",
+                all: "همه", add: "افزودن", outOfStock: "ناموجود", review: "📋 بازبینی سفارش",
+                table: "🍽️ سالن", delivery: "🛵 بیرون‌بر", itemsTotal: "جمع اقلام:", delPrice: "هزینه پیک:",
+                finalPayable: "قابل پرداخت:", notePlaceholder: "توضیحات سفارش (اختیاری)", tablePlaceholder: "شماره میز",
+                phonePlaceholder: "شماره تماس", addressPlaceholder: "آدرس دقیق برای ارسال",
+                actionBtn: "مشاهده سفارش و تایید", btnPay: "تایید نهایی و پرداخت", btnSubmit: "تایید و ثبت نهایی",
+                currency: "تومان", alertTable: "شماره میز؟", alertInfo: "تلفن و آدرس الزامی است.", alertLink: "خطا در درگاه پرداخت",
+                confirmMsg: "مبلغ قابل پرداخت: {amount} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی 'اسکرین‌شات' بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟",
+                expireTitle: "پایان اشتراک ⚠️", expireMsg1: "مهلت استفاده از این منوی دیجیتال به پایان رسیده است.", expireMsg2: "جهت تمدید اشتراک با پشتیبانی تماس بگیرید.", dev: "مجری طرح: گروه نرم‌افزاری مَجد"
+            },
+            en: {
+                statusCheck: "Checking status...", open: "✅ Open", closed: "⛔ Closed", loading: "Loading menu...",
+                all: "All", add: "Add", outOfStock: "Out of Stock", review: "📋 Review Order",
+                table: "🍽️ Dine-in", delivery: "🛵 Delivery", itemsTotal: "Items Total:", delPrice: "Delivery:",
+                finalPayable: "Total Payable:", notePlaceholder: "Order notes (optional)", tablePlaceholder: "Table number",
+                phonePlaceholder: "Phone number", addressPlaceholder: "Full address",
+                actionBtn: "View Order & Confirm", btnPay: "Confirm & Pay", btnSubmit: "Confirm & Submit",
+                currency: "Toman", alertTable: "Table number?", alertInfo: "Phone and address required.", alertLink: "Payment link error",
+                confirmMsg: "Total: {amount} Toman\n\n⚠️ Important:\nPlease take a screenshot of the receipt and send it to us via WhatsApp.\n\nReady for payment?",
+                expireTitle: "Subscription Expired ⚠️", expireMsg1: "Your digital menu subscription has ended.", expireMsg2: "Contact support for renewal.", dev: "Developed by: Majd Software Group"
+            },
+            ar: {
+                statusCheck: "جاري التحقق...", open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري تحميل القائمة...",
+                all: "الكل", add: "إضافة", outOfStock: "غير متوفر", review: "📋 مراجعة الطلب",
+                table: "🍽️ صالة", delivery: "🛵 توصيل", itemsTotal: "مجموع الأصناف:", delPrice: "توصيل:",
+                finalPayable: "المبلغ الإجمالي:", notePlaceholder: "ملاحظات الطلب (اختياري)", tablePlaceholder: "رقم الطاولة",
+                phonePlaceholder: "رقم الهاتف", addressPlaceholder: "العنوان بالتفصيل",
+                actionBtn: "عرض الطلب والتأكيد", btnPay: "التأكيد والدفع", btnSubmit: "تأكيد الطلب",
+                currency: "تومان", alertTable: "رقم الطاولة؟", alertInfo: "رقم الهاتف والعنوان مطلوبان.", alertLink: "خطأ في رابط الدفع",
+                confirmMsg: "المبلغ: {amount} تومان\n\n⚠️ هام:\nيرجى أخذ لقطة شاشة للإيصال وإرسالها إلينا عبر واتساب.\n\nهل أنت جاهز للدفع؟",
+                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت صلاحية استخدام هذه القائمة الرقمية.", expireMsg2: "يرجى الاتصال بالدعم للتجديد.", dev: "تنفيذ: مجموعة مجد للبرمجيات"
+            }
+        };
+
+        let currentLang = 'fa';
+
+        function changeLang(lang) {
+            currentLang = lang;
+            const html = document.getElementById('mainHtml');
+            html.dir = (lang === 'en') ? 'ltr' : 'rtl';
+            html.lang = lang;
+            
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="changeLang('${lang}')"]`).classList.add('active');
+
+            const t = translations[lang];
+            document.getElementById('loadingText').innerText = t.loading;
+            document.getElementById('reviewTitle').innerText = t.review;
+            document.getElementById('btn-table').innerText = t.table;
+            document.getElementById('btn-delivery').innerText = t.delivery;
+            document.getElementById('txtItemsTotal').innerText = t.itemsTotal;
+            document.getElementById('txtDelPrice').innerText = t.delPrice;
+            document.getElementById('txtFinal').innerText = t.finalPayable;
+            document.getElementById('userNote').placeholder = t.notePlaceholder;
+            document.getElementById('tableNum').placeholder = t.tablePlaceholder;
+            document.getElementById('userPhone').placeholder = t.phonePlaceholder;
+            document.getElementById('address').placeholder = t.addressPlaceholder;
+            document.getElementById('devTitle').innerText = t.dev;
+            document.getElementById('lockTitle').innerText = t.expireTitle;
+            document.getElementById('lockMsg1').innerText = t.expireMsg1;
+            document.getElementById('lockMsg2').innerText = t.expireMsg2;
+
+            updateShopStatusDisplay();
+            render('all');
+        }
+
         const hardcodedPaymentLink = "https://idpay.ir"; 
         let products = [];
         let cart = {};
@@ -206,7 +245,7 @@
                 const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
                 parseSettings(await settingsResp.text());
                 parseMenu(await menuResp.text());
-                setOrderType('table'); // فراخوانی اولیه برای تنظیم فرم‌ها
+                changeLang('fa');
             } catch (err) {}
         }
 
@@ -214,40 +253,30 @@
             const rows = csvToArr(csv);
             let settingsMap = {};
             rows.forEach(r => { if(r.length >= 2) settingsMap[r[0].replace(/"/g,'').trim()] = r[1].replace(/"/g,'').trim(); });
-            
-            if(settingsMap['ShopName']) {
-                config.name = settingsMap['ShopName'];
-                document.getElementById('shopName').innerText = config.name;
-            }
+            if(settingsMap['ShopName']) { config.name = settingsMap['ShopName']; document.getElementById('shopName').innerText = config.name; document.title = config.name; }
             if(settingsMap['HeaderImage']) document.documentElement.style.setProperty('--header-img', "url('" + settingsMap['HeaderImage'] + "')");
             if(settingsMap['BgImage']) document.documentElement.style.setProperty('--bg-img', "url('" + settingsMap['BgImage'] + "')");
             if(settingsMap['Phone']) config.phone = settingsMap['Phone'];
             if(settingsMap['DeliveryPrice']) config.deliveryPrice = parseInt(settingsMap['DeliveryPrice']) || 0;
             config.paymentLink = hardcodedPaymentLink || settingsMap['PaymentLink'] || "";
-
-            if(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE') {
-                config.isOpen = false;
-                document.getElementById('shopStatus').innerText = "⛔ بسته است";
-                document.getElementById('shopStatus').className = "status-badge closed";
-            } else {
-                document.getElementById('shopStatus').innerText = "✅ باز است";
-                document.getElementById('shopStatus').className = "status-badge open";
-            }
+            config.isOpen = !(settingsMap['IsOpen'] && settingsMap['IsOpen'].toUpperCase() === 'FALSE');
+            updateShopStatusDisplay();
             if (settingsMap['ExpireDate']) checkSubscription(settingsMap['ExpireDate']);
+        }
+
+        function updateShopStatusDisplay() {
+            const s = document.getElementById('shopStatus');
+            const t = translations[currentLang];
+            s.innerText = config.isOpen ? t.open : t.closed;
+            s.className = "status-badge " + (config.isOpen ? "open" : "closed");
         }
 
         function checkSubscription(dateStr) {
             try {
                 const expire = new Date(dateStr);
                 const diffDays = Math.ceil((expire - new Date()) / (1000 * 60 * 60 * 24)); 
-                if (diffDays <= 0) {
-                    document.getElementById('lockScreen').style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    const badge = document.getElementById('subBadge');
-                    badge.innerHTML = `📅 اعتبار: ${diffDays} روز`;
-                    badge.style.display = 'block';
-                }
+                if (diffDays <= 0) { document.getElementById('lockScreen').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+                else { const b = document.getElementById('subBadge'); b.innerHTML = `📅 ${diffDays} Day(s)`; b.style.display = 'block'; }
             } catch (e) {}
         }
 
@@ -260,9 +289,6 @@
                 tempCats.add(cat);
                 products.push({ id: i, c: cat, t: r[1].replace(/"/g, '').trim(), p: parseInt(r[2].replace(/,/g, '').trim()) || 0, i: r[3] ? r[3].replace(/"/g, '').trim() : '', active: !(r[4] && r[4].toUpperCase().includes('FALSE')) });
             }
-            let catHtml = `<div class="cat-btn active" onclick="filter('all', this)">همه</div>`;
-            tempCats.forEach(c => { catHtml += `<div class="cat-btn" onclick="filter('${c}', this)">${c}</div>`; });
-            document.getElementById('cats').innerHTML = catHtml;
             render('all');
         }
 
@@ -280,24 +306,34 @@
         }
 
         function render(cat) {
-            const list = document.getElementById('list'); list.innerHTML = '';
+            const list = document.getElementById('list'); 
+            const t = translations[currentLang];
+            const cats = document.getElementById('cats');
+            
+            let catSet = new Set(products.map(p => p.c));
+            let catHtml = `<div class="cat-btn ${cat==='all'?'active':''}" onclick="filter('all', this)">${t.all}</div>`;
+            catSet.forEach(c => { catHtml += `<div class="cat-btn ${cat===c?'active':''}" onclick="filter('${c}', this)">${c}</div>`; });
+            cats.innerHTML = catHtml;
+
+            list.innerHTML = '';
             const items = cat === 'all' ? products : products.filter(x => x.c === cat);
             items.forEach(x => {
                 const count = cart[x.id] || 0;
-                let btnHtml = !x.active ? `<span style="color:#e74c3c;">ناموجود</span>` 
-                    : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">افزودن</div>` 
+                let btnHtml = !x.active ? `<span style="color:#e74c3c;">${t.outOfStock}</span>` 
+                    : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">${t.add}</div>` 
                     : `<div class="qty-box show"><div class="q-btn" onclick="upd(${x.id}, 1)">+</div><div class="q-num">${count}</div><div class="q-btn" onclick="upd(${x.id}, -1)">-</div></div>`);
                 list.innerHTML += `<div class="item ${!x.active ? 'inactive' : ''}"><img src="${x.i}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1170/1170576.png'"><div class="info"><h3>${x.t}</h3><div style="display:flex; justify-content:space-between; margin-top:5px; align-items:center;"><span class="price">${x.p.toLocaleString()}</span>${btnHtml}</div></div></div>`;
             });
             calcTotal();
         }
 
-        window.filter = (cat, el) => { document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active')); el.classList.add('active'); render(cat); };
-        window.upd = (id, n) => { if(!config.isOpen) return alert('بسته است.'); cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; calcTotal(); const active = document.querySelector('.cat-btn.active'); render(active && active.innerText !== 'همه' ? active.innerText : 'all'); };
-        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); document.getElementById('actionBtn').innerText = 'مشاهده سفارش و تایید'; };
+        window.filter = (cat, el) => { render(cat); };
+        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; calcTotal(); const act = document.querySelector('.cat-btn.active'); render(act && act.innerText !== translations[currentLang].all ? act.innerText : 'all'); };
+        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
 
         function calcTotal() {
             let total = 0, count = 0, summaryHtml = '';
+            const t = translations[currentLang];
             for(let id in cart) { 
                 const p = products.find(x=>x.id==id); 
                 if(p) { 
@@ -306,54 +342,53 @@
                 } 
             }
             let final = orderType === 'delivery' ? total + config.deliveryPrice : total;
-            document.getElementById('summaryList').innerHTML = summaryHtml || '<p style="text-align:center;">سبد خالی است</p>';
+            document.getElementById('summaryList').innerHTML = summaryHtml || `<p style="text-align:center;">${t.all === 'All' ? 'Empty Cart' : 'سبد خالی است'}</p>`;
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
-            document.getElementById('finalPayable').innerText = final.toLocaleString() + ' تومان';
+            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + t.currency;
             const bar = document.getElementById('cartBar');
-            if(count>0) bar.style.display='flex'; else { bar.style.display='none'; document.getElementById('orderDetails').classList.remove('active'); }
+            const details = document.getElementById('orderDetails');
+            if(count>0) {
+                bar.style.display='flex';
+                if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.actionBtn;
+            } else { bar.style.display='none'; details.classList.remove('active'); }
         }
 
         window.setOrderType = (type) => {
             orderType = type;
+            const t = translations[currentLang];
             document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('btn-' + type).classList.add('selected');
-            
-            if(type === 'table') {
-                document.getElementById('form-table').classList.remove('hidden');
-                document.getElementById('form-delivery').classList.add('hidden');
-                document.getElementById('deliveryRow').style.display = 'none';
-            } else {
-                document.getElementById('form-table').classList.add('hidden');
-                document.getElementById('form-delivery').classList.remove('hidden');
-                document.getElementById('deliveryRow').style.display = 'flex';
-            }
+            document.getElementById('form-table').classList.toggle('hidden', type !== 'table');
+            document.getElementById('form-delivery').classList.toggle('hidden', type !== 'delivery');
+            document.getElementById('deliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
             calcTotal();
             if(document.getElementById('orderDetails').classList.contains('active')) {
-                document.getElementById('actionBtn').innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
+                document.getElementById('actionBtn').innerText = type === 'delivery' ? t.btnPay : t.btnSubmit;
             }
         };
 
         window.processOrder = () => {
+            const t = translations[currentLang];
             if(!config.isOpen) return;
             const details = document.getElementById('orderDetails');
             if (!details.classList.contains('active')) {
                 details.classList.add('active');
-                document.getElementById('actionBtn').innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
+                document.getElementById('actionBtn').innerText = orderType === 'delivery' ? t.btnPay : t.btnSubmit;
                 return;
             }
             let desc = ""; for(let id in cart) { const p = products.find(x=>x.id==id); if(p) desc += `${p.t}(${cart[id]}) - `; }
-            const note = document.getElementById('userNote').value; if(note) desc += `\nپیام: ${note}`;
+            const note = document.getElementById('userNote').value; if(note) desc += `\nNote: ${note}`;
             
             if(orderType === 'table') {
-                const tNum = document.getElementById('tableNum').value; if(!tNum) return alert('شماره میز؟');
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`);
+                const tNum = document.getElementById('tableNum').value; if(!tNum) return alert(t.alertTable);
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`Order\nTable: ${tNum}\n${desc}`)}`);
             } else {
                 const ph = document.getElementById('userPhone').value; const ad = document.getElementById('address').value;
-                if(!ph || !ad) return alert('تلفن و آدرس الزامی است.');
+                if(!ph || !ad) return alert(t.alertInfo);
                 let total = 0; for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
                 const finalAmount = total + config.deliveryPrice;
-                const confirmMsg = `مبلغ قابل پرداخت: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
+                const confirmMsg = t.confirmMsg.replace('{amount}', finalAmount.toLocaleString());
                 if(confirm(confirmMsg)) {
                     let payUrl = config.paymentLink;
                     if(payUrl.includes('idpay.ir')) payUrl += `${payUrl.includes('?') ? '&' : '?'}amount=${finalAmount}0`; 
