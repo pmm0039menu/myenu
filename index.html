@@ -25,7 +25,6 @@
             position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
         }
 
-        /* انتخابگر زبان */
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101; }
         .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
         .lang-btn.active { background: var(--primary); color: #000; }
@@ -162,19 +161,19 @@
             },
             en: {
                 open: "✅ Open", closed: "⛔ Closed", loading: "Loading Menu...", all: "All", add: "Add", out: "Out of Stock",
-                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Items Total:", courier: "Courier:",
-                payable: "Total Payable:", note: "Order notes (optional)", tNum: "Table #", phone: "Phone", addr: "Address",
+                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Items Total:", courier: "Courier Fee:",
+                payable: "Total Payable:", note: "Order notes (optional)", tNum: "Table Number", phone: "Phone Number", addr: "Full Address",
                 viewBtn: "View Order & Confirm", payBtn: "Confirm & Pay", submitBtn: "Confirm & Submit", unit: "Toman", empty: "Empty Cart",
-                confirm: "Total: {amount} Toman\nPlease take a screenshot.\nProceed?",
-                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software"
+                confirm: "Total: {amount} Toman\nPlease take a screenshot of receipt.\nProceed?",
+                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software Group"
             },
             ar: {
                 open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غیر متوفر",
-                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "التوصيل:",
-                payable: "الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "الهاتف", addr: "العنوان",
+                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "رسوم التوصيل:",
+                payable: "المبلغ الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "رقم الهاتف", addr: "العنوان بالتفصيل",
                 viewBtn: "عرض الطلب والتأكيد", payBtn: "تأكيد ودفع", submitBtn: "تأكيد الطلب", unit: "تومان", empty: "السلة فارغة",
-                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة.\nهل أنت مستعد؟",
-                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد"
+                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة بعد الدفع.\nهل أنت مستعد؟",
+                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد للبرمجيات"
             }
         };
 
@@ -304,7 +303,8 @@
             if(!config.isOpen) return; 
             cart[id] = (cart[id] || 0) + n; 
             if(cart[id]<=0) delete cart[id]; 
-            const activeCat = document.querySelector('.cat-btn.active')?.getAttribute('data-cat') || 'all';
+            const activeCatBtn = document.querySelector('.cat-btn.active');
+            const activeCat = activeCatBtn ? activeCatBtn.getAttribute('data-cat') : 'all';
             render(activeCat); 
         };
         
