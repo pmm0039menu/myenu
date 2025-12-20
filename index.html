@@ -70,13 +70,13 @@
         .s-btn { color: var(--primary); font-weight: bold; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
 
         .input-group { margin-bottom: 10px; }
-        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; text-align: inherit; }
 
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
         .dev-footer { text-align: center; margin-top: 40px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
-        .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .dev-icons { display: flex; justify-content: center; gap: 15px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
@@ -98,11 +98,11 @@
         <p id="lockMsg1">مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
         <p id="lockMsg2">جهت تمدید اشتراک با پشتیبانی تماس بگیرید.</p>
         <div class="dev-icons" style="margin-top:20px;">
-             <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="currentColor"/></svg></a>
+             <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
         </div>
     </div>
 
-    <div id="subBadge" class="sub-badge"></div>
+    <div id="subBadge" class="sub-badge" style="display:none"></div>
 
     <header>
         <h1 id="shopName">...</h1>
@@ -112,7 +112,7 @@
     <div class="cat-scroll" id="cats"></div>
 
     <div class="menu-list" id="list">
-        <p style="text-align:center; color:#fff; margin-top:50px;" id="loadingText">...</p>
+        <p style="text-align:center; color:#fff; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
     </div>
 
     <div class="dev-footer">
@@ -161,24 +161,24 @@
             },
             en: {
                 open: "✅ Open", closed: "⛔ Closed", loading: "Loading Menu...", all: "All", add: "Add", out: "Out of Stock",
-                review: "📋 Review Order", table: "🍽️ Table", delivery: "🛵 Delivery", total: "Items Total:", courier: "Courier Fee:",
-                payable: "Total Payable:", note: "Order notes (optional)", tNum: "Table Number", phone: "Phone Number", addr: "Full Address",
-                viewBtn: "View Order & Confirm", payBtn: "Confirm & Pay", submitBtn: "Confirm & Submit", unit: "Toman", empty: "Empty Cart",
-                confirm: "Total: {amount} Toman\nPlease take a screenshot of receipt.\nProceed?",
-                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software Group"
+                review: "📋 Review Order", table: "🍽️ Table", delivery: "🛵 Delivery", total: "Items Total:", courier: "Delivery:",
+                payable: "Total:", note: "Order notes (optional)", tNum: "Table #", phone: "Phone", addr: "Address",
+                viewBtn: "View Order & Confirm", payBtn: "Pay Now", submitBtn: "Confirm & Submit", unit: "Toman", empty: "Empty Cart",
+                confirm: "Total: {amount} Toman\nTake a screenshot after payment.\nProceed?",
+                expireTitle: "Expired ⚠️", expireMsg1: "Ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software"
             },
             ar: {
-                open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غير متوفر",
-                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "رسوم التوصيل:",
-                payable: "المبلغ الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "رقم الهاتف", addr: "العنوان بالتفصيل",
+                open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غیر متوفر",
+                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "التوصيل:",
+                payable: "الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "الهاتف", addr: "العنوان",
                 viewBtn: "عرض الطلب والتأكيد", payBtn: "تأكيد ودفع", submitBtn: "تأكيد الطلب", unit: "تومان", empty: "السلة فارغة",
-                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة بعد الدفع.\nهل أنت مستعد؟",
-                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد للبرمجيات"
+                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة.\nهل أنت مستعد؟",
+                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد"
             }
         };
 
         let currentLang = 'fa';
-        let products = []; let cart = {}; let config = { name: "فروشگاه", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
+        let products = []; let cart = {}; let config = { name: "...", deliveryPrice: 0, phone: "", isOpen: true, paymentLink: "" };
         let orderType = 'table';
         const sheetId = new URLSearchParams(window.location.search).get('id') || "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
 
@@ -211,14 +211,30 @@
 
         async function startApp() {
             try {
-                const menuResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&_t=${Date.now()}`);
-                const settingsResp = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&_t=${Date.now()}`);
-                if(!menuResp.ok || !settingsResp.ok) throw new Error();
+                // پاک کردن کش با Date.now
+                const menuUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cache_bust=${Date.now()}`;
+                const setUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cache_bust=${Date.now()}`;
                 
-                parseSettings(await settingsResp.text());
-                parseMenu(await menuResp.text());
+                const [menuRes, setRes] = await Promise.all([fetch(menuUrl), fetch(setUrl)]);
+                
+                if(!menuRes.ok || !setRes.ok) throw new Error("Fetch Error");
+                
+                const menuText = await menuRes.text();
+                const setText = await setRes.text();
+
+                if(menuText.includes('html') || setText.includes('html')) throw new Error("Check Share Link (Publish to Web)");
+
+                parseSettings(setText);
+                parseMenu(menuText);
                 changeLang('fa');
-            } catch (e) { document.getElementById('list').innerHTML = "<p style='text-align:center; color:red; margin-top:50px;'>Error: Check Internet or Sheet ID</p>"; }
+            } catch (e) { 
+                document.getElementById('list').innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#ff4d4d; background:rgba(0,0,0,0.5); border-radius:10px;">
+                        <h3 style="margin-bottom:10px;">❌ خطای دریافت منو</h3>
+                        <p style="font-size:0.9rem;">۱. مطمئن شوید فایل گوگل‌شیت را Publish to Web کرده‌اید.</p>
+                        <p style="font-size:0.9rem;">۲. نام شیت‌ها حتما Menu و Settings باشد.</p>
+                    </div>`; 
+            }
         }
 
         function parseSettings(csv) {
@@ -242,7 +258,7 @@
 
         function checkSubscription(dateStr) {
             try {
-                const diff = Math.ceil((new Date(dateStr) - new Date()) / (86400000)); 
+                const diff = Math.ceil((new Date(dateStr) - new Date()) / 86400000); 
                 if (diff <= 0) { document.getElementById('lockScreen').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
                 else { const b = document.getElementById('subBadge'); b.innerHTML = `📅 ${diff} Days`; b.style.display = 'block'; }
             } catch (e) {}
@@ -284,7 +300,14 @@
             calcTotal();
         }
 
-        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; const act = document.querySelector('.cat-btn.active'); render(act && act.innerText !== translations[currentLang].all ? act.innerText : 'all'); };
+        window.upd = (id, n) => { 
+            if(!config.isOpen) return; 
+            cart[id] = (cart[id] || 0) + n; 
+            if(cart[id]<=0) delete cart[id]; 
+            const activeBtn = document.querySelector('.cat-btn.active');
+            render(activeBtn && activeBtn.innerText !== translations[currentLang].all ? activeBtn.innerText : 'all'); 
+        };
+        
         window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
 
         function calcTotal() {
