@@ -3,95 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منوی آنلاین</title>
+    <title>Online Menu</title>
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
             --header-img: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&q=80');
             --bg-img: url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img);
-            background-size: cover; background-attachment: fixed; background-position: center;
-            color:var(--text); padding-bottom:120px; user-select: none; 
-        }
-        
-        /* --- موتور ترجمه CSS (نوآوری اصلی) --- */
-        [data-t]:after { content: attr(data-fa); } /* پیش‌فرض فارسی */
-        html[lang="en"] [data-t]:after { content: attr(data-en); }
-        html[lang="ar"] [data-t]:after { content: attr(data-ar); }
-        /* -------------------------------------- */
-
-        header { 
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img);
-            background-size: cover; background-position: center;
-            padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); 
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; }
+        body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:120px; user-select: none; }
+        header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101; }
-        .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; }
+        .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 6px 12px; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
         .lang-btn.active { background: var(--primary); color: #000; font-weight: bold; }
-
-        header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 5px; }
         .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; }
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
-        
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: rgba(11, 11, 15, 0.8); backdrop-filter: blur(5px); }
         .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; }
-        .cat-btn.active { background: var(--primary); color: #000; font-weight: bold; }
-
-        .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
+        .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: rgba(30, 30, 36, 0.9); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; }
-        .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); }
-        
-        .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; cursor: pointer; }
-        .qty-box { display: none; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
-        .qty-box.show { display: flex; }
-        .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary); font-weight: bold; }
-
-        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); max-height: 70vh; overflow-y: auto; }
+        .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); background: #000; }
+        .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+        .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
+        .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
+        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
         .order-details.active { display: block; }
-        .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--primary); }
-
+        .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; border: 1px solid var(--primary); z-index: 10; }
         .type-selector { display: flex; gap: 10px; margin: 15px 0; }
-        .type-btn { flex: 1; padding: 12px; background: #000; border: 1px solid #333; color: #888; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .type-btn { flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: #888; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .type-btn.selected { background: var(--primary); color: #000; }
-
-        .invoice-box { background: #111; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .invoice-box { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; color: #ccc; }
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; font-size: 1.1rem; }
-        
-        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; }
-        .summary-controls { display: flex; align-items: center; gap: 10px; background: #000; border-radius: 6px; padding: 2px 8px; border: 1px solid #444; }
-
+        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; }
         .input-group { margin-bottom: 10px; }
-        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; }
-
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; }
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
-        .final-btn { background: var(--green); color: #fff; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; text-align: center; width: 100%; font-size: 1rem; }
-
-        .dev-footer { text-align: center; margin-top: 40px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; }
+        .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
+        .dev-footer { text-align: center; margin-top: 40px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
-        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); }
-        
+        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
     <div class="lang-switch">
-        <div class="lang-btn active" onclick="setLang('fa')">FA</div>
-        <div class="lang-btn" onclick="setLang('en')">EN</div>
-        <div class="lang-btn" onclick="setLang('ar')">AR</div>
+        <div class="lang-btn active" id="btn-fa" onclick="changeLang('fa')">FA</div>
+        <div class="lang-btn" id="btn-en" onclick="changeLang('en')">EN</div>
     </div>
 
     <div id="lockScreen">
-        <h2 style="color:#e74c3c" data-t data-fa="پایان اشتراک ⚠️" data-en="Subscription Expired ⚠️" data-ar="انتهى الاشتراك ⚠️"></h2>
-        <p data-t data-fa="مهلت استفاده به پایان رسیده است." data-en="Subscription has ended." data-ar="انتهت صلاحية الاستخدام."></p>
+        <h2 id="lockTitle" style="color:#e74c3c">...</h2>
+        <p id="lockMsg1">...</p>
+        <p id="lockMsg2">...</p>
     </div>
 
     <header>
@@ -100,12 +69,10 @@
     </header>
 
     <div class="cat-scroll" id="cats"></div>
-    <div class="menu-list" id="list">
-        <p style="text-align:center; padding-top:50px;" data-t data-fa="در حال دریافت منو..." data-en="Loading menu..." data-ar="جاري التحميل..."></p>
-    </div>
+    <div class="menu-list" id="list"><p style="text-align:center; padding-top:50px;" id="loadingText">...</p></div>
 
     <div class="dev-footer">
-        <p id="devTitle" data-t data-fa="مجری طرح: گروه نرم‌افزاری مَجد" data-en="Developer: Majd Software Group" data-ar="المطور: مجموعة مجد للبرمجيات"></p>
+        <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">...</p>
         <div class="dev-icons">
             <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
             <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
@@ -114,17 +81,17 @@
     </div>
 
     <div class="order-details" id="orderDetails">
-        <div class="close-details" onclick="toggleDetails(false)">✕</div>
-        <h3 style="text-align:center; margin-bottom:15px;" data-t data-fa="📋 بازبینی سفارش" data-en="📋 Review Order" data-ar="📋 مراجعة الطلب"></h3>
-        <div id="summaryList" class="summary-list"></div>
+        <div class="close-details" onclick="closeDetails()">✕</div>
+        <h3 id="reviewTitle" style="text-align:center; margin-bottom:15px; color:var(--primary);">...</h3>
+        <div id="summaryList"></div>
         <div class="type-selector">
-            <div class="type-btn selected" id="btn-table" onclick="setType('table')" data-t data-fa="🍽️ سالن" data-en="🍽️ Dine-in" data-ar="🍽️ صالة"></div>
-            <div class="type-btn" id="btn-delivery" onclick="setType('delivery')" data-t data-fa="🛵 بیرون‌بر" data-en="🛵 Delivery" data-ar="🛵 توصيل"></div>
+            <div class="type-btn selected" id="btn-table" onclick="setOrderType('table')">...</div>
+            <div class="type-btn" id="btn-delivery" onclick="setOrderType('delivery')">...</div>
         </div>
         <div class="invoice-box">
-            <div class="invoice-row"><span data-t data-fa="جمع اقلام:" data-en="Subtotal:" data-ar="المجموع:"></span><span id="itemsTotal">0</span></div>
-            <div class="invoice-row" id="deliveryRow" style="display:none;"><span data-t data-fa="هزینه پیک:" data-en="Delivery Fee:" data-ar="رسوم التوصيل:"></span><span id="deliveryPriceDisplay">0</span></div>
-            <div class="invoice-row highlight"><span data-t data-fa="قابل پرداخت:" data-en="Total:" data-ar="الإجمالي:"></span><span id="finalPayable">0</span></div>
+            <div class="invoice-row"><span id="txtSubtotal">...</span><span id="itemsTotal">0</span></div>
+            <div class="invoice-row" id="deliveryRow" style="display:none;"><span id="txtCourier">...</span><span id="deliveryPriceDisplay">0</span></div>
+            <div class="invoice-row highlight"><span id="txtPayable">...</span><span id="finalPayable">0</span></div>
         </div>
         <div class="input-group"><textarea id="userNote"></textarea></div>
         <div id="form-table" class="input-group"><input type="number" id="tableNum"></div>
@@ -134,159 +101,173 @@
         </div>
     </div>
 
-    <div class="cart-bar" id="cartBar">
-        <div class="final-btn" id="actionBtn" onclick="handleOrder()"></div>
-    </div>
+    <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="processOrder()">...</div></div>
 
     <script>
-        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        let products = [], cart = {}, config = { isOpen: true, deliveryPrice: 0, phone: '', lang: 'fa' };
-
-        const placeholders = {
-            fa: { note: "توضیحات سفارش (اختیاری)", table: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق" },
-            en: { note: "Order notes (optional)", table: "Table number", phone: "Phone number", addr: "Full address" },
-            ar: { note: "ملاحظات (اختياري)", table: "رقم الطاولة", phone: "رقم الهاتف", addr: "العنوان بالتفصيل" }
+        const translations = {
+            fa: {
+                open: "✅ باز است", closed: "⛔ بسته است", loading: "در حال دریافت منو...", all: "همه", add: "افزودن", out: "ناموجود",
+                review: "📋 بازبینی سفارش", table: "🍽️ سالن", delivery: "🛵 بیرون‌بر", subtotal: "جمع اقلام:", courier: "هزینه پیک:",
+                payable: "قابل پرداخت:", note: "توضیحات سفارش (اختیاری)", tNum: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق",
+                viewBtn: "مشاهده سفارش و تایید", payBtn: "تایید و پرداخت", submitBtn: "ثبت نهایی سفارش", unit: "تومان", empty: "سبد خالی است",
+                confirm: "مبلغ: {amount} تومان\nپس از پرداخت اسکرین‌شات بگیرید.\nآماده‌اید؟",
+                expireTitle: "پایان اشتراک ⚠️", expireMsg1: "اشتراک تمام شده است.", expireMsg2: "تماس با پشتیبانی.", dev: "گروه نرم‌افزاری مَجد"
+            },
+            en: {
+                open: "✅ Open", closed: "⛔ Closed", loading: "Loading...", all: "All", add: "Add", out: "Sold Out",
+                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", subtotal: "Subtotal:", courier: "Courier:",
+                payable: "Total:", note: "Notes (Optional)", tNum: "Table #", phone: "Phone", addr: "Address",
+                viewBtn: "View Order", payBtn: "Pay Now", submitBtn: "Submit Order", unit: "Toman", empty: "Empty Cart",
+                confirm: "Total: {amount} Toman\nPlease take a screenshot after payment.\nProceed?",
+                expireTitle: "Expired ⚠️", expireMsg1: "Ended.", expireMsg2: "Contact Support.", dev: "Majd Software Group"
+            }
         };
 
-        function setLang(l) {
-            config.lang = l;
-            const html = document.documentElement;
-            html.lang = l;
-            html.dir = l === 'en' ? 'ltr' : 'rtl';
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === l));
+        let currentLang = 'fa', currentCat = 'all';
+        let products = [], cart = {}, config = { isOpen: true, deliveryPrice: 0, phone: '', paymentLink: '' };
+        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
+
+        function changeLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            const html = document.getElementById('mainHtml');
+            html.dir = (lang === 'en') ? 'ltr' : 'rtl';
+            html.lang = lang;
             
-            // آپدیت پلیس‌هولدرها (تنها بخشی که CSS نمی‌تواند ترجمه کند)
-            document.getElementById('userNote').placeholder = placeholders[l].note;
-            document.getElementById('tableNum').placeholder = placeholders[l].table;
-            document.getElementById('userPhone').placeholder = placeholders[l].phone;
-            document.getElementById('address').placeholder = placeholders[l].addr;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
+
+            document.getElementById('loadingText').innerText = t.loading;
+            document.getElementById('reviewTitle').innerText = t.review;
+            document.getElementById('btn-table').innerText = t.table;
+            document.getElementById('btn-delivery').innerText = t.delivery;
+            document.getElementById('txtSubtotal').innerText = t.subtotal;
+            document.getElementById('txtCourier').innerText = t.courier;
+            document.getElementById('txtPayable').innerText = t.payable;
+            document.getElementById('userNote').placeholder = t.note;
+            document.getElementById('tableNum').placeholder = t.tNum;
+            document.getElementById('userPhone').placeholder = t.phone;
+            document.getElementById('address').placeholder = t.addr;
+            document.getElementById('devTitle').innerText = t.dev;
+            document.getElementById('lockTitle').innerText = t.expireTitle;
+            document.getElementById('lockMsg1').innerText = t.expireMsg1;
+            document.getElementById('lockMsg2').innerText = t.expireMsg2;
 
             updateShopStatus();
-            render();
+            if (products.length > 0) render(currentCat);
+            calcTotal();
         }
 
-        async function start() {
+        async function startApp() {
             try {
-                const [m, s] = await Promise.all([
-                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cb=${Date.now()}`).then(r => r.text()),
-                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cb=${Date.now()}`).then(r => r.text())
+                const [menuRes, setRes] = await Promise.all([
+                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cb=${Date.now()}`),
+                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cb=${Date.now()}`)
                 ]);
-                parseSettings(s);
-                parseMenu(m);
-                setLang('fa');
-            } catch (e) { document.getElementById('list').innerHTML = "Check Internet / Publish to web"; }
+                parseSettings(await setRes.text());
+                parseMenu(await menuRes.text());
+                changeLang('fa');
+            } catch (e) { document.getElementById('list').innerHTML = "Check Internet / Publish to Web"; }
         }
 
         function parseSettings(csv) {
-            const lines = csv.split('\n');
-            lines.forEach(l => {
-                const parts = l.split(',').map(p => p.replace(/"/g, '').trim());
-                if (parts[0] === 'ShopName') document.getElementById('shopName').innerText = parts[1];
-                if (parts[0] === 'HeaderImage') document.documentElement.style.setProperty('--header-img', `url('${parts[1]}')`);
-                if (parts[0] === 'BgImage') document.documentElement.style.setProperty('--bg-img', `url('${parts[1]}')`);
-                if (parts[0] === 'Phone') config.phone = parts[1];
-                if (parts[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(parts[1]) || 0;
-                if (parts[0] === 'PaymentLink') config.paymentLink = parts[1];
-                if (parts[0] === 'IsOpen') config.isOpen = parts[1].toUpperCase() !== 'FALSE';
+            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g,'').trim()));
+            rows.forEach(r => {
+                if(r[0] === 'ShopName') document.getElementById('shopName').innerText = r[1];
+                if(r[0] === 'HeaderImage') document.documentElement.style.setProperty('--header-img', `url('${r[1]}')`);
+                if(r[0] === 'BgImage') document.documentElement.style.setProperty('--bg-img', `url('${r[1]}')`);
+                if(r[0] === 'Phone') config.phone = r[1];
+                if(r[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(r[1]) || 0;
+                if(r[0] === 'PaymentLink') config.paymentLink = r[1];
+                if(r[0] === 'IsOpen') config.isOpen = r[1].toUpperCase() !== 'FALSE';
+                if(r[0] === 'ExpireDate') checkSubscription(r[1]);
             });
+        }
+
+        function updateShopStatus() {
+            const s = document.getElementById('shopStatus');
+            const t = translations[currentLang];
+            s.innerText = config.isOpen ? t.open : t.closed;
+            s.className = "status-badge " + (config.isOpen ? "open" : "closed");
+        }
+
+        function checkSubscription(dateStr) {
+            try {
+                const diff = Math.ceil((new Date(dateStr) - new Date()) / 86400000); 
+                if (diff <= 0) { document.getElementById('lockScreen').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+            } catch (e) {}
         }
 
         function parseMenu(csv) {
             const rows = csv.split('\n').slice(1);
             rows.forEach((r, i) => {
-                const p = r.split(',').map(x => x.replace(/"/g, '').trim());
-                if (p.length >= 3) products.push({ id: i, cat: p[0], title: p[1], price: parseInt(p[2].replace(/,/g,'')), img: p[3], active: p[4]?.toUpperCase() !== 'FALSE' });
+                const c = r.split(',').map(x => x.replace(/"/g, '').trim());
+                if(c.length >= 3) products.push({ id: i, cat: c[0], title: c[1], price: parseInt(c[2].replace(/,/g,'')), img: c[3], active: c[4]?.toUpperCase() !== 'FALSE' });
             });
         }
 
-        function render() {
-            const list = document.getElementById('list');
-            list.innerHTML = '';
+        function render(cat) {
+            currentCat = cat;
+            const list = document.getElementById('list'), t = translations[currentLang];
+            const cats = ['all', ...new Set(products.map(p => p.cat))];
+            document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="render('${c}')">${c==='all'?t.all:c}</div>`).join('');
             
-            // دکمه‌های دسته‌بندی
-            const cats = ['all', ...new Set(products.map(x => x.cat))];
-            document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-btn ${c==='all'?'active':''}" onclick="filter('${c}', this)">${c === 'all' ? (config.lang==='en'?'All':(config.lang==='ar'?'الكل':'همه')) : c}</div>`).join('');
-
-            products.forEach(p => {
+            list.innerHTML = '';
+            products.filter(p => cat === 'all' || p.cat === cat).forEach(p => {
                 const count = cart[p.id] || 0;
-                const btn = !p.active ? `<span style="color:#e74c3c" data-t data-fa="ناموجود" data-en="Out" data-ar="غیر متوفر"></span>` : 
-                    (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)" data-t data-fa="افزودن" data-en="Add" data-ar="إضافة"></div>` : 
-                    `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span>${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
-                
-                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title}</h3><div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;"><span class="price">${p.price.toLocaleString()}</span>${btn}</div></div></div>`;
+                const btn = !p.active ? `<span style="color:#e74c3c;">${t.out}</span>` : 
+                    (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${t.add}</div>` : 
+                    `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span style="padding:0 8px">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span style="color:var(--primary);font-weight:bold">${p.price.toLocaleString()}</span>${btn}</div></div></div>`;
             });
-            calcTotal();
         }
 
-        window.filter = (c, el) => {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.item').forEach((item, i) => item.style.display = (c === 'all' || products[i].cat === c) ? 'flex' : 'none');
-        };
-
-        window.upd = (id, n) => {
-            cart[id] = (cart[id] || 0) + n;
-            if (cart[id] <= 0) delete cart[id];
-            render();
-        };
+        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; render(currentCat); calcTotal(); };
+        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
 
         function calcTotal() {
-            let total = 0, count = 0, summaryHtml = '';
-            for (let id in cart) {
-                const p = products[id];
-                total += p.price * cart[id]; count += cart[id];
-                summaryHtml += `<div class="summary-item"><span>${p.title}</span><div class="summary-controls"><div class="q-btn" onclick="upd(${id},-1)">-</div><span>${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.price * cart[id]).toLocaleString()}</span></div>`;
+            let total = 0, count = 0, sumHtml = '', t = translations[currentLang];
+            for(let id in cart) { 
+                const p = products[id]; total += p.price * cart[id]; count += cart[id];
+                sumHtml += `<div class="summary-item"><span>${p.title}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span style="padding:0 10px">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.price * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
             const final = isDel ? total + config.deliveryPrice : total;
-            
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
-            document.getElementById('finalPayable').innerText = final.toLocaleString() + (config.lang === 'en' ? ' Toman' : ' تومان');
-            document.getElementById('summaryList').innerHTML = summaryHtml || '<p style="text-align:center; opacity:0.5">...</p>';
+            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + t.unit;
+            document.getElementById('summaryList').innerHTML = sumHtml || `<p style="text-align:center;opacity:0.5">${t.empty}</p>`;
             
-            const bar = document.getElementById('cartBar');
-            const isOpen = document.getElementById('orderDetails').classList.contains('active');
+            const bar = document.getElementById('cartBar'), details = document.getElementById('orderDetails');
             bar.style.display = count > 0 ? 'block' : 'none';
-            
-            const btn = document.getElementById('actionBtn');
-            btn.innerHTML = !isOpen ? `<span data-t data-fa="مشاهده سفارش و تایید" data-en="View Order" data-ar="عرض الطلب"></span>` : 
-                (isDel ? `<span data-t data-fa="تایید و پرداخت آنلاین" data-en="Pay Now" data-ar="تأكيد ودفع"></span>` : `<span data-t data-fa="ثبت نهایی سفارش" data-en="Submit Order" data-ar="تأكيد الطلب"></span>`);
+            if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.viewBtn;
+            else document.getElementById('actionBtn').innerText = isDel ? t.payBtn : t.submitBtn;
         }
 
-        window.toggleDetails = (s) => { document.getElementById('orderDetails').classList.toggle('active', s); calcTotal(); };
-        window.setType = (t) => {
-            document.getElementById('btn-table').classList.toggle('selected', t==='table');
-            document.getElementById('btn-delivery').classList.toggle('selected', t==='delivery');
-            document.getElementById('form-table').classList.toggle('hidden', t!=='table');
-            document.getElementById('form-delivery').classList.toggle('hidden', t!=='delivery');
-            document.getElementById('deliveryRow').style.display = t==='delivery' ? 'flex' : 'none';
+        window.setOrderType = (type) => {
+            document.getElementById('btn-table').classList.toggle('selected', type === 'table');
+            document.getElementById('btn-delivery').classList.toggle('selected', type === 'delivery');
+            document.getElementById('form-table').classList.toggle('hidden', type !== 'table');
+            document.getElementById('form-delivery').classList.toggle('hidden', type !== 'delivery');
+            document.getElementById('deliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
             calcTotal();
         };
 
-        window.handleOrder = () => {
+        window.processOrder = () => {
+            const t = translations[currentLang]; if(!config.isOpen) return;
             const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) return toggleDetails(true);
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
             
-            let desc = ""; for (let id in cart) desc += `${products[id].title}(${cart[id]}) - `;
-            if (document.getElementById('btn-table').classList.contains('selected')) {
-                const n = document.getElementById('tableNum').value;
-                if (!n) return alert(config.lang === 'en' ? "Table #?" : "شماره میز؟");
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent("Order Table " + n + ": " + desc)}`);
+            let desc = ""; for(let id in cart) desc += `${products[id].title}(${cart[id]}) - `;
+            if(document.getElementById('btn-table').classList.contains('selected')) {
+                const n = document.getElementById('tableNum').value; if(!n) return alert(t.tNum + '?');
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(t.table + " " + n + ": " + desc)}`);
             } else {
                 const ph = document.getElementById('userPhone').value, ad = document.getElementById('address').value;
-                if (!ph || !ad) return alert(config.lang === 'en' ? "Info required" : "اطلاعات ناقص");
-                const msg = config.lang==='en' ? "Take screenshot after payment. Proceed?" : "پس از پرداخت اسکرین‌شات بگیرید. تایید؟";
-                if(confirm(msg)) window.location.href = config.paymentLink;
+                if(!ph || !ad) return alert(t.phone + " & " + t.addr + "?");
+                if(confirm(t.confirm.replace('{amount}', (total + config.deliveryPrice).toLocaleString()))) window.location.href = config.paymentLink;
             }
         };
 
-        function updateShopStatus() {
-            const s = document.getElementById('shopStatus');
-            s.className = "status-badge " + (config.isOpen ? 'open' : 'closed');
-            s.innerHTML = config.isOpen ? `<span data-t data-fa="✅ باز است" data-en="✅ Open" data-ar="✅ مفتوح"></span>` : `<span data-t data-fa="⛔ بسته" data-en="⛔ Closed" data-ar="⛔ مغلق"></span>`;
-        }
-
-        start();
+        startApp();
     </script>
 </body>
 </html>
