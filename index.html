@@ -136,7 +136,7 @@
                 review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Subtotal:", courier: "Delivery:",
                 payable: "Total:", note: "Notes (Optional)", tNum: "Table #", phone: "Phone", addr: "Address",
                 viewBtn: "View Order", payBtn: "Pay Now", submitBtn: "Submit Order", unit: "Toman", empty: "Cart is empty",
-                confirm: "Total: {amount} Toman\nPlease take a screenshot of receipt.\nProceed?",
+                confirm: "Total: {amount} Toman\nPlease take a screenshot.\nProceed?",
                 expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Majd Software Group"
             },
             ar: {
@@ -157,12 +157,9 @@
         function changeLang(lang) {
             currentLang = lang;
             const t = translations[lang];
-            const html = document.getElementById('mainHtml');
-            html.dir = (lang === 'en') ? 'ltr' : 'rtl';
-            
+            document.getElementById('mainHtml').dir = (lang === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
 
-            // آپدیت متن‌های ثابت DOM
             document.getElementById('loadingText').innerText = t.loading;
             document.getElementById('reviewTitle').innerText = t.review;
             document.getElementById('btn-table').innerText = t.table;
@@ -179,9 +176,8 @@
             document.getElementById('lockMsg1').innerText = t.expireMsg1;
             document.getElementById('lockMsg2').innerText = t.expireMsg2;
 
-            // بازسازی منو و سبد خرید
             updateShopStatusDisplay();
-            render(currentCat);
+            if (products.length > 0) render(currentCat);
             calcTotal();
         }
 
@@ -276,7 +272,9 @@
                 const p = products.find(x=>x.id==id); 
                 if(p) { total += p.p * cart[id]; count += cart[id]; summaryHtml += `<div class="summary-item"><span>${p.t}</span><div class="summary-controls"><div class="s-btn" onclick="upd(${id}, -1)">-</div><span>${cart[id]}</span><div class="s-btn" onclick="upd(${id}, 1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`; } 
             }
-            let final = (document.getElementById('btn-delivery').classList.contains('selected')) ? total + config.deliveryPrice : total;
+            let isDelivery = document.getElementById('btn-delivery').classList.contains('selected');
+            let final = isDelivery ? total + config.deliveryPrice : total;
+            
             document.getElementById('summaryList').innerHTML = summaryHtml || `<p style="text-align:center; padding:10px; opacity:0.5;">${t.empty}</p>`;
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
@@ -286,7 +284,7 @@
             if(count>0) { 
                 bar.style.display='flex'; 
                 if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.viewBtn; 
-                else document.getElementById('actionBtn').innerText = (document.getElementById('btn-delivery').classList.contains('selected') ? t.payBtn : t.submitBtn);
+                else document.getElementById('actionBtn').innerText = (isDelivery ? t.payBtn : t.submitBtn);
             } 
             else { bar.style.display='none'; details.classList.remove('active'); }
         }
