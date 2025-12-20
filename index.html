@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" id="mainHtml">
+<html id="mainHtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Online Menu</title>
+    <title>Menu</title>
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
@@ -11,8 +11,17 @@
             --bg-img: url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; }
-        body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:120px; user-select: none; }
-        header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        body { 
+            background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img);
+            background-size: cover; background-attachment: fixed; background-position: center;
+            color:var(--text); padding-bottom:120px; user-select: none; 
+        }
+        header { 
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img);
+            background-size: cover; background-position: center;
+            padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); 
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+        }
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101; }
         .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 6px 12px; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
         .lang-btn.active { background: var(--primary); color: #000; font-weight: bold; }
@@ -26,6 +35,7 @@
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: rgba(30, 30, 36, 0.9); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; }
         .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); background: #000; }
+        .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
         .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
@@ -53,26 +63,23 @@
 <body id="mainBody">
 
     <div class="lang-switch">
-        <div class="lang-btn active" id="btn-fa" onclick="changeLang('fa')">FA</div>
-        <div class="lang-btn" id="btn-en" onclick="changeLang('en')">EN</div>
+        <div class="lang-btn active" id="btn-fa" onclick="switchPage('fa')">FA</div>
+        <div class="lang-btn" id="btn-en" onclick="switchPage('en')">EN</div>
     </div>
 
     <div id="lockScreen">
         <h2 id="lockTitle" style="color:#e74c3c">...</h2>
-        <p id="lockMsg1">...</p>
-        <p id="lockMsg2">...</p>
+        <p id="lockMsg">...</p>
     </div>
 
-    <header>
-        <h1 id="shopName">...</h1>
-        <div id="shopStatus" class="status-badge">...</div>
-    </header>
-
-    <div class="cat-scroll" id="cats"></div>
-    <div class="menu-list" id="list"><p style="text-align:center; padding-top:50px;" id="loadingText">...</p></div>
+    <div id="appContainer">
+        <header><h1 id="shopName">Loading...</h1><div id="shopStatus" class="status-badge">...</div></header>
+        <div class="cat-scroll" id="cats"></div>
+        <div class="menu-list" id="list"><p style="text-align:center; padding-top:50px;">Please Wait...</p></div>
+    </div>
 
     <div class="dev-footer">
-        <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">...</p>
+        <p class="dev-title" id="devTitle">...</p>
         <div class="dev-icons">
             <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
             <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
@@ -82,16 +89,16 @@
 
     <div class="order-details" id="orderDetails">
         <div class="close-details" onclick="closeDetails()">✕</div>
-        <h3 id="reviewTitle" style="text-align:center; margin-bottom:15px; color:var(--primary);">...</h3>
+        <h3 id="revTitle" style="text-align:center; margin-bottom:15px; color:var(--primary);">...</h3>
         <div id="summaryList"></div>
         <div class="type-selector">
             <div class="type-btn selected" id="btn-table" onclick="setOrderType('table')">...</div>
             <div class="type-btn" id="btn-delivery" onclick="setOrderType('delivery')">...</div>
         </div>
         <div class="invoice-box">
-            <div class="invoice-row"><span id="txtSubtotal">...</span><span id="itemsTotal">0</span></div>
-            <div class="invoice-row" id="deliveryRow" style="display:none;"><span id="txtCourier">...</span><span id="deliveryPriceDisplay">0</span></div>
-            <div class="invoice-row highlight"><span id="txtPayable">...</span><span id="finalPayable">0</span></div>
+            <div class="invoice-row"><span id="l-sub">...</span><span id="itemsTotal">0</span></div>
+            <div class="invoice-row" id="deliveryRow" style="display:none;"><span id="l-courier">...</span><span id="deliveryPriceDisplay">0</span></div>
+            <div class="invoice-row highlight"><span id="l-total">...</span><span id="finalPayable">0</span></div>
         </div>
         <div class="input-group"><textarea id="userNote"></textarea></div>
         <div id="form-table" class="input-group"><input type="number" id="tableNum"></div>
@@ -104,137 +111,122 @@
     <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="processOrder()">...</div></div>
 
     <script>
-        const translations = {
+        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
+        const dictionary = {
             fa: {
-                open: "✅ باز است", closed: "⛔ بسته است", loading: "در حال دریافت منو...", all: "همه", add: "افزودن", out: "ناموجود",
+                dir: 'rtl', open: "✅ باز است", closed: "⛔ بسته است", all: "همه", add: "افزودن", out: "ناموجود",
                 review: "📋 بازبینی سفارش", table: "🍽️ سالن", delivery: "🛵 بیرون‌بر", subtotal: "جمع اقلام:", courier: "هزینه پیک:",
-                payable: "قابل پرداخت:", note: "توضیحات سفارش (اختیاری)", tNum: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق",
+                payable: "قابل پرداخت:", note: "توضیحات (اختیاری)", tNum: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق",
                 viewBtn: "مشاهده سفارش و تایید", payBtn: "تایید و پرداخت", submitBtn: "ثبت نهایی سفارش", unit: "تومان", empty: "سبد خالی است",
                 confirm: "مبلغ: {amount} تومان\nپس از پرداخت اسکرین‌شات بگیرید.\nآماده‌اید؟",
-                expireTitle: "پایان اشتراک ⚠️", expireMsg1: "اشتراک تمام شده است.", expireMsg2: "تماس با پشتیبانی.", dev: "گروه نرم‌افزاری مَجد"
+                expireTitle: "پایان اشتراک ⚠️", expireMsg: "اشتراک تمام شده است.", dev: "گروه نرم‌افزاری مَجد"
             },
             en: {
-                open: "✅ Open", closed: "⛔ Closed", loading: "Loading...", all: "All", add: "Add", out: "Sold Out",
+                dir: 'ltr', open: "✅ Open", closed: "⛔ Closed", all: "All", add: "Add", out: "Sold Out",
                 review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", subtotal: "Subtotal:", courier: "Courier:",
                 payable: "Total:", note: "Notes (Optional)", tNum: "Table #", phone: "Phone", addr: "Address",
                 viewBtn: "View Order", payBtn: "Pay Now", submitBtn: "Submit Order", unit: "Toman", empty: "Empty Cart",
                 confirm: "Total: {amount} Toman\nPlease take a screenshot after payment.\nProceed?",
-                expireTitle: "Expired ⚠️", expireMsg1: "Ended.", expireMsg2: "Contact Support.", dev: "Majd Software Group"
+                expireTitle: "Expired ⚠️", expireMsg: "Subscription ended.", dev: "Majd Software Group"
             }
         };
 
-        let currentLang = 'fa', currentCat = 'all';
-        let products = [], cart = {}, config = { isOpen: true, deliveryPrice: 0, phone: '', paymentLink: '' };
-        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
+        let lang = 'fa', data = { products: [], config: { isOpen:true, deliveryPrice:0 } }, cart = {}, currentCat = 'all';
 
-        function changeLang(lang) {
-            currentLang = lang;
-            const t = translations[lang];
+        async function startApp() {
+            try {
+                const [m, s] = await Promise.all([
+                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cb=${Date.now()}`).then(r => r.text()),
+                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cb=${Date.now()}`).then(r => r.text())
+                ]);
+                parseData(m, s);
+                switchPage('fa');
+            } catch (e) { document.getElementById('list').innerHTML = "Error! Check Internet & Publish to web."; }
+        }
+
+        function parseData(mCsv, sCsv) {
+            const sRows = sCsv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g,'').trim()));
+            sRows.forEach(r => {
+                if(r[0] === 'ShopName') document.getElementById('shopName').innerText = r[1];
+                if(r[0] === 'HeaderImage') document.documentElement.style.setProperty('--header-img', `url('${r[1]}')`);
+                if(r[0] === 'BgImage') document.documentElement.style.setProperty('--bg-img', `url('${r[1]}')`);
+                if(r[0] === 'Phone') data.config.phone = r[1];
+                if(r[0] === 'DeliveryPrice') data.config.deliveryPrice = parseInt(r[1]) || 0;
+                if(r[0] === 'PaymentLink') data.config.paymentLink = r[1];
+                if(r[0] === 'IsOpen') data.config.isOpen = r[1].toUpperCase() !== 'FALSE';
+                if(r[0] === 'ExpireDate') checkExpire(r[1]);
+            });
+
+            const mRows = mCsv.split('\n').slice(1);
+            mRows.forEach((r, i) => {
+                const c = r.split(',').map(x => x.replace(/"/g, '').trim());
+                if(c.length >= 3) data.products.push({ id: i, cat: c[0], title: c[1], price: parseInt(c[2].replace(/,/g,'')), img: c[3], active: c[4]?.toUpperCase() !== 'FALSE' });
+            });
+        }
+
+        function switchPage(newLang) {
+            lang = newLang;
+            const t = dictionary[lang];
             const html = document.getElementById('mainHtml');
-            html.dir = (lang === 'en') ? 'ltr' : 'rtl';
+            html.dir = t.dir;
             html.lang = lang;
             
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
 
-            document.getElementById('loadingText').innerText = t.loading;
-            document.getElementById('reviewTitle').innerText = t.review;
+            // بازنویسی متون ثابت
+            document.getElementById('devTitle').innerText = t.dev;
+            document.getElementById('lockTitle').innerText = t.expireTitle;
+            document.getElementById('lockMsg').innerText = t.expireMsg;
+            document.getElementById('revTitle').innerText = t.review;
             document.getElementById('btn-table').innerText = t.table;
             document.getElementById('btn-delivery').innerText = t.delivery;
-            document.getElementById('txtSubtotal').innerText = t.subtotal;
-            document.getElementById('txtCourier').innerText = t.courier;
-            document.getElementById('txtPayable').innerText = t.payable;
+            document.getElementById('l-sub').innerText = t.subtotal;
+            document.getElementById('l-courier').innerText = t.courier;
+            document.getElementById('l-total').innerText = t.payable;
             document.getElementById('userNote').placeholder = t.note;
             document.getElementById('tableNum').placeholder = t.tNum;
             document.getElementById('userPhone').placeholder = t.phone;
             document.getElementById('address').placeholder = t.addr;
-            document.getElementById('devTitle').innerText = t.dev;
-            document.getElementById('lockTitle').innerText = t.expireTitle;
-            document.getElementById('lockMsg1').innerText = t.expireMsg1;
-            document.getElementById('lockMsg2').innerText = t.expireMsg2;
 
-            updateShopStatus();
-            if (products.length > 0) render(currentCat);
+            // آپدیت وضعیت فروشگاه
+            const s = document.getElementById('shopStatus');
+            s.innerText = data.config.isOpen ? t.open : t.closed;
+            s.className = "status-badge " + (data.config.isOpen ? "open" : "closed");
+
+            renderMenu(currentCat);
+        }
+
+        function renderMenu(cat) {
+            currentCat = cat;
+            const t = dictionary[lang];
+            const catSet = ['all', ...new Set(data.products.map(p => p.cat))];
+            document.getElementById('cats').innerHTML = catSet.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="renderMenu('${c}')">${c==='all'?t.all:c}</div>`).join('');
+            
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            data.products.filter(p => cat === 'all' || p.cat === cat).forEach(p => {
+                const count = cart[p.id] || 0;
+                const btn = !p.active ? `<span style="color:#e74c3c;">${t.out}</span>` : 
+                    (count === 0 ? `<div class="add-btn" onclick="updateCart(${p.id},1)">${t.add}</div>` : 
+                    `<div class="qty-box"><div class="q-btn" onclick="updateCart(${p.id},1)">+</div><span style="padding:0 8px">${count}</span><div class="q-btn" onclick="updateCart(${p.id},-1)">-</div></div>`);
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span style="color:var(--primary);font-weight:bold">${p.price.toLocaleString()}</span>${btn}</div></div></div>`;
+            });
             calcTotal();
         }
 
-        async function startApp() {
-            try {
-                const [menuRes, setRes] = await Promise.all([
-                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cb=${Date.now()}`),
-                    fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cb=${Date.now()}`)
-                ]);
-                parseSettings(await setRes.text());
-                parseMenu(await menuRes.text());
-                changeLang('fa');
-            } catch (e) { document.getElementById('list').innerHTML = "Check Internet / Publish to Web"; }
-        }
-
-        function parseSettings(csv) {
-            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g,'').trim()));
-            rows.forEach(r => {
-                if(r[0] === 'ShopName') document.getElementById('shopName').innerText = r[1];
-                if(r[0] === 'HeaderImage') document.documentElement.style.setProperty('--header-img', `url('${r[1]}')`);
-                if(r[0] === 'BgImage') document.documentElement.style.setProperty('--bg-img', `url('${r[1]}')`);
-                if(r[0] === 'Phone') config.phone = r[1];
-                if(r[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(r[1]) || 0;
-                if(r[0] === 'PaymentLink') config.paymentLink = r[1];
-                if(r[0] === 'IsOpen') config.isOpen = r[1].toUpperCase() !== 'FALSE';
-                if(r[0] === 'ExpireDate') checkSubscription(r[1]);
-            });
-        }
-
-        function updateShopStatus() {
-            const s = document.getElementById('shopStatus');
-            const t = translations[currentLang];
-            s.innerText = config.isOpen ? t.open : t.closed;
-            s.className = "status-badge " + (config.isOpen ? "open" : "closed");
-        }
-
-        function checkSubscription(dateStr) {
-            try {
-                const diff = Math.ceil((new Date(dateStr) - new Date()) / 86400000); 
-                if (diff <= 0) { document.getElementById('lockScreen').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
-            } catch (e) {}
-        }
-
-        function parseMenu(csv) {
-            const rows = csv.split('\n').slice(1);
-            rows.forEach((r, i) => {
-                const c = r.split(',').map(x => x.replace(/"/g, '').trim());
-                if(c.length >= 3) products.push({ id: i, cat: c[0], title: c[1], price: parseInt(c[2].replace(/,/g,'')), img: c[3], active: c[4]?.toUpperCase() !== 'FALSE' });
-            });
-        }
-
-        function render(cat) {
-            currentCat = cat;
-            const list = document.getElementById('list'), t = translations[currentLang];
-            const cats = ['all', ...new Set(products.map(p => p.cat))];
-            document.getElementById('cats').innerHTML = cats.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="render('${c}')">${c==='all'?t.all:c}</div>`).join('');
-            
-            list.innerHTML = '';
-            products.filter(p => cat === 'all' || p.cat === cat).forEach(p => {
-                const count = cart[p.id] || 0;
-                const btn = !p.active ? `<span style="color:#e74c3c;">${t.out}</span>` : 
-                    (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${t.add}</div>` : 
-                    `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span style="padding:0 8px">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
-                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span style="color:var(--primary);font-weight:bold">${p.price.toLocaleString()}</span>${btn}</div></div></div>`;
-            });
-        }
-
-        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; render(currentCat); calcTotal(); };
-        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
+        function updateCart(id, n) { if(!data.config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); }
 
         function calcTotal() {
-            let total = 0, count = 0, sumHtml = '', t = translations[currentLang];
+            let total = 0, count = 0, sumHtml = '', t = dictionary[lang];
             for(let id in cart) { 
-                const p = products[id]; total += p.price * cart[id]; count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.title}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span style="padding:0 10px">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.price * cart[id]).toLocaleString()}</span></div>`;
+                const p = data.products[id]; total += p.price * cart[id]; count += cart[id];
+                sumHtml += `<div class="summary-item"><span>${p.title}</span><div class="qty-box"><div class="q-btn" onclick="updateCart(${id},-1)">-</div><span style="padding:0 10px">${cart[id]}</span><div class="q-btn" onclick="updateCart(${id},1)">+</div></div><span>${(p.price * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            const final = isDel ? total + config.deliveryPrice : total;
+            const final = isDel ? total + data.config.deliveryPrice : total;
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + t.unit;
-            document.getElementById('summaryList').innerHTML = sumHtml || `<p style="text-align:center;opacity:0.5">${t.empty}</p>`;
+            document.getElementById('summaryList').innerHTML = sumHtml || `<p style="text-align:center;opacity:0.5;padding:10px;">${t.empty}</p>`;
             
             const bar = document.getElementById('cartBar'), details = document.getElementById('orderDetails');
             bar.style.display = count > 0 ? 'block' : 'none';
@@ -252,20 +244,23 @@
         };
 
         window.processOrder = () => {
-            const t = translations[currentLang]; if(!config.isOpen) return;
+            const t = dictionary[lang]; if(!data.config.isOpen) return;
             const det = document.getElementById('orderDetails');
             if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
             
-            let desc = ""; for(let id in cart) desc += `${products[id].title}(${cart[id]}) - `;
+            let desc = ""; for(let id in cart) desc += `${data.products[id].title}(${cart[id]}) - `;
             if(document.getElementById('btn-table').classList.contains('selected')) {
                 const n = document.getElementById('tableNum').value; if(!n) return alert(t.tNum + '?');
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(t.table + " " + n + ": " + desc)}`);
+                window.open(`https://wa.me/${data.config.phone}?text=${encodeURIComponent(t.table + " " + n + ": " + desc)}`);
             } else {
                 const ph = document.getElementById('userPhone').value, ad = document.getElementById('address').value;
                 if(!ph || !ad) return alert(t.phone + " & " + t.addr + "?");
-                if(confirm(t.confirm.replace('{amount}', (total + config.deliveryPrice).toLocaleString()))) window.location.href = config.paymentLink;
+                if(confirm(t.confirm.replace('{amount}', (total + data.config.deliveryPrice).toLocaleString()))) window.location.href = data.config.paymentLink;
             }
         };
+
+        function checkExpire(d) { if(Math.ceil((new Date(d)-new Date())/86400000)<=0) { document.getElementById('lockScreen').style.display='flex'; document.body.style.overflow='hidden'; } }
+        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
 
         startApp();
     </script>
