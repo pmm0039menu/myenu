@@ -25,7 +25,7 @@
             position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
         }
 
-        /* دکمه‌های تغییر زبان */
+        /* انتخابگر زبان */
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101; }
         .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
         .lang-btn.active { background: var(--primary); color: #000; }
@@ -95,9 +95,9 @@
     </div>
 
     <div id="lockScreen">
-        <h2 id="lockTitle" style="color:#e74c3c">پایان اشتراک ⚠️</h2>
-        <p id="lockMsg1">مهلت استفاده از این منوی دیجیتال به پایان رسیده است.</p>
-        <p id="lockMsg2">جهت تمدید اشتراک با پشتیبانی تماس بگیرید.</p>
+        <h2 id="lockTitle" style="color:#e74c3c">...</h2>
+        <p id="lockMsg1">...</p>
+        <p id="lockMsg2">...</p>
         <div class="dev-icons" style="margin-top:20px;">
              <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
         </div>
@@ -117,7 +117,7 @@
     </div>
 
     <div class="dev-footer">
-        <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">مجری طرح: گروه نرم‌افزاری مَجد</p>
+        <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">...</p>
         <div class="dev-icons">
             <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
             <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
@@ -162,19 +162,19 @@
             },
             en: {
                 open: "✅ Open", closed: "⛔ Closed", loading: "Loading Menu...", all: "All", add: "Add", out: "Out of Stock",
-                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Items Total:", courier: "Courier Fee:",
-                payable: "Total Payable:", note: "Order notes (optional)", tNum: "Table Number", phone: "Phone Number", addr: "Full Address",
+                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Items Total:", courier: "Courier:",
+                payable: "Total Payable:", note: "Order notes (optional)", tNum: "Table #", phone: "Phone", addr: "Address",
                 viewBtn: "View Order & Confirm", payBtn: "Confirm & Pay", submitBtn: "Confirm & Submit", unit: "Toman", empty: "Empty Cart",
-                confirm: "Total: {amount} Toman\nPlease take a screenshot of receipt.\nProceed?",
-                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software Group"
+                confirm: "Total: {amount} Toman\nPlease take a screenshot.\nProceed?",
+                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software"
             },
             ar: {
                 open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غیر متوفر",
-                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "رسوم التوصيل:",
-                payable: "المبلغ الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "رقم الهاتف", addr: "العنوان بالتفصيل",
+                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "التوصيل:",
+                payable: "الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "الهاتف", addr: "العنوان",
                 viewBtn: "عرض الطلب والتأكيد", payBtn: "تأكيد ودفع", submitBtn: "تأكيد الطلب", unit: "تومان", empty: "السلة فارغة",
-                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة بعد الدفع.\nهل أنت مستعد؟",
-                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد للبرمجيات"
+                confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة.\nهل أنت مستعد؟",
+                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد"
             }
         };
 
@@ -189,6 +189,7 @@
             document.getElementById('mainHtml').dir = (lang === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
 
+            // آپدیت متن‌های ثابت
             document.getElementById('loadingText').innerText = t.loading;
             document.getElementById('reviewTitle').innerText = t.review;
             document.getElementById('btn-table').innerText = t.table;
@@ -206,7 +207,10 @@
             document.getElementById('lockMsg2').innerText = t.expireMsg2;
 
             updateShopStatusDisplay();
-            const activeCat = document.querySelector('.cat-btn.active')?.getAttribute('data-cat') || 'all';
+            
+            // رندر دوباره کل منو و دکمه‌ها برای اعمال زبان جدید
+            const activeCatBtn = document.querySelector('.cat-btn.active');
+            const activeCat = activeCatBtn ? activeCatBtn.getAttribute('data-cat') : 'all';
             if (products.length > 0) render(activeCat);
             calcTotal();
         }
@@ -224,14 +228,9 @@
 
                 parseSettings(setText);
                 parseMenu(menuText);
-                changeLang('fa');
+                changeLang('fa'); // شروع با فارسی
             } catch (e) { 
-                document.getElementById('list').innerHTML = `
-                    <div style="text-align:center; padding:20px; color:#ff4d4d; background:rgba(0,0,0,0.5); border-radius:10px;">
-                        <h3 style="margin-bottom:10px;">❌ خطای دریافت منو</h3>
-                        <p style="font-size:0.9rem;">۱. مطمئن شوید فایل گوگل‌شیت را Publish to Web کرده‌اید.</p>
-                        <p style="font-size:0.9rem;">۲. نام شیت‌ها حتما Menu و Settings باشد.</p>
-                    </div>`; 
+                document.getElementById('list').innerHTML = "<p style='text-align:center; color:red; padding:50px;'>Error Loading Data...</p>"; 
             }
         }
 
@@ -285,8 +284,8 @@
         function render(cat) {
             const list = document.getElementById('list'); const t = translations[currentLang];
             const catsDiv = document.getElementById('cats');
-            
             const catSet = new Set(products.map(p => p.c));
+            
             let catHtml = `<div class="cat-btn ${cat==='all'?'active':''}" data-cat="all" onclick="render('all')">${t.all}</div>`;
             catSet.forEach(c => { catHtml += `<div class="cat-btn ${cat===c?'active':''}" data-cat="${c}" onclick="render('${c}')">${c}</div>`; });
             catsDiv.innerHTML = catHtml;
@@ -318,29 +317,34 @@
                 if(p) { total += p.p * cart[id]; count += cart[id]; summaryHtml += `<div class="summary-item"><span>${p.t}</span><div class="summary-controls"><div class="s-btn" onclick="upd(${id}, -1)">-</div><span>${cart[id]}</span><div class="s-btn" onclick="upd(${id}, 1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`; } 
             }
             let final = orderType === 'delivery' ? total + config.deliveryPrice : total;
-            document.getElementById('summaryList').innerHTML = summaryHtml || `<p style="text-align:center;">${t.empty}</p>`;
+            document.getElementById('summaryList').innerHTML = summaryHtml || `<p style="text-align:center; padding:10px; opacity:0.5;">${t.empty}</p>`;
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + t.unit;
+            
             const bar = document.getElementById('cartBar'); const details = document.getElementById('orderDetails');
-            if(count>0) { bar.style.display='flex'; if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.viewBtn; } 
+            if(count>0) { 
+                bar.style.display='flex'; 
+                if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.viewBtn; 
+                else document.getElementById('actionBtn').innerText = (orderType === 'delivery' ? t.payBtn : t.submitBtn);
+            } 
             else { bar.style.display='none'; details.classList.remove('active'); }
         }
 
         window.setOrderType = (type) => {
-            orderType = type; const t = translations[currentLang];
-            document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('selected', b.id === 'btn-'+type));
+            orderType = type;
             document.getElementById('form-table').classList.toggle('hidden', type !== 'table');
             document.getElementById('form-delivery').classList.toggle('hidden', type !== 'delivery');
             document.getElementById('deliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('selected', b.id === 'btn-'+type));
             calcTotal();
-            if(document.getElementById('orderDetails').classList.contains('active')) document.getElementById('actionBtn').innerText = type === 'delivery' ? t.payBtn : t.submitBtn;
         };
 
         window.processOrder = () => {
             const t = translations[currentLang]; if(!config.isOpen) return;
             const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); setOrderType(orderType); return; }
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+            
             let desc = ""; for(let id in cart) { const p = products.find(x=>x.id==id); if(p) desc += `${p.t}(${cart[id]}) - `; }
             if(orderType === 'table') {
                 const tNum = document.getElementById('tableNum').value; if(!tNum) return alert(t.tNum + '?');
