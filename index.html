@@ -36,9 +36,13 @@
         .q-btn { width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
 
-        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
+        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; position: relative; }
         .order-details.active { display: block; }
-        .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
+        
+        /* استایل دکمه بستن */
+        .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; border: 1px solid var(--primary); z-index: 10; }
+
+        .type-selector { display: flex; gap: 10px; margin-bottom: 15px; margin-top: 10px; }
         .type-btn { flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: #888; text-align: center; border-radius: 8px; cursor: pointer; }
         .type-btn.selected { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
         .input-group { margin-bottom: 8px; }
@@ -48,12 +52,13 @@
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; padding: 0 5px; color: #ccc; }
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
         
-        /* استایل جدید لیست تایید سفارش */
         .summary-list { border-bottom: 1px solid #333; margin-bottom: 15px; padding-bottom: 10px; }
-        .summary-item { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #eee; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; }
         .summary-item span:first-child { flex: 2; }
-        .summary-item span:nth-child(2) { flex: 1; text-align: center; color: var(--primary); }
-        .summary-item span:last-child { flex: 1; text-align: left; }
+        
+        /* استایل کنترل‌های داخل لیست تایید */
+        .summary-controls { flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 8px; background: #000; border-radius: 6px; border: 1px solid #444; padding: 2px 5px; margin: 0 10px; }
+        .s-btn { color: var(--primary); font-weight: bold; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
 
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
@@ -109,7 +114,9 @@
     </div>
 
     <div class="order-details" id="orderDetails">
-        <h3 style="margin-bottom:10px; color:var(--primary); font-size:1rem;">📋 بازبینی سفارش</h3>
+        <div class="close-details" onclick="closeDetails()">✕</div>
+        
+        <h3 style="margin-bottom:10px; color:var(--primary); font-size:1rem; text-align:center;">📋 بازبینی سفارش</h3>
         <div id="summaryList" class="summary-list"></div>
 
         <div class="type-selector">
@@ -306,6 +313,11 @@
             render(activeBtn && activeBtn.innerText !== 'همه' ? activeBtn.innerText : 'all');
         };
 
+        window.closeDetails = () => {
+            document.getElementById('orderDetails').classList.remove('active');
+            document.getElementById('actionBtn').innerText = 'مشاهده سفارش و تایید';
+        };
+
         function calcTotal() {
             let total = 0, count = 0;
             let summaryHtml = '';
@@ -314,12 +326,21 @@
                 if(p) { 
                     total += p.p * cart[id]; 
                     count += cart[id]; 
-                    summaryHtml += `<div class="summary-item"><span>${p.t}</span><span>${cart[id]} عدد</span><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
+                    summaryHtml += `
+                        <div class="summary-item">
+                            <span>${p.t}</span>
+                            <div class="summary-controls">
+                                <div class="s-btn" onclick="upd(${id}, -1)">-</div>
+                                <span>${cart[id]}</span>
+                                <div class="s-btn" onclick="upd(${id}, 1)">+</div>
+                            </div>
+                            <span>${(p.p * cart[id]).toLocaleString()}</span>
+                        </div>`;
                 } 
             }
             let final = orderType === 'delivery' ? total + config.deliveryPrice : total;
             
-            document.getElementById('summaryList').innerHTML = summaryHtml || '<p style="font-size:0.8rem; color:#888;">سبد خرید خالی است</p>';
+            document.getElementById('summaryList').innerHTML = summaryHtml || '<p style="font-size:0.8rem; color:#888; text-align:center;">سبد خرید خالی است</p>';
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('deliveryPriceDisplay').innerText = config.deliveryPrice.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + ' تومان';
@@ -350,6 +371,9 @@
                 document.getElementById('deliveryRow').style.display='flex';
             }
             calcTotal();
+            if(document.getElementById('orderDetails').classList.contains('active')) {
+                document.getElementById('actionBtn').innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
+            }
         };
 
         window.processOrder = () => {
@@ -357,14 +381,12 @@
             const details = document.getElementById('orderDetails');
             const btn = document.getElementById('actionBtn');
 
-            // اگر پنجره تایید باز نیست، آن را باز کن
             if (!details.classList.contains('active')) {
                 details.classList.add('active');
                 btn.innerText = orderType === 'delivery' ? 'تایید نهایی و پرداخت' : 'تایید و ثبت نهایی';
                 return;
             }
             
-            // اگر باز است، عملیات ثبت را انجام بده
             let desc = "";
             for(let id in cart) { const p = products.find(x=>x.id==id); if(p) { desc += `${p.t}(${cart[id]}) - `; } }
             const note = document.getElementById('userNote').value;
