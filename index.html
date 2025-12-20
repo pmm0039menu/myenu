@@ -7,6 +7,7 @@
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
+            /* متغیرهای پیش‌فرض برای عکس‌ها */
             --header-img: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&q=80');
             --bg-img: url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
         }
@@ -75,6 +76,7 @@
 
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         #lockScreen h2 { color: #e74c3c; margin-bottom: 15px; font-size: 2rem; }
+
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
@@ -99,7 +101,7 @@
     <div class="cat-scroll" id="cats"></div>
 
     <div class="menu-list" id="list">
-        <p style="text-align:center; color:#fff; margin-top:50px;" id="loadingText">در حال دریافت منو...</p>
+        <p style="text-align:center; color:#fff; margin-top:50px; text-shadow: 1px 1px 2px #000;" id="loadingText">در حال دریافت منو...</p>
     </div>
 
     <div class="dev-footer">
@@ -163,6 +165,7 @@
             if(settingsMap['ShopName']) {
                 config.name = settingsMap['ShopName'];
                 document.getElementById('shopName').innerText = config.name;
+                document.title = config.name;
             }
             if(settingsMap['HeaderImage']) document.documentElement.style.setProperty('--header-img', "url('" + settingsMap['HeaderImage'] + "')");
             if(settingsMap['BgImage']) document.documentElement.style.setProperty('--bg-img', "url('" + settingsMap['BgImage'] + "')");
@@ -230,7 +233,7 @@
             const items = cat === 'all' ? products : products.filter(x => x.c === cat);
             items.forEach(x => {
                 const count = cart[x.id] || 0;
-                let btnHtml = !x.active ? `<span style="color:#e74c3c;">ناموجود</span>` 
+                let btnHtml = !x.active ? `<span style="color:#e74c3c; border:1px solid; padding:3px;">ناموجود</span>` 
                     : (count === 0 ? `<div class="add-btn" onclick="upd(${x.id}, 1)">افزودن</div>` 
                     : `<div class="qty-box show"><div class="q-btn" onclick="upd(${x.id}, 1)">+</div><div class="q-num">${count}</div><div class="q-btn" onclick="upd(${x.id}, -1)">-</div></div>`);
                 list.innerHTML += `<div class="item ${!x.active ? 'inactive' : ''}"><img src="${x.i}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1170/1170576.png'"><div class="info"><h3>${x.t}</h3><div style="display:flex; justify-content:space-between; margin-top:5px; align-items:center;"><span class="price">${x.p.toLocaleString()}</span>${btnHtml}</div></div></div>`;
@@ -239,7 +242,7 @@
         }
 
         window.filter = (cat, el) => { document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active')); el.classList.add('active'); render(cat); };
-        window.upd = (id, n) => { if(!config.isOpen) return alert('بسته است.'); cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; calcTotal(); render(document.querySelector('.cat-btn.active').innerText === 'همه' ? 'all' : document.querySelector('.cat-btn.active').innerText); };
+        window.upd = (id, n) => { if(!config.isOpen) return alert('بسته است.'); cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; calcTotal(); const active = document.querySelector('.cat-btn.active'); render(active && active.innerText !== 'همه' ? active.innerText : 'all'); };
         window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); document.getElementById('actionBtn').innerText = 'مشاهده سفارش و تایید'; };
 
         function calcTotal() {
@@ -289,7 +292,6 @@
                 if(!ph || !ad) return alert('تلفن و آدرس الزامی است.');
                 let total = 0; for(let id in cart) { const p = products.find(x=>x.id==id); if(p) total += p.p * cart[id]; }
                 const finalAmount = total + config.deliveryPrice;
-                // پیام هشدار اسکرین‌شات بازگردانی شد
                 const confirmMsg = `مبلغ قابل پرداخت: ${finalAmount.toLocaleString()} تومان\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
                 if(confirm(confirmMsg)) {
                     let payUrl = config.paymentLink;
