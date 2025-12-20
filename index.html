@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Menu</title>
+    <title>Online Menu</title>
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
@@ -11,17 +11,11 @@
             --bg-img: url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; }
-        body { 
-            background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img);
-            background-size: cover; background-attachment: fixed; background-position: center;
-            color:var(--text); padding-bottom:120px; user-select: none; 
-        }
-        header { 
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img);
-            background-size: cover; background-position: center;
-            padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); 
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
-        }
+        body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:120px; user-select: none; }
+        
+        header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        
+        /* دکمه‌های تغییر زبان */
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 101; }
         .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
         .lang-btn.active { background: var(--primary); color: #000; }
@@ -30,46 +24,36 @@
         .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; }
         .open { background: #27ae60; color: #fff; }
         .closed { background: #c0392b; color: #fff; }
-        .sub-badge { position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; z-index: 1000; font-weight: bold; backdrop-filter: blur(5px); }
         
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: rgba(11, 11, 15, 0.8); backdrop-filter: blur(5px); }
-        .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; transition: 0.3s; }
+        .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; }
         .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
 
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: rgba(30, 30, 36, 0.9); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; }
         .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); background: #000; }
-        .info { flex: 1; }
-        .info h3 { font-size: 1rem; margin-bottom: 4px; }
         .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
         
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
-        .qty-box { display: none; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
-        .qty-box.show { display: flex; }
-        .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
-        .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
+        .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
+        .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
 
-        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; position: relative; }
+        .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
         .order-details.active { display: block; }
         .close-details { position: absolute; top: 15px; left: 15px; width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; border: 1px solid var(--primary); z-index: 10; }
 
         .type-selector { display: flex; gap: 10px; margin: 15px 0; }
         .type-btn { flex: 1; padding: 10px; background: #000; border: 1px solid #333; color: #888; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .type-btn.selected { background: var(--primary); color: #000; border-color: var(--primary); }
-
+        .type-btn.selected { background: var(--primary); color: #000; }
         .invoice-box { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-        .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; padding: 0 5px; color: #ccc; }
-        .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
-        
-        .summary-list { border-bottom: 1px solid #333; margin-bottom: 15px; padding-bottom: 10px; }
-        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; }
-        .summary-controls { flex: 1.5; display: flex; align-items: center; justify-content: center; gap: 8px; background: #000; border-radius: 6px; border: 1px solid #444; padding: 2px 5px; margin: 0 10px; }
-        .s-btn { color: var(--primary); font-weight: bold; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
+        .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; color: #ccc; }
+        .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; font-size: 1.1rem; }
+        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; }
 
         .input-group { margin-bottom: 10px; }
-        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; text-align: inherit; }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; }
 
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
+        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
         .dev-footer { text-align: center; margin-top: 40px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
@@ -78,27 +62,21 @@
         
         #lockScreen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .hidden { display: none !important; }
-
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
     <div class="lang-switch">
-        <div class="lang-btn active" id="btn-fa" onclick="setLanguage('fa')">FA</div>
-        <div class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</div>
-        <div class="lang-btn" id="btn-ar" onclick="setLanguage('ar')">AR</div>
+        <div class="lang-btn active" id="btn-fa" onclick="runAppInLang('fa')">FA</div>
+        <div class="lang-btn" id="btn-en" onclick="runAppInLang('en')">EN</div>
+        <div class="lang-btn" id="btn-ar" onclick="runAppInLang('ar')">AR</div>
     </div>
 
     <div id="lockScreen">
         <h2 id="lockTitle" style="color:#e74c3c">...</h2>
         <p id="lockMsg1">...</p><p id="lockMsg2">...</p>
-        <div class="dev-icons" style="margin-top:20px;">
-             <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-        </div>
     </div>
-
-    <div id="subBadge" class="sub-badge" style="display:none"></div>
 
     <header>
         <h1 id="shopName">...</h1>
@@ -106,93 +84,89 @@
     </header>
 
     <div class="cat-scroll" id="cats"></div>
-
-    <div class="menu-list" id="list">
-        <p style="text-align:center; color:#fff; margin-top:50px;" id="loadingText">...</p>
-    </div>
+    <div class="menu-list" id="list"><p style="text-align:center; color:#fff; padding-top:50px;" id="loadingText">...</p></div>
 
     <div class="dev-footer">
         <p class="dev-title" id="devTitle" style="color: #fff; font-weight: bold;">...</p>
         <div class="dev-icons">
-            <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="tel:09123456789"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+            <a href="https://t.me/YOUR_ID"><svg viewBox="0 0 24 24" width="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
             <a href="https://wa.me/989123456789"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
         </div>
     </div>
 
     <div class="order-details" id="orderDetails">
-        <div class="close-details" onclick="closeDetails()">✕</div>
-        <h3 id="reviewTitle" style="margin-bottom:10px; color:var(--primary); font-size:1rem; text-align:center;">...</h3>
-        <div id="summaryList" class="summary-list"></div>
+        <div class="close-details" onclick="closeOrderWindow()">✕</div>
+        <h3 id="reviewTitle" style="text-align:center; margin-bottom:15px; color:var(--primary);">...</h3>
+        <div id="summaryList"></div>
         <div class="type-selector">
-            <div class="type-btn selected" onclick="setOrderType('table')" id="btn-table">...</div>
-            <div class="type-btn" onclick="setOrderType('delivery')" id="btn-delivery">...</div>
+            <div class="type-btn selected" id="btn-table" onclick="setMode('table')">...</div>
+            <div class="type-btn" id="btn-delivery" onclick="setMode('delivery')">...</div>
         </div>
         <div class="invoice-box">
-            <div class="invoice-row"><span id="txtItemsTotal">...</span><span id="itemsTotal">0</span></div>
-            <div class="invoice-row" id="deliveryRow" style="display: none;"><span id="txtDelPrice">...</span><span id="deliveryPriceDisplay">0</span></div>
-            <div class="invoice-row highlight"><span id="txtFinal">...</span><span id="finalPayable">0</span></div>
+            <div class="invoice-row"><span id="txt-sub">...</span><span id="itemsTotal">0</span></div>
+            <div class="invoice-row" id="deliveryRow" style="display:none;"><span id="txt-courier">...</span><span id="deliveryPriceDisplay">0</span></div>
+            <div class="invoice-row highlight"><span id="txt-final">...</span><span id="finalPayable">0</span></div>
         </div>
-        <div class="input-group"><textarea id="userNote" placeholder=""></textarea></div>
-        <div id="form-table" class="input-group"><input type="number" id="tableNum" placeholder=""></div>
+        <div class="input-group"><textarea id="userNote"></textarea></div>
+        <div id="form-table" class="input-group"><input type="number" id="tableNum"></div>
         <div id="form-delivery" class="hidden">
-            <div class="input-group"><input type="tel" id="userPhone" placeholder=""></div>
-            <div class="input-group"><textarea id="address" placeholder=""></textarea></div>
+            <div class="input-group"><input type="tel" id="userPhone"></div>
+            <div class="input-group"><textarea id="address"></textarea></div>
         </div>
     </div>
 
-    <div class="cart-bar" id="cartBar" style="display:none">
-        <div class="final-btn" id="actionBtn" onclick="processOrder()">...</div>
-    </div>
+    <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="submitOrder()">...</div></div>
 
     <script>
-        const translations = {
+        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
+        const dictionary = {
             fa: {
-                open: "✅ باز است", closed: "⛔ بسته است", loading: "در حال دریافت منو...", all: "همه", add: "افزودن", out: "ناموجود",
-                review: "📋 بازبینی سفارش", table: "🍽️ سالن", delivery: "🛵 بیرون‌بر", total: "جمع اقلام:", courier: "هزینه پیک:",
-                payable: "قابل پرداخت:", note: "توضیحات سفارش (اختیاری)", tNum: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق برای ارسال",
-                viewBtn: "مشاهده سفارش و تایید", payBtn: "تایید نهایی و پرداخت", submitBtn: "تایید و ثبت نهایی", unit: "تومان", empty: "سبد خالی است",
-                confirm: "مبلغ: {amount} تومان\n\n⚠️ توجه:\nپس از پرداخت اسکرین‌شات بگیرید.\nآماده‌اید؟",
-                expireTitle: "پایان اشتراک ⚠️", expireMsg1: "مهلت تمام شده است.", expireMsg2: "جهت تمدید با پشتیبانی تماس بگیرید.", dev: "مجری طرح: گروه نرم‌افزاری مَجد"
+                dir: 'rtl', open: "✅ باز است", closed: "⛔ بسته است", loading: "در حال دریافت منو...", all: "همه", add: "افزودن", out: "ناموجود",
+                review: "📋 بازبینی سفارش", table: "🍽️ سالن", delivery: "🛵 بیرون‌بر", subtotal: "جمع اقلام:", courier: "هزینه پیک:",
+                payable: "قابل پرداخت:", note: "توضیحات سفارش (اختیاری)", tNum: "شماره میز", phone: "شماره تماس", addr: "آدرس دقیق",
+                viewBtn: "مشاهده سفارش و تایید", payBtn: "تایید و پرداخت آنلاین", submitBtn: "ثبت نهایی سفارش", unit: "تومان", empty: "سبد خالی است",
+                confirm: "مبلغ: {amount} تومان\nپس از پرداخت اسکرین‌شات بگیرید.\nآماده‌اید؟",
+                expireTitle: "پایان اشتراک ⚠️", expireMsg1: "اشتراک تمام شده است.", expireMsg2: "تماس با پشتیبانی.", dev: "گروه نرم‌افزاری مَجد"
             },
             en: {
-                open: "✅ Open", closed: "⛔ Closed", loading: "Loading Menu...", all: "All", add: "Add", out: "Out of Stock",
-                review: "📋 Review Order", table: "🍽️ Dine-in", delivery: "🛵 Delivery", total: "Subtotal:", courier: "Courier Fee:",
-                payable: "Total:", note: "Order notes (optional)", tNum: "Table Number", phone: "Phone Number", addr: "Full Address",
-                viewBtn: "View Order & Confirm", payBtn: "Confirm & Pay", submitBtn: "Confirm & Submit", unit: "Toman", empty: "Cart is Empty",
-                confirm: "Total: {amount} Toman\n\n⚠️ Note:\nPlease take a screenshot of receipt.\nProceed?",
-                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Developer: Majd Software Group"
+                dir: 'ltr', open: "✅ Open", closed: "⛔ Closed", loading: "Loading Menu...", all: "All", add: "Add", out: "Out of Stock",
+                review: "📋 Review Order", table: "🍽️ Table", delivery: "🛵 Delivery", subtotal: "Subtotal:", courier: "Courier Fee:",
+                payable: "Total:", note: "Notes (Optional)", tNum: "Table #", phone: "Phone", addr: "Address",
+                viewBtn: "View Order", payBtn: "Pay Now", submitBtn: "Submit Order", unit: "Toman", empty: "Empty Cart",
+                confirm: "Total: {amount} Toman\nPlease take a screenshot of receipt.\nProceed?",
+                expireTitle: "Expired ⚠️", expireMsg1: "Subscription ended.", expireMsg2: "Contact Support.", dev: "Majd Software Group"
             },
             ar: {
-                open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غیر متوفر",
-                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "رسوم التوصيل:",
-                payable: "الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "رقم الهاتف", addr: "العنوان بالتفصيل",
-                viewBtn: "عرض الطلب والتأكيد", payBtn: "تأكيد ودفع", submitBtn: "تأكيد الطلب", unit: "تومان", empty: "السلة فارغة",
+                dir: 'rtl', open: "✅ مفتوح", closed: "⛔ مغلق", loading: "جاري التحميل...", all: "الكل", add: "إضافة", out: "غیر متوفر",
+                review: "📋 مراجعة الطلب", table: "🍽️ صالة", delivery: "🛵 توصيل", total: "المجموع:", courier: "التوصيل:",
+                payable: "الإجمالي:", note: "ملاحظات (اختياري)", tNum: "رقم الطاولة", phone: "الهاتف", addr: "العنوان",
+                viewBtn: "عرض الطلب", payBtn: "تأكيد ودفع", submitBtn: "تأكيد الطلب", unit: "تومان", empty: "السلة فارغة",
                 confirm: "المبلغ: {amount} تومان\nيرجى تصوير الشاشة بعد الدفع.\nهل أنت مستعد؟",
-                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "المطور: مجموعة مجد للبرمجيات"
+                expireTitle: "انتهى الاشتراك ⚠️", expireMsg1: "انتهت الصلاحية.", expireMsg2: "اتصل بالدعم.", dev: "مجموعة مجد للبرمجيات"
             }
         };
 
-        let currentLang = 'fa', currentCat = 'all', products = [], cart = {}, config = { name: "...", isOpen: true, deliveryPrice: 0, phone: "" };
-        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
+        let currentLang = 'fa', currentCat = 'all';
+        let products = [], cart = {}, config = { isOpen: true, deliveryPrice: 0, phone: '', paymentLink: '' };
 
-        // تابع اصلی سوئیچ زبان که همه چیز را درجا بازسازی می‌کند
-        function setLanguage(lang) {
+        function runAppInLang(lang) {
             currentLang = lang;
-            const t = translations[lang];
+            const t = dictionary[lang];
+            const html = document.getElementById('mainHtml');
+            html.dir = t.dir;
+            html.lang = lang;
             
-            // ۱. تغییر جهت و دکمه‌ها
-            document.getElementById('mainHtml').dir = (lang === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
 
-            // ۲. ترجمه متون ایستا
+            // ترجمه همزمان تمام متن‌ها
             document.getElementById('loadingText').innerText = t.loading;
             document.getElementById('reviewTitle').innerText = t.review;
             document.getElementById('btn-table').innerText = t.table;
             document.getElementById('btn-delivery').innerText = t.delivery;
-            document.getElementById('txtItemsTotal').innerText = t.total;
-            document.getElementById('txtDelPrice').innerText = t.courier;
-            document.getElementById('txtFinal').innerText = t.payable;
+            document.getElementById('txt-sub').innerText = t.subtotal;
+            document.getElementById('txt-courier').innerText = t.courier;
+            document.getElementById('txt-final').innerText = t.payable;
             document.getElementById('userNote').placeholder = t.note;
             document.getElementById('tableNum').placeholder = t.tNum;
             document.getElementById('userPhone').placeholder = t.phone;
@@ -202,26 +176,23 @@
             document.getElementById('lockMsg1').innerText = t.expireMsg1;
             document.getElementById('lockMsg2').innerText = t.expireMsg2;
 
-            // ۳. ترجمه وضعیت فروشگاه
             const s = document.getElementById('shopStatus');
             s.innerText = config.isOpen ? t.open : t.closed;
             s.className = "status-badge " + (config.isOpen ? "open" : "closed");
 
-            // ۴. رندر مجدد کامل منو (برای تغییر کلمه افزودن)
-            if (products.length > 0) buildMenu(currentCat);
-            updateCartUI();
+            if (products.length > 0) renderMenu(currentCat);
         }
 
         async function startApp() {
             try {
-                const [menuRes, setRes] = await Promise.all([
+                const [mRes, sRes] = await Promise.all([
                     fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Menu&cb=${Date.now()}`),
                     fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Settings&cb=${Date.now()}`)
                 ]);
-                parseSettings(await setRes.text());
-                parseMenu(await menuRes.text());
-                setLanguage('fa');
-            } catch (e) { document.getElementById('list').innerHTML = "Check Internet / ID"; }
+                parseSettings(await sRes.text());
+                parseMenu(await mRes.text());
+                runAppInLang('fa');
+            } catch (e) { document.getElementById('list').innerHTML = "ERROR: Internet or Sheet ID"; }
         }
 
         function parseSettings(csv) {
@@ -234,9 +205,11 @@
                 if(r[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(r[1]) || 0;
                 if(r[0] === 'PaymentLink') config.paymentLink = r[1];
                 if(r[0] === 'IsOpen') config.isOpen = r[1].toUpperCase() !== 'FALSE';
-                if(r[0] === 'ExpireDate') checkExp(r[1]);
+                if(r[0] === 'ExpireDate') checkExpire(r[1]);
             });
         }
+
+        function checkExpire(d) { if(Math.ceil((new Date(d)-new Date())/86400000)<=0) { document.getElementById('lockScreen').style.display='flex'; document.body.style.overflow='hidden'; } }
 
         function parseMenu(csv) {
             const rows = csv.split('\n').slice(1);
@@ -246,57 +219,54 @@
             });
         }
 
-        function buildMenu(cat) {
+        function renderMenu(cat) {
             currentCat = cat;
-            const t = translations[currentLang], catsDiv = document.getElementById('cats'), list = document.getElementById('list');
+            const t = dictionary[currentLang], list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             const catSet = ['all', ...new Set(products.map(p => p.cat))];
             
-            catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="buildMenu('${c}')">${c==='all'?t.all:c}</div>`).join('');
+            catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="renderMenu('${c}')">${c==='all'?t.all:c}</div>`).join('');
             list.innerHTML = '';
             
             products.filter(p => cat === 'all' || p.cat === cat).forEach(p => {
                 const count = cart[p.id] || 0;
-                const btn = !p.active ? `<span style="color:#e74c3c;">${t.out}</span>` : 
-                    (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${t.add}</div>` : 
-                    `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span style="padding:0 5px">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
-                list.innerHTML += `<div class="item"><img src="${p.img}"><div class="info"><h3>${p.t}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()}</span>${btn}</div></div></div>`;
+                const btn = !p.active ? `<span style="color:#e74c3c;">${t.out}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${t.add}</div>` : `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span style="padding:0 8px">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.t}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()}</span>${btn}</div></div></div>`;
             });
+            calcTotal();
         }
 
-        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; buildMenu(currentCat); };
-
-        function updateCartUI() {
-            let total = 0, count = 0, sumHtml = '', t = translations[currentLang];
+        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
+        
+        function calcTotal() {
+            let total = 0, count = 0, sumHtml = '', t = dictionary[currentLang];
             for(let id in cart) { 
                 const p = products[id]; total += p.p * cart[id]; count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.t}</span><div class="summary-controls"><div class="s-btn" onclick="upd(${id},-1)">-</div><span>${cart[id]}</span><div class="s-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
+                sumHtml += `<div class="summary-item"><span>${p.t}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span style="padding:0 10px">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
             const final = isDel ? total + config.deliveryPrice : total;
-            
-            document.getElementById('summaryList').innerHTML = sumHtml || `<p style="text-align:center;opacity:0.5;padding:10px;">${t.empty}</p>`;
             document.getElementById('itemsTotal').innerText = total.toLocaleString();
             document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + t.unit;
+            document.getElementById('summaryList').innerHTML = sumHtml || `<p style="text-align:center;opacity:0.5;padding:10px;">${t.empty}</p>`;
             
             const bar = document.getElementById('cartBar'), details = document.getElementById('orderDetails');
-            bar.style.display = count > 0 ? 'flex' : 'none';
-            if(!details.classList.contains('active')) document.getElementById('actionBtn').innerText = t.viewBtn;
-            else document.getElementById('actionBtn').innerText = isDel ? t.payBtn : t.submitBtn;
+            bar.style.display = count > 0 ? 'block' : 'none';
+            document.getElementById('actionBtn').innerText = !details.classList.contains('active') ? t.viewBtn : (isDel ? t.payBtn : t.submitBtn);
         }
 
-        window.setOrderType = (type) => {
+        window.setMode = (type) => {
             document.getElementById('btn-table').classList.toggle('selected', type === 'table');
             document.getElementById('btn-delivery').classList.toggle('selected', type === 'delivery');
             document.getElementById('form-table').classList.toggle('hidden', type !== 'table');
             document.getElementById('form-delivery').classList.toggle('hidden', type !== 'delivery');
             document.getElementById('deliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
-            updateCartUI();
+            calcTotal();
         };
 
-        window.processOrder = () => {
-            const t = translations[currentLang]; if(!config.isOpen) return;
+        window.submitOrder = () => {
+            const t = dictionary[currentLang]; if(!config.isOpen) return;
             const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); updateCartUI(); return; }
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
             
             let desc = ""; for(let id in cart) desc += `${products[id].t}(${cart[id]}) - `;
             if(document.getElementById('btn-table').classList.contains('selected')) {
@@ -310,8 +280,7 @@
             }
         };
 
-        function checkExp(d) { if(Math.ceil((new Date(d)-new Date())/86400000)<=0) { document.getElementById('lockScreen').style.display='flex'; document.body.style.overflow='hidden'; } }
-        window.closeDetails = () => { document.getElementById('orderDetails').classList.remove('active'); updateCartUI(); };
+        window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
 
         startApp();
     </script>
