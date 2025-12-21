@@ -125,14 +125,15 @@
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
                 sRows.forEach(r => {
-                    let k = (r[0] || "").trim();
-                    let v = (r[1] || "").trim();
-                    if(k === 'Phone') config.phone = v;
-                    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
-                    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
-                    // اصلاحیه: خواندن لینک درگاه
-                    if(k === 'PaymentLink') config.paymentLink = v;
-                });
+    let k = (r[0] || "").trim();
+    let v = (r[1] || "").trim();
+    if(k === 'Phone') config.phone = v;
+    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
+    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
+    
+    // این خط بسیار مهم است و باید حتماً باشد تا لینک از اکسل خوانده شود:
+    if(k === 'PaymentLink') config.paymentLink = v; 
+});
 
                 mRows.slice(1).forEach((r, i) => {
                     if(r.length < 7) return;
@@ -216,36 +217,50 @@
         };
 
         window.processOrder = () => {
-            const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+    const det = document.getElementById('orderDetails');
+    if (!det.classList.contains('active')) { 
+        det.classList.add('active'); 
+        calcTotal(); 
+        return; 
+    }
+    
+    let desc = ""; 
+    let finalPrice = 0;
+    for(let id in cart) {
+        desc += `${products[id].title[curLang]}(${cart[id]}) - `;
+        finalPrice += products[id].p * cart[id];
+    }
+    
+    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+    
+    if(!isDel) {
+        // سفارش سالن
+        const n = document.getElementById('tableNum').value || "0";
+        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+    } else {
+        // سفارش بیرون‌بر
+        const totalText = document.getElementById('finalPayable').innerText;
+        const msg = getT('confirmMsg').replace('{amount}', totalText).replace(/\\n/g, '\n');
+        
+        if(confirm(msg)) {
+            finalPrice += config.deliveryPrice;
             
-            let desc = ""; 
-            let finalPrice = 0;
-            for(let id in cart) {
-                desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-                finalPrice += products[id].p * cart[id];
-            }
+            // دریافت لینک درگاه
+            let payUrl = config.paymentLink;
             
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            
-            if(!isDel) {
-                const n = document.getElementById('tableNum').value || "0";
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
-            } else {
-                const totalText = document.getElementById('finalPayable').innerText;
-                const msg = getT('confirmMsg').replace('{amount}', totalText).replace(/\\n/g, '\n');
-                
-                if(confirm(msg)) {
-                    finalPrice += config.deliveryPrice;
-                    let payUrl = config.paymentLink;
-                    if(payUrl && payUrl.includes('idpay.ir')) {
-                        payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
-                    }
-                    if(payUrl) window.location.href = payUrl;
-                    else alert("لینک درگاه تنظیم نشده است.");
+            if(payUrl && payUrl.length > 5) {
+                // اگر درگاه آیدی‌پی است، مبلغ را اضافه کن
+                if(payUrl.includes('idpay.ir')) {
+                    payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
                 }
+                window.location.href = payUrl;
+            } else {
+                // اگر هنوز خطا می‌دهد، یعنی لینک از اکسل خوانده نشده است
+                alert("خطا: لینک درگاه در شیت Settings پیدا نشد. مطمئن شوید کلمه PaymentLink دقیقاً نوشته شده است.");
             }
-        };
+        }
+    }
+};
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
         startApp();
