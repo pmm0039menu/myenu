@@ -116,32 +116,39 @@
         let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'' };
 
         async function startApp() {
-            try {
-                const fetchCsv = async (sheet) => {
-                    const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
-                    const text = await r.text();
-                    return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
-                };
-                const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
-                
-                sRows.forEach(r => {
-                    let k = r[0] ? r[0].toString().trim() : "";
-                    let v = r[1] ? r[1].toString().trim() : "";
-                    if(k === 'Phone') config.phone = v;
-                    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
-                    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
-                    if(k === 'PaymentLink') config.paymentLink = v; // اتصال قطعی لینک پرداخت
-                });
+    try {
+        const fetchCsv = async (sheet) => {
+            // اضافه کردن یک عدد تصادفی برای جلوگیری از خواندن نسخه قدیمی (Cache)
+            const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Math.random()}`);
+            const text = await r.text();
+            return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+        };
+        const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
+        
+        console.log("داده‌های دریافت شده از Settings:", sRows); // این خط برای عیب‌یابی است
 
-                mRows.slice(1).forEach((r, i) => {
-                    if(r.length < 7) return;
-                    products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
-                });
+        sRows.forEach(r => {
+            let k = (r[0] || "").toString().toLowerCase().trim(); // تبدیل به حروف کوچک برای مقایسه راحت‌تر
+            let v = (r[1] || "").toString().trim();
+            
+            if(k === 'phone') config.phone = v;
+            if(k === 'deliveryprice') config.deliveryPrice = parseInt(v) || 0;
+            if(k === 'isopen') config.isOpen = v.toUpperCase() !== 'FALSE';
+            
+            // بررسی منعطف برای لینک پرداخت
+            if(k.includes('paymentlink')) {
+                config.paymentLink = v;
+                console.log("لینک پرداخت با موفقیت ذخیره شد:", v);
+            }
+        });
 
-                tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
-                setLang('fa');
-            } catch (e) { console.error(e); }
-        }
+        tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
+        setLang('fa');
+    } catch (e) { 
+        console.error("خطا در بارگذاری اطلاعات:", e);
+        alert("خطا در اتصال به گوگل‌شیت. لطفاً اینترنت و دسترسی شیت را چک کنید.");
+    }
+}
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
 
@@ -210,44 +217,41 @@
         };
 
         window.processOrder = () => {
-            const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+    const det = document.getElementById('orderDetails');
+    if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+    
+    let desc = ""; 
+    let finalPrice = 0;
+    for(let id in cart) {
+        desc += `${products[id].title[curLang]}(${cart[id]}) - `;
+        finalPrice += products[id].p * cart[id];
+    }
+    
+    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+    
+    if(!isDel) {
+        const n = document.getElementById('tableNum').value || "0";
+        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+    } else {
+        const totalText = document.getElementById('finalPayable').innerText;
+        let msg = getT('confirmMsg').replace('{amount}', totalText).replace(/\\n/g, '\n');
+        
+        if(confirm(msg)) {
+            finalPrice += config.deliveryPrice;
+            let payUrl = config.paymentLink;
             
-            let desc = ""; 
-            let finalPrice = 0;
-            for(let id in cart) {
-                desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-                finalPrice += products[id].p * cart[id];
-            }
-            
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            
-            if(!isDel) {
-                const n = document.getElementById('tableNum').value || "0";
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
-            } else {
-                const totalText = document.getElementById('finalPayable').innerText;
-                
-                // اصلاح پیام تایید: تبدیل \\n به خط جدید (Enter)
-                let msg = getT('confirmMsg').replace('{amount}', totalText);
-                msg = msg.replace(/\\n/g, '\n'); 
-                
-                if(confirm(msg)) {
-                    finalPrice += config.deliveryPrice;
-                    let payUrl = config.paymentLink;
-                    
-                    if(payUrl && payUrl.length > 5) {
-                        if(payUrl.includes('idpay.ir')) {
-                            // تبدیل مبلغ به ریال (اضافه کردن صفر اگر در شیت به تومان است)
-                            payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
-                        }
-                        window.location.href = payUrl;
-                    } else {
-                        alert("خطا: لینک درگاه در شیت Settings پیدا نشد. مطمئن شوید کلمه PaymentLink دقیقاً در ستون A نوشته شده است.");
-                    }
+            // اگر لینک وجود داشت (حتی کوتاه)
+            if(payUrl && payUrl.length > 5) {
+                if(payUrl.includes('idpay.ir')) {
+                    payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
                 }
+                window.location.href = payUrl;
+            } else {
+                alert("لینک درگاه یافت نشد. مقدار ذخیره شده: " + payUrl);
             }
-        };
+        }
+    }
+};
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
         startApp();
