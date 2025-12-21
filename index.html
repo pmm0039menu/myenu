@@ -4,112 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>فست فود سیب - منوی آنلاین</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { 
-            --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; 
+            --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60;
             --header-img: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1000&q=80');
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-        /* صفحه ورود و اسکن */
-        #welcome-screen { position: fixed; inset: 0; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), var(--header-img); background-size: cover; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .welcome-box { background: rgba(30, 30, 36, 0.95); padding: 30px; border-radius: 20px; border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(211, 173, 127, 0.3); width: 100%; max-width: 350px; }
-        .welcome-box h2 { color: var(--primary); margin-bottom: 15px; }
-        .welcome-box p { font-size: 0.9rem; margin-bottom: 25px; line-height: 1.6; }
-
-        /* دکمه‌های ورود */
-        .entry-btn { width: 100%; padding: 15px; margin-bottom: 10px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; color: white; }
-        .btn-qr { background: #8e44ad; }
-        .btn-nfc { background: var(--blue); }
-        .entry-btn svg { width: 20px; height: 20px; fill: white; }
-
-        /* کانتینر اصلی منو (در ابتدا مخفی) */
-        #main-content { display: none; padding-bottom: 100px; }
-
-        /* استایل‌های قبلی منو */
-        header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; padding: 40px 20px; text-align: center; border-bottom: 3px solid var(--primary); }
-        .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; position: sticky; top: 0; z-index: 100; }
-        .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; }
+        body { background: #13131a; color: #fff; padding-bottom: 100px; }
+        header { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), var(--header-img); background-size: cover; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); }
+        .table-banner { background: var(--primary); color: #000; padding: 5px; font-weight: bold; text-align: center; font-size: 0.8rem; }
+        .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: #0b0b0f; sticky; top: 0; z-index: 100; }
+        .cat-btn { background: #1e1e24; color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; }
         .cat-btn.active { background: var(--primary); color: #000; font-weight: bold; }
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; }
-        .item { background: var(--card); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; border: 1px solid #2a2a35; }
+        .item { background: #1e1e24; border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; border: 1px solid #2a2a35; }
         .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); }
         .price { color: var(--primary); font-weight: bold; }
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; cursor: pointer; }
         .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
         .q-btn { width: 30px; text-align: center; cursor: pointer; color: var(--primary); font-size: 1.2rem; }
         .q-num { width: 25px; text-align: center; font-weight: bold; }
-
-        /* اسکنر */
-        #qr-reader-container { display: none; position: fixed; inset: 0; background: #000; z-index: 6000; flex-direction: column; align-items: center; justify-content: center; }
-        #qr-reader { width: 90%; max-width: 400px; border-radius: 15px; overflow: hidden; }
-
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; display: none; border-top: 1px solid #333; }
+        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; display: none; border-top: 1px solid #333; z-index: 1000; }
         .final-btn { background: var(--green); color: white; padding: 12px; border-radius: 12px; text-align: center; font-weight: bold; cursor: pointer; }
-
-        .order-details { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); padding: 20px; border-radius: 20px 20px 0 0; display: none; z-index: 1000; border-top: 2px solid var(--primary); }
-        .order-details.active { display: block; }
+        .order-details { position: fixed; inset: 0; background: rgba(0,0,0,0.9); padding: 20px; display: none; z-index: 2000; flex-direction: column; justify-content: center; }
+        .order-details.active { display: flex; }
+        .invoice-card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="welcome-screen">
-        <div class="welcome-box">
-            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=100" style="width: 80px; border-radius: 50%; margin-bottom: 10px; border: 2px solid var(--primary);">
-            <h2>خوش آمدید</h2>
-            <p>لطفاً برای مشاهده منو و ثبت سفارش، کد روی میز را اسکن کنید.</p>
-            
-            <button class="entry-btn btn-qr" onclick="startQrScan()">
-                <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4zm2 2v2h2V6H6zm8-2h6v6h-6V4zm2 2v2h2V6h-2zM4 14h6v6H4v-6zm2 2v2h2v-2H6zm10 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0 4h2v2h-2v-2zm-2 2h2v-2h-2v2zm0-4h-2v2h2v-2zm0-2h-2v2h2v-2z"/></svg>
-                اسکن QR کد میز
-            </button>
-            
-            <button class="entry-btn btn-nfc" onclick="readNfcTag()">
-                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.28c-.6.35-1 .98-1 1.72 0 1.1.9 2 2 2s2-.9 2-2c0-.74-.4-1.38-1-1.72V8h3v8H8V8h2V6H6v12h12V6z"/></svg>
-                اسکن با NFC
-            </button>
-        </div>
-    </div>
+    <div id="tableNotify" class="table-banner" style="display:none;"></div>
 
-    <div id="qr-reader-container">
-        <div id="qr-reader"></div>
-        <button onclick="stopQrScan()" style="margin-top:20px; background:red; color:white; border:none; padding:10px 20px; border-radius:8px;">انصراف</button>
-    </div>
+    <header>
+        <h1 id="shopName">فست فود سیب</h1>
+    </header>
 
-    <div id="main-content">
-        <header>
-            <h1 id="shopName">فست فود سیب</h1>
-            <div id="tableIndicator" style="background: var(--primary); color: #000; display: inline-block; padding: 5px 15px; border-radius: 10px; margin-top: 10px; font-weight: bold;">میز شناسایی نشده</div>
-        </header>
+    <div class="cat-scroll" id="cats"></div>
+    <div class="menu-list" id="list"></div>
 
-        <div class="cat-scroll" id="cats"></div>
-        <div class="menu-list" id="list"></div>
-
-        <div class="cart-bar" id="cartBar">
-            <div class="final-btn" onclick="toggleOrderDetails()">مشاهده سبد و ثبت نهایی</div>
-        </div>
+    <div class="cart-bar" id="cartBar">
+        <div class="final-btn" onclick="toggleOrderDetails()">مشاهده فاکتور و پرداخت</div>
     </div>
 
     <div class="order-details" id="orderDetails">
-        <h3 style="text-align:center; color:var(--primary); margin-bottom:15px;">فاکتور سفارش</h3>
-        <div id="summaryList"></div>
-        <button class="final-btn" style="width:100%; margin-top:15px;" onclick="processOrder()">تایید و پرداخت</button>
-        <button onclick="toggleOrderDetails()" style="width:100%; margin-top:10px; background:none; color:#888; border:none;">بازگشت</button>
+        <div class="invoice-card">
+            <h3 style="text-align:center; color:var(--primary); margin-bottom:15px;">فاکتور نهایی</h3>
+            <div id="summaryList"></div>
+            <hr style="margin:15px 0; border:0; border-top:1px solid #444;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:20px;">
+                <span>جمع فاکتور:</span>
+                <span id="totalDisplay">0</span>
+            </div>
+            <button class="final-btn" style="width:100%;" onclick="processOrder()">پرداخت آنلاین (در تب جدید)</button>
+            <button onclick="toggleOrderDetails()" style="width:100%; margin-top:10px; background:none; color:#888; border:none;">انصراف</button>
+        </div>
     </div>
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        let products = [], cart = {}, config = { paymentLink: '', tableNum: '' };
-        let html5QrCode;
+        let products = [], cart = {}, config = { paymentLink: '', tableNum: '', phone: '' };
 
         async function startApp() {
             try {
-                // ۱. بررسی پارامتر URL (اگر مشتری مستقیم با اسکن دوربین گوشی وارد شده باشد)
+                // ۱. تشخیص خودکار میز از لینک (نیاز به اسکن مجدد داخل سایت نیست)
                 const urlParams = new URLSearchParams(window.location.search);
                 const table = urlParams.get('table');
-                if(table) unlockMenu(table);
+                if(table) {
+                    config.tableNum = table;
+                    const notify = document.getElementById('tableNotify');
+                    notify.style.display = 'block';
+                    notify.innerText = "شما در حال سفارش برای میز شماره " + table + " هستید.";
+                }
 
                 // ۲. دریافت اطلاعات از گوگل شیت
                 const fetchRaw = async (sheet) => {
@@ -118,11 +83,14 @@
                 };
                 const [mText, sText] = await Promise.all([fetchRaw('Menu'), fetchRaw('Settings')]);
                 
-                // استخراج لینک پرداخت
+                // ۳. ردیاب هوشمند لینک پرداخت (حل مشکل فرمت اکسل)
                 const paymentMatch = sText.match(/https:\/\/idpay\.ir\/[^\s,\"]+/);
                 if (paymentMatch) config.paymentLink = paymentMatch[0];
 
-                // پردازش محصولات
+                const sRows = sText.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+                sRows.forEach(r => { if(r[0]?.toLowerCase().includes('phone')) config.phone = r[1]; });
+
+                // ۴. پردازش محصولات
                 mText.split(/\r?\n/).slice(1).forEach((row, i) => {
                     const r = row.split(',').map(c => c.replace(/"/g,'').trim());
                     if(r.length < 7) return;
@@ -130,58 +98,17 @@
                 });
 
                 renderMenu('همه');
-            } catch (e) { console.error(e); }
-        }
-
-        function unlockMenu(tableId) {
-            config.tableNum = tableId;
-            document.getElementById('welcome-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            document.getElementById('tableIndicator').innerText = "شماره میز شما: " + tableId;
-        }
-
-        // --- اسکن QR ---
-        function startQrScan() {
-            document.getElementById('qr-reader-container').style.display = 'flex';
-            html5QrCode = new Html5Qrcode("qr-reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
-                let table = text;
-                if(text.includes('table=')) table = new URL(text).searchParams.get('table');
-                unlockMenu(table);
-                stopQrScan();
-            });
-        }
-        function stopQrScan() {
-            if(html5QrCode) html5QrCode.stop().then(() => { document.getElementById('qr-reader-container').style.display = 'none'; });
-        }
-
-        // --- اسکن NFC ---
-        async function readNfcTag() {
-            if ('NDEFReader' in window) {
-                try {
-                    const ndef = new NDEFReader();
-                    await ndef.scan();
-                    alert("گوشی را به تگ نزدیک کنید...");
-                    ndef.onreading = event => {
-                        const decoder = new TextDecoder();
-                        for (const record of event.message.records) {
-                            const data = decoder.decode(record.data);
-                            unlockMenu(data);
-                        }
-                    };
-                } catch (e) { alert("خطا: " + e); }
-            } else { alert("NFC در این مرورگر پشتیبانی نمی‌شود (از QR استفاده کنید)."); }
+            } catch (e) { console.error("Error:", e); }
         }
 
         function renderMenu(cat) {
             const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             const catSet = ['همه', ...new Set(products.map(p => p.cat))];
             catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${cat===c?'active':''}" onclick="renderMenu('${c}')">${c}</div>`).join('');
-            
             list.innerHTML = '';
             products.filter(p => cat === 'همه' || p.cat === cat).forEach(p => {
                 const count = cart[p.id] || 0;
-                const btn = !p.active ? `<span style="color:red">تمام شد</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">افزودن</div>` : `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
+                const btn = !p.active ? `<span style="color:red">ناموجود</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">افزودن</div>` : `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
                 list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title}</h3><div style="display:flex;justify-content:space-between;align-items:center;"><span class="price">${p.p.toLocaleString()}</span>${btn}</div></div></div>`;
             });
         }
@@ -199,19 +126,21 @@
             let total = 0, html = '';
             for(let id in cart) {
                 const p = products[id]; total += p.p * cart[id];
-                html += `<div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.9rem;"><span>${p.title} (${cart[id]} عدد)</span><span>${(p.p*cart[id]).toLocaleString()}</span></div>`;
+                html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span>${p.title} (${cart[id]})</span><span>${(p.p*cart[id]).toLocaleString()}</span></div>`;
             }
-            document.getElementById('summaryList').innerHTML = html + `<hr style="margin:10px 0; border:0; border-top:1px solid #444;"><div style="display:flex;justify-content:space-between;font-weight:bold;color:var(--primary);"><span>جمع کل:</span><span>${total.toLocaleString()} تومان</span></div>`;
+            document.getElementById('summaryList').innerHTML = html;
+            document.getElementById('totalDisplay').innerText = total.toLocaleString() + " تومان";
         }
 
         window.processOrder = () => {
             let total = 0; for(let id in cart) total += products[id].p * cart[id];
-            // هدایت به درگاه پرداخت در صفحه جدید
+            // ۱. باز کردن درگاه پرداخت در تب جدید
             const finalUrl = config.paymentLink + (config.paymentLink.includes('?') ? '&' : '?') + "amount=" + total + "0";
             window.open(finalUrl, '_blank');
-            // ارسال پیام به واتس‌اپ فروشگاه برای اطلاع از سفارش میز
+            // ۲. ارسال پیام سفارش به واتس‌اپ برای میز مشخص شده
             let d = ""; for(let id in cart) d += `${products[id].title}(${cart[id]}) - `;
-            window.open(`https://wa.me/9105710039?text=${encodeURIComponent("سفارش میز " + config.tableNum + ": " + d)}`, '_blank');
+            const tableStr = config.tableNum ? "میز " + config.tableNum : "بیرون‌بر";
+            window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent("سفارش جدید " + tableStr + ": " + d)}`, '_blank');
         };
 
         startApp();
