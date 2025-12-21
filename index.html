@@ -212,26 +212,37 @@
         };
 
         window.processOrder = () => {
-            const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
-            
-            let desc = ""; for(let id in cart) desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            
-            if(!isDel) {
-                // سفارش سالن: مستقیم به واتس‌اپ
-                const n = document.getElementById('tableNum').value || "0";
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
-            } else {
-                // سفارش بیرون‌بر: نمایش پیام تایید هوشمند
-                const totalText = document.getElementById('finalPayable').innerText;
-                const msg = getT('confirmMsg').replace('{amount}', totalText);
-                
-                if(confirm(msg)) {
-                    window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('delivery') + ": " + desc)}`);
-                }
-            }
-        };
+    const det = document.getElementById('orderDetails');
+    // اگر پنجره بازبینی باز نیست، آن را باز کن
+    if (!det.classList.contains('active')) { 
+        det.classList.add('active'); 
+        calcTotal(); 
+        return; 
+    }
+    
+    let desc = ""; 
+    for(let id in cart) desc += `${products[id].title[curLang]}(${cart[id]}) - `;
+    
+    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+    
+    if(!isDel) {
+        // سفارش سالن: ارسال مستقیم به واتس‌اپ
+        const n = document.getElementById('tableNum').value || "0";
+        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+    } else {
+        // سفارش بیرون‌بر: نمایش پیام تایید هوشمند و اصلاح خط‌های جدید
+        const totalText = document.getElementById('finalPayable').innerText;
+        
+        // این همان خطی است که مشکل \n را حل می‌کند:
+        const msg = getT('confirmMsg')
+                    .replace('{amount}', totalText)
+                    .replace(/\\n/g, '\n'); // تبدیل متن \n به اینتر واقعی
+        
+        if(confirm(msg)) {
+            window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('delivery') + ": " + desc)}`);
+        }
+    }
+};
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
         startApp();
