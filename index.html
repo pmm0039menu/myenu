@@ -120,13 +120,13 @@
                 const fetchCsv = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
                     const text = await r.text();
-                    // اصلاح مهم: جدا کردن سطرها با رگکس برای حذف کاراکترهای مخفی \r
-                    return text.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+                    return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
                 
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
-                sRows.forEach((r) => {
+                // بر اساس سطر فیزیکی 5 (ایندکس 4 در برنامه نویسی)
+                sRows.forEach((r, index) => {
                     if (r.length < 2) return;
                     let k = (r[0] || "").toString().toLowerCase().trim();
                     let v = (r[1] || "").toString().trim();
@@ -135,14 +135,11 @@
                     if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
                     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
                     
-                    // منطق هوشمند: اگر کلمه شامل payment بود و شامل image نبود
-                    if(k.includes('payment') && !k.includes('image')) {
+                    // اصلاح نهایی: فقط از سطر 5 در شیت ستینگز لینک را بخوان
+                    if(index === 4) {
                         config.paymentLink = v;
                     }
                 });
-
-                // تایید دریافت لینک برای اطمینان شما (می‌توانید بعداً این خط را پاک کنید)
-                if(config.paymentLink) console.log("لینک پرداخت شناسایی شد: " + config.paymentLink);
 
                 mRows.slice(1).forEach((r, i) => {
                     if(r.length < 7) return;
