@@ -15,8 +15,8 @@
         header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
 
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 1001; }
-        .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; }
-        .lang-btn.active { background: var(--primary); color: #000; font-weight: bold; }
+        .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        .lang-btn.active { background: var(--primary); color: #000; }
 
         header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 5px; }
         .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; }
@@ -32,7 +32,7 @@
         
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
-        .q-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
+        .q-btn { width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; color: var(--primary); }
         .q-num { width: 25px; text-align: center; font-weight: bold; font-size: 1rem; }
 
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
@@ -56,7 +56,7 @@
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
-        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 130px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
+        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 100px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
@@ -75,8 +75,8 @@
     </div>
 
     <div id="lockScreen">
-        <h2 style="color:#e74c3c">پایان اشتراک ⚠️</h2>
-        <p>لطفاً جهت تمدید تماس بگیرید.</p>
+        <h2 id="lockTitle" style="color:#e74c3c">پایان اشتراک ⚠️</h2>
+        <p id="lockMsg"></p>
     </div>
 
     <header>
@@ -131,16 +131,17 @@
                 };
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
+                // پارس دقیق تنظیمات برای جلوگیری از undefined شدن نام
                 sRows.forEach(r => {
                     let k = (r[0] || "").trim();
                     let v = (r[1] || "").trim();
                     if(k === 'ShopName_fa') config.names.fa = v;
-                    else if(k === 'ShopName_en') config.names.en = v;
-                    else if(k === 'ShopName_ar') config.names.ar = v;
-                    else if(k === 'Phone') config.phone = v;
-                    else if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
-                    else if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
-                    else if(k === 'ExpireDate') { if(new Date(v) < new Date()) document.getElementById('lockScreen').style.display='flex'; }
+                    if(k === 'ShopName_en') config.names.en = v;
+                    if(k === 'ShopName_ar') config.names.ar = v;
+                    if(k === 'Phone') config.phone = v;
+                    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
+                    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
+                    if(k === 'ExpireDate') { if(new Date(v) < new Date()) document.getElementById('lockScreen').style.display='flex'; }
                 });
 
                 mRows.slice(1).forEach((r, i) => {
@@ -149,6 +150,8 @@
                 });
 
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
+                
+                // اجرای زبان اول بعد از اتمام پارس داده‌ها
                 setLang('fa');
             } catch (e) { console.error(e); }
         }
@@ -160,8 +163,9 @@
             document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
 
-            // نمایش نام فروشگاه با اولویت زبان انتخابی
-            document.getElementById('shopName').innerText = config.names[l] || config.names.fa || "Apple Fast Food";
+            // حل قطعی مشکل نام فروشگاه
+            const nameToDisplay = config.names[l] || config.names.fa || "فست فود سیب";
+            document.getElementById('shopName').innerText = nameToDisplay;
             
             document.getElementById('revTitle').innerText = getT('review');
             document.getElementById('btn-table').innerText = getT('table');
@@ -176,7 +180,7 @@
             s.innerText = config.isOpen ? getT('open') : getT('closed');
             s.className = "status-badge " + (config.isOpen ? "open" : "closed");
 
-            renderMenu(currentCat);
+            renderMenu('all');
         }
 
         function renderMenu(cat) {
@@ -204,7 +208,7 @@
             let total = 0, count = 0, sumHtml = '';
             for(let id in cart) { 
                 const p = products[id]; total += p.p * cart[id]; count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="summary-controls"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
+                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
             const final = isDel ? total + config.deliveryPrice : total;
