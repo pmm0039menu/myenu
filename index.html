@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>فست فود سیب - منوی آنلاین</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
@@ -13,6 +14,19 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:150px; user-select: none; }
         header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+
+        /* دکمه‌های اسکن */
+        .scan-group { display: flex; gap: 8px; margin-top: 10px; }
+        .nfc-btn, .qr-btn { flex: 1; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: bold; }
+        .nfc-btn { background: var(--blue); }
+        .qr-btn { background: #8e44ad; }
+        .scan-group svg { width: 16px; height: 16px; fill: white; }
+
+        /* استایل اسکنر QR */
+        #qr-reader-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #qr-reader { width: 100%; max-width: 400px; border: 2px solid var(--primary); border-radius: 15px; overflow: hidden; }
+        .close-scanner { margin-top: 20px; background: #c0392b; color: white; padding: 10px 30px; border-radius: 8px; cursor: pointer; }
+
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 1001; }
         .lang-btn { background: rgba(0,0,0,0.7); border: 1px solid var(--primary); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; }
         .lang-btn.active { background: var(--primary); color: #000; font-weight: bold; }
@@ -39,15 +53,10 @@
         .invoice-box { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
         .invoice-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; color: #ccc; }
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
-        .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; border-bottom: 1px solid #2a2a35; padding-bottom: 8px; }
         .input-group { margin-bottom: 10px; }
         .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; text-align: inherit; }
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
-        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 80px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
-        .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
-        .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
-        .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
@@ -56,7 +65,11 @@
     <div class="lang-switch">
         <button class="lang-btn active" id="btn-fa" onclick="setLang('fa')">FA</button>
         <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" id="btn-ar" onclick="setLang('ar')">AR</button>
+    </div>
+
+    <div id="qr-reader-container">
+        <div id="qr-reader"></div>
+        <div class="close-scanner" onclick="stopQrScan()">بستن دوربین</div>
     </div>
 
     <header>
@@ -66,15 +79,6 @@
 
     <div class="cat-scroll" id="cats"></div>
     <div class="menu-list" id="list"></div>
-
-    <div class="dev-footer">
-        <p id="devTitle" style="color: #fff; font-weight: bold;"></p>
-        <div class="dev-icons">
-            <a href="tel:09105710039"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="https://t.me/pmm0039"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
-            <a href="https://wa.me/989105710039"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
-        </div>
-    </div>
 
     <div class="order-details" id="orderDetails">
         <div class="close-details" onclick="closeOrderWindow()">✕</div>
@@ -89,7 +93,21 @@
             <div class="invoice-row highlight"><span id="l-total">...</span><span id="finalPayable">0</span></div>
         </div>
         <div class="input-group"><textarea id="userNote"></textarea></div>
-        <div id="form-table" class="input-group"><input type="number" id="tableNum"></div>
+        
+        <div id="form-table" class="input-group">
+            <input type="number" id="tableNum">
+            <div class="scan-group">
+                <button class="qr-btn" onclick="startQrScan()">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4V4zm2 2v2h2V6H6zm8-2h6v6h-6V4zm2 2v2h2V6h-2zM4 14h6v6H4v-6zm2 2v2h2v-2H6zm10 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0 4h2v2h-2v-2zm-2 2h2v-2h-2v2zm0-4h-2v2h2v-2zm0-2h-2v2h2v-2z"/></svg>
+                    <span>اسکن QR میز</span>
+                </button>
+                <button class="nfc-btn" onclick="readNfcTag()">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.28c-.6.35-1 .98-1 1.72 0 1.1.9 2 2 2s2-.9 2-2c0-.74-.4-1.38-1-1.72V8h3v8H8V8h2V6H6v12h12V6z"/></svg>
+                    <span>اسکن NFC</span>
+                </button>
+            </div>
+        </div>
+
         <div id="form-delivery" style="display:none">
             <div class="input-group"><input type="tel" id="userPhone"></div>
             <div class="input-group"><textarea id="address"></textarea></div>
@@ -100,26 +118,25 @@
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', phone:'', deliveryPrice:0 };
+        let curLang = 'fa', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', phone:'', deliveryPrice:0 };
+        let html5QrCode;
 
         async function startApp() {
             try {
+                // چک کردن پارامتر میز در لینک (مثلاً site.com/?table=12)
+                const urlParams = new URLSearchParams(window.location.search);
+                if(urlParams.get('table')) document.getElementById('tableNum').value = urlParams.get('table');
+
                 const fetchRaw = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
                     return await r.text();
                 };
-                
                 const [mText, sText, tText] = await Promise.all([fetchRaw('Menu'), fetchRaw('Settings'), fetchRaw('Translations')]);
                 
-                // --- بخش هوشمند جدید: اسکن متن خام تنظیمات ---
-                // لینک آیدی‌پی را از داخل کل متن پیدا کن (فارغ از شماره سطر یا ستون)
+                // استخراج لینک پرداخت هوشمند
                 const paymentMatch = sText.match(/https:\/\/idpay\.ir\/[^\s,\"]+/);
-                if (paymentMatch) {
-                    config.paymentLink = paymentMatch[0];
-                    console.log("لینک پرداخت شناسایی شد: " + config.paymentLink);
-                }
+                if (paymentMatch) config.paymentLink = paymentMatch[0];
 
-                // سایر تنظیمات را به صورت معمولی بخوان
                 const sRows = sText.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 sRows.forEach(r => {
                     let k = (r[0] || "").toLowerCase();
@@ -129,105 +146,126 @@
                     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
                 });
 
-                // --- بخش محصولات و ترجمه‌ها ---
                 mText.split(/\r?\n/).slice(1).forEach((row, i) => {
                     const r = row.split(',').map(c => c.replace(/"/g,'').trim());
                     if(r.length < 7) return;
-                    products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
-                });
-
-                tText.split(/\r?\n/).slice(1).forEach(row => {
-                    const r = row.split(',').map(c => c.replace(/"/g,'').trim());
-                    if(r[0]) dictionary[r[0]] = { fa:r[1], en:r[2], ar:r[3] };
+                    products.push({ id: i, cat: { fa: r[0], en: r[1] }, title: { fa: r[3], en: r[4] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
                 });
 
                 setLang('fa');
-            } catch (e) { console.error("Error loading data:", e); }
+            } catch (e) { console.error(e); }
+        }
+
+        // --- بخش QR کد ---
+        function startQrScan() {
+            document.getElementById('qr-reader-container').style.display = 'flex';
+            html5QrCode = new Html5Qrcode("qr-reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+                // اگر متن اسکن شده فقط عدد باشد
+                if(!isNaN(decodedText)) {
+                    document.getElementById('tableNum').value = decodedText.trim();
+                } else {
+                    // اگر لینک باشد، سعی کن شماره میز را از آن استخراج کند
+                    try {
+                        const url = new URL(decodedText);
+                        const table = url.searchParams.get("table");
+                        if(table) document.getElementById('tableNum').value = table;
+                    } catch(e) {}
+                }
+                stopQrScan();
+                alert("میز شناسایی شد.");
+            });
+        }
+
+        function stopQrScan() {
+            if(html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('qr-reader-container').style.display = 'none';
+                }).catch(() => {
+                    document.getElementById('qr-reader-container').style.display = 'none';
+                });
+            }
+        }
+
+        // --- بخش NFC ---
+        async function readNfcTag() {
+            if ('NDEFReader' in window) {
+                try {
+                    const ndef = new NDEFReader();
+                    await ndef.scan();
+                    alert("گوشی را به تگ نزدیک کنید...");
+                    ndef.onreading = event => {
+                        const decoder = new TextDecoder();
+                        for (const record of event.message.records) {
+                            const data = decoder.decode(record.data);
+                            if (!isNaN(data)) document.getElementById('tableNum').value = data.trim();
+                        }
+                        alert("میز شناسایی شد.");
+                    };
+                } catch (e) { alert("خطای NFC: " + e); }
+            } else { alert("NFC در این گوشی/مرورگر پشتیبانی نمی‌شود."); }
         }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
         function setLang(l) {
             curLang = l; document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
-            document.getElementById('shopName').innerText = getT('shopName');
-            document.getElementById('revTitle').innerText = getT('review');
-            document.getElementById('btn-table').innerText = getT('table');
-            document.getElementById('btn-delivery').innerText = getT('delivery');
-            document.getElementById('l-sub').innerText = getT('subtotal');
-            document.getElementById('l-total').innerText = getT('payable');
-            document.getElementById('devTitle').innerText = getT('dev');
-            document.getElementById('userNote').placeholder = getT('note');
-            document.getElementById('tableNum').placeholder = getT('tNum');
-            document.getElementById('userPhone').placeholder = getT('phone');
-            document.getElementById('address').placeholder = getT('addr');
+            document.getElementById('shopName').innerText = "فست فود سیب";
+            document.getElementById('tableNum').placeholder = l === 'fa' ? 'شماره میز' : 'Table Number';
+            
             const s = document.getElementById('shopStatus');
-            s.innerText = config.isOpen ? getT('open') : getT('closed');
+            s.innerText = config.isOpen ? (l === 'fa' ? 'باز است' : 'OPEN') : (l === 'fa' ? 'بسته است' : 'CLOSED');
             s.className = "status-badge " + (config.isOpen ? "open" : "closed");
-            renderMenu(currentCat);
+            renderMenu('all');
         }
 
         function renderMenu(cat) {
-            currentCat = cat; const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
+            const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
-            catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${(c === 'all') ? getT('all') : c}</div>`).join('');
+            catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c) ? 'active' : ''}" onclick="renderMenu('${c}')">${c === 'all' ? (curLang==='fa'?'همه':'All') : c}</div>`).join('');
             list.innerHTML = '';
             products.filter(p => cat === 'all' || p.cat[curLang] === cat).forEach(p => {
                 const count = cart[p.id] || 0;
-                const btn = !p.active ? `<span style="color:#e74c3c;">${getT('out')}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${getT('add')}</div>` : `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
-                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()}</span>${btn}</div></div></div>`;
+                const btn = !p.active ? `<span style="color:red">ناموجود</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">افزودن</div>` : `<div class="qty-box"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;align-items:center;"><span class="price">${p.p.toLocaleString()}</span>${btn}</div></div></div>`;
             });
             calcTotal();
         }
 
-        window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
+        window.upd = (id, n) => { cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu('all'); };
 
         function calcTotal() {
-            let total = 0, count = 0, sumHtml = '';
-            for(let id in cart) { 
-                const p = products[id]; total += p.p * cart[id]; count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
-            }
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            const final = isDel ? total + config.deliveryPrice : total;
-            document.getElementById('itemsTotal').innerText = total.toLocaleString();
-            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + getT('unit');
-            document.getElementById('summaryList').innerHTML = sumHtml || "...";
-            const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
-            bar.style.display = count > 0 ? 'block' : 'none';
-            document.getElementById('actionBtn').innerText = det.classList.contains('active') ? (isDel ? getT('payBtn') : getT('submitBtn')) : getT('viewBtn');
+            let count = Object.keys(cart).length;
+            document.getElementById('cartBar').style.display = count > 0 ? 'block' : 'none';
         }
 
+        window.processOrder = () => {
+            const det = document.getElementById('orderDetails');
+            if (!det.classList.contains('active')) { det.classList.add('active'); return; }
+            let total = 0; for(let id in cart) total += products[id].p * cart[id];
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            
+            if(!isDel) {
+                let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
+                const n = document.getElementById('tableNum').value || "0";
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent("سفارش میز " + n + ": " + d)}`, '_blank');
+            } else {
+                if(config.paymentLink) {
+                    let finalUrl = config.paymentLink + (config.paymentLink.includes('?') ? '&' : '?') + "amount=" + total + "0";
+                    window.open(finalUrl, '_blank'); 
+                } else { alert("درگاه پرداخت یافت نشد."); }
+            }
+        };
+
+        window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
         window.setMode = (t) => {
             document.getElementById('btn-table').classList.toggle('selected', t==='table');
             document.getElementById('btn-delivery').classList.toggle('selected', t==='delivery');
             document.getElementById('form-table').style.display = t==='table' ? 'block' : 'none';
             document.getElementById('form-delivery').style.display = t==='delivery' ? 'block' : 'none';
-            calcTotal();
         };
 
-        window.processOrder = () => {
-            const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
-            let finalAmt = 0; for(let id in cart) finalAmt += products[id].p * cart[id];
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            if(!isDel) {
-                let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
-                const n = document.getElementById('tableNum').value || "0";
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`, '_blank');
-            } else {
-                let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
-                if(confirm(msg)) {
-                    finalAmt += config.deliveryPrice;
-                    let link = config.paymentLink;
-                    if(link && link.length > 5) {
-                        let sep = link.includes('?') ? '&' : '?';
-                        let finalUrl = link + sep + "amount=" + finalAmt + "0";
-                        window.open(finalUrl, '_blank'); 
-                    } else { alert("خطا: لینک پرداخت در شیت Settings یافت نشد. مطمئن شوید لینک با https://idpay.ir شروع شده باشد."); }
-                }
-            }
-        };
-        window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
         startApp();
     </script>
 </body>
