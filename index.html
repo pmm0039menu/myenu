@@ -120,18 +120,33 @@
                 const fetchCsv = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
                     const text = await r.text();
+                    // پاکسازی دقیق داده‌ها از کوتیشن و فاصله‌های اضافه
                     return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
+                
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
-                sRows.forEach(r => {
+                // بر اساس تصویر شما از گوگل شیت:
+                // سطر 1: تلفن (index 0)
+                // سطر 2: هزینه ارسال (index 1)
+                // سطر 3: باز/بسته (index 2)
+                // سطر 4: تاریخ انقضا (index 3)
+                // سطر 5: لینک پرداخت (index 4)
+                
+                sRows.forEach((r, index) => {
+                    if (r.length < 2) return;
                     let k = (r[0] || "").toString().toLowerCase().trim();
                     let v = (r[1] || "").toString().trim();
+                    
                     if(k.includes('phone')) config.phone = v;
                     if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
                     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
-                    // اصلاح منطق: فقط اگر کلید دقیقا معادل paymentlink باشد لینک را ذخیره کن
-                    if(k === 'paymentlink') config.paymentLink = v;
+                    
+                    // اصلاح نهایی: فقط اگر سطر دقیقاً سطر 5 باشد (Index 4) لینک را بردار
+                    // یا اگر کلمه کلیدی دقیقاً paymentlink باشد
+                    if(index === 4 || k === 'paymentlink') {
+                        config.paymentLink = v;
+                    }
                 });
 
                 mRows.slice(1).forEach((r, i) => {
@@ -141,7 +156,7 @@
 
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
                 setLang('fa');
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("خطا در بارگذاری داده‌ها:", e); }
         }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
@@ -215,21 +230,23 @@
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
             
             if(!isDel) {
-                // ارسال سفارش از طریق واتس‌اپ برای سفارش سر میز
                 let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
                 const n = document.getElementById('tableNum').value || "0";
                 window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`);
             } else {
-                // انتقال به درگاه پرداخت برای سفارش بیرون‌بر
                 let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
                 if(confirm(msg)) {
                     finalAmt += config.deliveryPrice;
                     let link = config.paymentLink;
                     if(link && link.length > 5) {
-                        // افزودن مبلغ به انتهای لینک آیدی‌پی (تبدیل به ریال برای درگاه)
-                        if(link.includes('idpay.ir')) link += (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
+                        // افزودن مبلغ به انتهای لینک (تبدیل به ریال برای درگاه)
+                        if(link.includes('idpay.ir')) {
+                            link += (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
+                        }
                         window.location.href = link;
-                    } else { alert("لینک پرداخت یافت نشد. لطفاً تنظیمات گوگل شیت را بررسی کنید."); }
+                    } else { 
+                        alert("لینک پرداخت یافت نشد. لطفاً سطر 5 در شیت Settings را بررسی کنید."); 
+                    }
                 }
             }
         };
