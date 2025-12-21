@@ -84,7 +84,7 @@
         <p id="devTitle" style="color: #fff; font-weight: bold;"></p>
         <div class="dev-icons">
             <a href="tel:09105710039"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="https://t.me/your_id"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
             <a href="https://wa.me/989105710039"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
         </div>
     </div>
@@ -113,7 +113,7 @@
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true };
+        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'' };
 
         async function startApp() {
             try {
@@ -125,9 +125,13 @@
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
                 sRows.forEach(r => {
-                    if(r[0] === 'Phone') config.phone = r[1];
-                    if(r[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(r[1]) || 0;
-                    if(r[0] === 'IsOpen') config.isOpen = r[1].toUpperCase() !== 'FALSE';
+                    let k = (r[0] || "").trim();
+                    let v = (r[1] || "").trim();
+                    if(k === 'Phone') config.phone = v;
+                    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
+                    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
+                    // اصلاحیه: خواندن لینک درگاه
+                    if(k === 'PaymentLink') config.paymentLink = v;
                 });
 
                 mRows.slice(1).forEach((r, i) => {
@@ -212,49 +216,37 @@
         };
 
         window.processOrder = () => {
-    const det = document.getElementById('orderDetails');
-    // ۱. اگر پنجره بازبینی باز نیست، آن را باز کن
-    if (!det.classList.contains('active')) { 
-        det.classList.add('active'); 
-        calcTotal(); 
-        return; 
-    }
-    
-    let desc = ""; 
-    let finalAmount = 0;
-    for(let id in cart) {
-        desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-        // محاسبه مبلغ کل برای درگاه
-        finalAmount += products[id].p * cart[id];
-    }
-    
-    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-    
-    if(!isDel) {
-        // ۲. سفارش سالن: ارسال به واتس‌اپ
-        const n = document.getElementById('tableNum').value || "0";
-        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
-    } else {
-        // ۳. سفارش بیرون‌بر: نمایش پیام و اتصال به درگاه
-        finalAmount += config.deliveryPrice; // اضافه کردن هزینه پیک
-        const totalText = document.getElementById('finalPayable').innerText;
-        
-        // اصلاح مشکل \n و جایگذاری مبلغ در پیام
-        const msg = getT('confirmMsg')
-                    .replace('{amount}', totalText)
-                    .replace(/\\n/g, '\n'); 
-        
-        if(confirm(msg)) {
-            let payUrl = config.paymentLink;
-            // اگر از آیدی‌پی استفاده می‌کنید، مبلغ را به لینک اضافه می‌کند
-            if(payUrl.includes('idpay.ir')) {
-                // تبدیل مبلغ به ریال (اضافه کردن یک صفر اگر در شیت به تومان است)
-                payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalAmount + "0";
+            const det = document.getElementById('orderDetails');
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+            
+            let desc = ""; 
+            let finalPrice = 0;
+            for(let id in cart) {
+                desc += `${products[id].title[curLang]}(${cart[id]}) - `;
+                finalPrice += products[id].p * cart[id];
             }
-            window.location.href = payUrl;
-        }
-    }
-};
+            
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            
+            if(!isDel) {
+                const n = document.getElementById('tableNum').value || "0";
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+            } else {
+                const totalText = document.getElementById('finalPayable').innerText;
+                const msg = getT('confirmMsg').replace('{amount}', totalText).replace(/\\n/g, '\n');
+                
+                if(confirm(msg)) {
+                    finalPrice += config.deliveryPrice;
+                    let payUrl = config.paymentLink;
+                    if(payUrl && payUrl.includes('idpay.ir')) {
+                        payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
+                    }
+                    if(payUrl) window.location.href = payUrl;
+                    else alert("لینک درگاه تنظیم نشده است.");
+                }
+            }
+        };
+
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
         startApp();
     </script>
