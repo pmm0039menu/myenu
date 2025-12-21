@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منوی آنلاین</title>
+    <title>Menu</title>
     <style>
         :root { 
             --primary: #d3ad7f; --bg: #13131a; --card: #1e1e24; --text: #ffffff; --green: #27ae60; --blue: #2980b9; --input-bg: #2a2a35; 
@@ -11,7 +11,7 @@
             --bg-img: url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80');
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Tahoma', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:120px; user-select: none; }
+        body { background: linear-gradient(rgba(19, 19, 26, 0.85), rgba(19, 19, 26, 0.85)), var(--bg-img); background-size: cover; background-attachment: fixed; background-position: center; color:var(--text); padding-bottom:150px; user-select: none; }
         header { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), var(--header-img); background-size: cover; background-position: center; padding: 50px 20px; text-align: center; border-bottom: 3px solid var(--primary); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
 
         .lang-switch { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 1001; }
@@ -20,7 +20,7 @@
 
         header h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-bottom: 5px; }
         .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; font-weight: bold; }
-        .open { background: #27ae60; } .closed { background: #c0392b; }
+        .open { background: #27ae60; color: #fff; } .closed { background: #c0392b; color: #fff; }
         
         .cat-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: rgba(11, 11, 15, 0.8); backdrop-filter: blur(5px); }
         .cat-btn { background: var(--card); color: #fff; padding: 8px 16px; border-radius: 20px; border: 1px solid #333; white-space: nowrap; cursor: pointer; }
@@ -29,6 +29,7 @@
         .menu-list { padding: 15px; max-width: 600px; margin: 0 auto; min-height: 300px; }
         .item { background: rgba(30, 30, 36, 0.9); border-radius: 12px; padding: 10px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid #2a2a35; align-items: center; animation: fadeIn 0.5s; position: relative; }
         .item img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--primary); background: #000; }
+        .price { color: var(--primary); font-weight: bold; font-size: 1.1rem; }
         
         .add-btn { background: #333; color: #fff; padding: 6px 15px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .qty-box { display: flex; align-items: center; background: #000; border-radius: 6px; border: 1px solid var(--primary); }
@@ -48,7 +49,6 @@
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
         
         .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; border-bottom: 1px solid #2a2a35; padding-bottom: 8px; }
-        .summary-controls { display: flex; align-items: center; gap: 8px; }
 
         .input-group { margin-bottom: 10px; }
         .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; text-align: inherit; }
@@ -56,7 +56,7 @@
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
-        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 140px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
+        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 80px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
@@ -73,7 +73,7 @@
     </div>
 
     <header>
-        <h1 id="shopName">در حال بارگذاری...</h1>
+        <h1 id="shopName">در حال دریافت...</h1>
         <div id="shopStatus" class="status-badge">...</div>
     </header>
 
@@ -83,9 +83,9 @@
     <div class="dev-footer">
         <p id="devTitle" style="color: #fff; font-weight: bold;"></p>
         <div class="dev-icons">
-            <a href="tel:09123456789"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
-            <a href="#"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
-            <a href="#"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
+            <a href="tel:09105710039"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+            <a href="https://t.me/your_id"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="https://wa.me/989105710039"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
         </div>
     </div>
 
@@ -113,7 +113,7 @@
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, names:{fa:'', en:'', ar:''} };
+        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true };
 
         async function startApp() {
             try {
@@ -124,27 +124,18 @@
                 };
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
-                // پارس تنظیمات - با دقت بسیار بالا
                 sRows.forEach(r => {
-                    let k = (r[0] || "").trim();
-                    let v = (r[1] || "").trim();
-                    if(k === 'ShopName_fa') config.names.fa = v;
-                    else if(k === 'ShopName_en') config.names.en = v;
-                    else if(k === 'ShopName_ar') config.names.ar = v;
-                    else if(k === 'Phone') config.phone = v;
-                    else if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
-                    else if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
+                    if(r[0] === 'Phone') config.phone = r[1];
+                    if(r[0] === 'DeliveryPrice') config.deliveryPrice = parseInt(r[1]) || 0;
+                    if(r[0] === 'IsOpen') config.isOpen = r[1].toUpperCase() !== 'FALSE';
                 });
 
-                // پارس منو
                 mRows.slice(1).forEach((r, i) => {
                     if(r.length < 7) return;
                     products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
                 });
 
-                // پارس ترجمه
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
-                
                 setLang('fa');
             } catch (e) { console.error(e); }
         }
@@ -156,8 +147,8 @@
             document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
 
-            // آپدیت نام فروشگاه بر اساس زبان انتخاب شده
-            document.getElementById('shopName').innerText = config.names[l] || config.names.fa || "Apple Fast Food";
+            // اتصال نام فروشگاه به شیت Translations
+            document.getElementById('shopName').innerText = getT('shopName');
             
             document.getElementById('revTitle').innerText = getT('review');
             document.getElementById('btn-table').innerText = getT('table');
@@ -200,6 +191,7 @@
             let total = 0, count = 0, sumHtml = '';
             for(let id in cart) { 
                 const p = products[id]; total += p.p * cart[id]; count += cart[id];
+                // دکمه‌های مثبت و منفی در فاکتور
                 sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
