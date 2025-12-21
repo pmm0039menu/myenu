@@ -60,8 +60,6 @@
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
-
-        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
@@ -120,25 +118,21 @@
                 const fetchCsv = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
                     const text = await r.text();
-                    // پاکسازی داده‌ها: حذف فواصل اضافه و کاراکترهای مزاحم CSV
+                    // پاکسازی کامل کاراکترهای مخفی و کوتیشن‌ها برای جلوگیری از قاطی شدن ستون‌ها
                     return text.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
                 
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
                 sRows.forEach((r) => {
-                    // اسکن تمام خانه‌های سطر برای یافتن لینک پرداخت (فارغ از شماره ستون)
+                    // اسکن تمام خانه‌های سطر برای یافتن لینک پرداخت (فارغ از شماره ستون یا سطر)
                     r.forEach(cell => {
-                        let c = cell.toLowerCase();
-                        let v = cell;
-                        
-                        // شناسایی هوشمند لینک پرداخت بر اساس محتوا
-                        if(v.startsWith('http') && !c.includes('image')) {
-                            config.paymentLink = v;
+                        if (cell.startsWith('http') && !cell.toLowerCase().includes('image')) {
+                            config.paymentLink = cell;
                         }
                     });
 
-                    // شناسایی سایر تنظیمات بر اساس نام کلید
+                    // شناسایی سایر تنظیمات بر اساس نام
                     let key = r[0] ? r[0].toLowerCase() : "";
                     let val = r[1] || "";
                     if(key.includes('phone')) config.phone = val;
@@ -152,14 +146,12 @@
                 });
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
                 setLang('fa');
-            } catch (e) { console.error("Loading error:", e); }
+            } catch (e) { console.error("Loading Error:", e); }
         }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
-
         function setLang(l) {
-            curLang = l;
-            document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
+            curLang = l; document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
             document.getElementById('shopName').innerText = getT('shopName');
             document.getElementById('revTitle').innerText = getT('review');
@@ -179,8 +171,7 @@
         }
 
         function renderMenu(cat) {
-            currentCat = cat;
-            const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
+            currentCat = cat; const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
             catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${(c === 'all') ? getT('all') : c}</div>`).join('');
             list.innerHTML = '';
@@ -221,33 +212,25 @@
         window.processOrder = () => {
             const det = document.getElementById('orderDetails');
             if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
-            
             let finalAmt = 0; for(let id in cart) finalAmt += products[id].p * cart[id];
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            
             if(!isDel) {
-                // ارسال سفارش از طریق واتس‌اپ
                 let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
                 const n = document.getElementById('tableNum').value || "0";
                 window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`, '_blank');
             } else {
-                // انتقال به درگاه پرداخت در صفحه جدید برای جلوگیری از خطای سرور
                 let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
                 if(confirm(msg)) {
                     finalAmt += config.deliveryPrice;
                     let link = config.paymentLink;
                     if(link && link.length > 5) {
-                        // افزودن مبلغ و باز کردن در تب جدید
-                        let sep = link.includes('?') ? '&' : '?';
-                        let finalUrl = link + sep + "amount=" + finalAmt + "0";
-                        window.open(finalUrl, '_blank'); 
-                    } else { 
-                        alert("خطا: لینک در ستون B یافت نشد. لطفاً گوگل‌شیت را بررسی کنید."); 
-                    }
+                        // افزودن مبلغ و باز کردن در تب جدید برای جلوگیری از ارور سرور
+                        let finalUrl = link + (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
+                        window.open(finalUrl, '_blank');
+                    } else { alert("خطا: لینک در گوگل‌شیت یافت نشد. لطفاً در شیت Settings چک کنید که لینک با http شروع شده باشد."); }
                 }
             }
         };
-
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
         startApp();
     </script>
