@@ -192,54 +192,70 @@
 
         window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
 
-        function calcTotal() {
-            let total = 0, count = 0, sumHtml = '';
-            for(let id in cart) { 
-                const p = products[id]; total += p.p * cart[id]; count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
+        async function startApp() {
+    try {
+        const fetchCsv = async (sheet) => {
+            const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
+            const text = await r.text();
+            // پاکسازی کامل کاراکترهای مخفی و کوتیشن‌ها
+            return text.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+        };
+        
+        const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
+        
+        // جستجوی هوشمند در تمام سطرهای شیت Settings
+        sRows.forEach((r) => {
+            if (r.length < 2) return;
+            let k = (r[0] || "").toString().toLowerCase().trim(); // کلید (ستون A)
+            let v = (r[1] || "").toString().trim();              // مقدار (ستون B)
+            
+            if(k.includes('phone')) config.phone = v;
+            if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
+            if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
+            
+            // پیدا کردن لینک پرداخت: هر فیلدی که با http شروع شود و عکس نباشد
+            if(v.startsWith('http') && !k.includes('image')) {
+                config.paymentLink = v;
             }
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            const final = isDel ? total + config.deliveryPrice : total;
-            document.getElementById('itemsTotal').innerText = total.toLocaleString();
-            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + getT('unit');
-            document.getElementById('summaryList').innerHTML = sumHtml || "...";
-            const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
-            bar.style.display = count > 0 ? 'block' : 'none';
-            document.getElementById('actionBtn').innerText = det.classList.contains('active') ? (isDel ? getT('payBtn') : getT('submitBtn')) : getT('viewBtn');
+        });
+
+        // ساخت منو و ترجمه‌ها
+        mRows.slice(1).forEach((r, i) => {
+            if(r.length < 7) return;
+            products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
+        });
+        tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
+        setLang('fa');
+    } catch (e) { console.error("خطا در بارگذاری:", e); }
+}
+
+// اصلاح بخش پرداخت برای باز شدن در صفحه جدید
+window.processOrder = () => {
+    const det = document.getElementById('orderDetails');
+    if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+    
+    let finalAmt = 0; for(let id in cart) finalAmt += products[id].p * cart[id];
+    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+    
+    if(!isDel) {
+        let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
+        const n = document.getElementById('tableNum').value || "0";
+        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`, '_blank');
+    } else {
+        let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
+        if(confirm(msg)) {
+            finalAmt += config.deliveryPrice;
+            let link = config.paymentLink;
+            if(link && link.length > 10) {
+                // افزودن پارامتر مبلغ و باز کردن در تب جدید
+                let finalUrl = link + (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
+                window.open(finalUrl, '_blank'); 
+            } else { 
+                alert("خطا: لینک پرداخت در گوگل‌شیت (سطر ۵) یافت نشد یا ناقص است."); 
+            }
         }
-
-        window.setMode = (t) => {
-            document.getElementById('btn-table').classList.toggle('selected', t==='table');
-            document.getElementById('btn-delivery').classList.toggle('selected', t==='delivery');
-            document.getElementById('form-table').style.display = t==='table' ? 'block' : 'none';
-            document.getElementById('form-delivery').style.display = t==='delivery' ? 'block' : 'none';
-            calcTotal();
-        };
-
-        window.processOrder = () => {
-            const det = document.getElementById('orderDetails');
-            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
-            
-            let finalAmt = 0; for(let id in cart) finalAmt += products[id].p * cart[id];
-            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-            
-            if(!isDel) {
-                let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
-                const n = document.getElementById('tableNum').value || "0";
-                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`);
-            } else {
-                let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
-                if(confirm(msg)) {
-                    finalAmt += config.deliveryPrice;
-                    let link = config.paymentLink;
-                    if(link && link.length > 5) {
-                        // چسباندن مبلغ به انتهای لینک آیدی‌پی (تومان به ریال)
-                        let sep = link.includes('?') ? '&' : '?';
-                        window.location.href = link + sep + "amount=" + finalAmt + "0";
-                    } else { alert("Link Error: Please check Row 5 in Google Sheet."); }
-                }
-            }
-        };
+    }
+};
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
         startApp();
