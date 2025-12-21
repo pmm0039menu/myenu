@@ -48,17 +48,55 @@
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     </style>
 </head>
 <body>
+
     <div class="lang-switch">
         <button class="lang-btn active" id="btn-fa" onclick="setLang('fa')">FA</button>
         <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
         <button class="lang-btn" id="btn-ar" onclick="setLang('ar')">AR</button>
     </div>
-    <header><h1 id="shopName">...</h1><div id="shopStatus" class="status-badge">...</div></header>
+
+    <header>
+        <h1 id="shopName">...</h1>
+        <div id="shopStatus" class="status-badge">...</div>
+    </header>
+
     <div class="cat-scroll" id="cats"></div>
     <div class="menu-list" id="list"></div>
+
+    <div class="dev-footer">
+        <p id="devTitle" style="color: #fff; font-weight: bold;"></p>
+        <div class="dev-icons">
+            <a href="tel:09105710039"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
+            <a href="https://t.me/pmm0039"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.75-.33 1.42.2 1.17 1.38l-2.75 12.96c-.2.9-1.52.84-2.1.28l-5.31-4.22-2.58 2.48c-.28.28-.52.51-1.06.51l.39-3.98z"/></svg></a>
+            <a href="https://wa.me/989105710039"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zM12.05 19.81c-1.48 0-2.93-.4-4.21-1.15l-.3-.18-3.11.82.83-3.04-.19-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83 0 4.54-3.69 8.23-8.23 8.23z"/></svg></a>
+        </div>
+    </div>
+
+    <div class="order-details" id="orderDetails">
+        <div class="close-details" onclick="closeOrderWindow()">✕</div>
+        <h3 id="revTitle" style="text-align:center; margin-bottom:15px; color:var(--primary);">...</h3>
+        <div id="summaryList"></div>
+        <div class="type-selector">
+            <button class="type-btn selected" id="btn-table" onclick="setMode('table')">...</button>
+            <button class="type-btn" id="btn-delivery" onclick="setMode('delivery')">...</button>
+        </div>
+        <div class="invoice-box">
+            <div class="invoice-row"><span id="l-sub">...</span><span id="itemsTotal">0</span></div>
+            <div class="invoice-row highlight"><span id="l-total">...</span><span id="finalPayable">0</span></div>
+        </div>
+        <div class="input-group"><textarea id="userNote"></textarea></div>
+        <div id="form-table" class="input-group"><input type="number" id="tableNum"></div>
+        <div id="form-delivery" style="display:none">
+            <div class="input-group"><input type="tel" id="userPhone"></div>
+            <div class="input-group"><textarea id="address"></textarea></div>
+        </div>
+    </div>
+
+    <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="processOrder()">...</div></div>
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
@@ -68,26 +106,22 @@
             try {
                 const fetchRaw = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
-                    const text = await r.text();
-                    // اگر گوگل صفحه لاگین را برگرداند هشدار بده
-                    if (text.includes('<!DOCTYPE') || text.includes('<html>')) {
-                        alert("خطای دسترسی: لطفا در گوگل شیت دکمه Share را زده و دسترسی را روی Anyone with the link قرار دهید.");
-                    }
-                    return text;
+                    return await r.text();
                 };
                 
                 const [mText, sText, tText] = await Promise.all([fetchRaw('Menu'), fetchRaw('Settings'), fetchRaw('Translations')]);
                 
-                // --- استخراج هوشمند لینک پرداخت از کل متن ---
-                const linkMatch = sText.match(/https:\/\/idpay\.ir\/[a-zA-Z0-9_\-]+/);
-                if (linkMatch) {
-                    config.paymentLink = linkMatch[0];
-                    console.log("لینک پیدا شد: " + config.paymentLink);
+                // --- بخش هوشمند جدید: اسکن متن خام تنظیمات ---
+                // لینک آیدی‌پی را از داخل کل متن پیدا کن (فارغ از شماره سطر یا ستون)
+                const paymentMatch = sText.match(/https:\/\/idpay\.ir\/[^\s,\"]+/);
+                if (paymentMatch) {
+                    config.paymentLink = paymentMatch[0];
+                    console.log("لینک پرداخت شناسایی شد: " + config.paymentLink);
                 }
 
-                // سایر تنظیمات
-                sText.split(/\r?\n/).forEach(row => {
-                    const r = row.split(',').map(c => c.replace(/"/g,'').trim());
+                // سایر تنظیمات را به صورت معمولی بخوان
+                const sRows = sText.split(/\r?\n/).map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+                sRows.forEach(r => {
                     let k = (r[0] || "").toLowerCase();
                     let v = r[1] || "";
                     if(k.includes('phone')) config.phone = v;
@@ -95,21 +129,20 @@
                     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
                 });
 
-                // محصولات
+                // --- بخش محصولات و ترجمه‌ها ---
                 mText.split(/\r?\n/).slice(1).forEach((row, i) => {
                     const r = row.split(',').map(c => c.replace(/"/g,'').trim());
                     if(r.length < 7) return;
                     products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
                 });
 
-                // ترجمه ها
                 tText.split(/\r?\n/).slice(1).forEach(row => {
                     const r = row.split(',').map(c => c.replace(/"/g,'').trim());
                     if(r[0]) dictionary[r[0]] = { fa:r[1], en:r[2], ar:r[3] };
                 });
 
                 setLang('fa');
-            } catch (e) { console.error("Error:", e); }
+            } catch (e) { console.error("Error loading data:", e); }
         }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
@@ -117,6 +150,16 @@
             curLang = l; document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
             document.getElementById('shopName').innerText = getT('shopName');
+            document.getElementById('revTitle').innerText = getT('review');
+            document.getElementById('btn-table').innerText = getT('table');
+            document.getElementById('btn-delivery').innerText = getT('delivery');
+            document.getElementById('l-sub').innerText = getT('subtotal');
+            document.getElementById('l-total').innerText = getT('payable');
+            document.getElementById('devTitle').innerText = getT('dev');
+            document.getElementById('userNote').placeholder = getT('note');
+            document.getElementById('tableNum').placeholder = getT('tNum');
+            document.getElementById('userPhone').placeholder = getT('phone');
+            document.getElementById('address').placeholder = getT('addr');
             const s = document.getElementById('shopStatus');
             s.innerText = config.isOpen ? getT('open') : getT('closed');
             s.className = "status-badge " + (config.isOpen ? "open" : "closed");
@@ -139,21 +182,52 @@
         window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
 
         function calcTotal() {
-            let total = 0, count = 0;
-            for(let id in cart) { total += products[id].p * cart[id]; count += cart[id]; }
-            document.getElementById('cartBar').style.display = count > 0 ? 'block' : 'none';
+            let total = 0, count = 0, sumHtml = '';
+            for(let id in cart) { 
+                const p = products[id]; total += p.p * cart[id]; count += cart[id];
+                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
+            }
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            const final = isDel ? total + config.deliveryPrice : total;
+            document.getElementById('itemsTotal').innerText = total.toLocaleString();
+            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + getT('unit');
+            document.getElementById('summaryList').innerHTML = sumHtml || "...";
+            const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
+            bar.style.display = count > 0 ? 'block' : 'none';
+            document.getElementById('actionBtn').innerText = det.classList.contains('active') ? (isDel ? getT('payBtn') : getT('submitBtn')) : getT('viewBtn');
         }
 
-        window.processOrder = () => {
-            let total = 0; for(let id in cart) total += products[id].p * cart[id];
-            if(config.paymentLink && config.paymentLink.length > 5) {
-                let finalUrl = config.paymentLink + (config.paymentLink.includes('?') ? '&' : '?') + "amount=" + total + "0";
-                window.open(finalUrl, '_blank');
-            } else {
-                alert("خطا: لینک پرداخت در شیت Settings یافت نشد. لطفا مطمئن شوید لینک با https://idpay.ir شروع شده باشد.");
-            }
+        window.setMode = (t) => {
+            document.getElementById('btn-table').classList.toggle('selected', t==='table');
+            document.getElementById('btn-delivery').classList.toggle('selected', t==='delivery');
+            document.getElementById('form-table').style.display = t==='table' ? 'block' : 'none';
+            document.getElementById('form-delivery').style.display = t==='delivery' ? 'block' : 'none';
+            calcTotal();
         };
 
+        window.processOrder = () => {
+            const det = document.getElementById('orderDetails');
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+            let finalAmt = 0; for(let id in cart) finalAmt += products[id].p * cart[id];
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            if(!isDel) {
+                let d = ""; for(let id in cart) d += `${products[id].title[curLang]}(${cart[id]}) - `;
+                const n = document.getElementById('tableNum').value || "0";
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + d)}`, '_blank');
+            } else {
+                let msg = getT('confirmMsg').replace('{amount}', document.getElementById('finalPayable').innerText).split('\\n').join('\n');
+                if(confirm(msg)) {
+                    finalAmt += config.deliveryPrice;
+                    let link = config.paymentLink;
+                    if(link && link.length > 5) {
+                        let sep = link.includes('?') ? '&' : '?';
+                        let finalUrl = link + sep + "amount=" + finalAmt + "0";
+                        window.open(finalUrl, '_blank'); 
+                    } else { alert("خطا: لینک پرداخت در شیت Settings یافت نشد. مطمئن شوید لینک با https://idpay.ir شروع شده باشد."); }
+                }
+            }
+        };
+        window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
         startApp();
     </script>
 </body>
