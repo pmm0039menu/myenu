@@ -156,8 +156,6 @@
             document.getElementById('devTitle').innerText = getT('dev');
             document.getElementById('userNote').placeholder = getT('note');
             document.getElementById('tableNum').placeholder = getT('tNum');
-            
-            // اصلاح جایگذاری متن شماره تماس و آدرس
             document.getElementById('userPhone').placeholder = getT('phone');
             document.getElementById('address').placeholder = getT('addr');
 
@@ -216,8 +214,23 @@
         window.processOrder = () => {
             const det = document.getElementById('orderDetails');
             if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
+            
             let desc = ""; for(let id in cart) desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-            window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(desc)}`);
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            
+            if(!isDel) {
+                // سفارش سالن: مستقیم به واتس‌اپ
+                const n = document.getElementById('tableNum').value || "0";
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+            } else {
+                // سفارش بیرون‌بر: نمایش پیام تایید هوشمند
+                const totalText = document.getElementById('finalPayable').innerText;
+                const msg = getT('confirmMsg').replace('{amount}', totalText);
+                
+                if(confirm(msg)) {
+                    window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('delivery') + ": " + desc)}`);
+                }
+            }
         };
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
