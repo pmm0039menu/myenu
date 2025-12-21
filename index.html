@@ -49,6 +49,7 @@
         .invoice-row.highlight { color: var(--primary); font-weight: bold; border-top: 1px solid #333; padding-top: 5px; margin-top: 5px; font-size: 1.1rem; }
         
         .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 12px; color: #eee; border-bottom: 1px solid #2a2a35; padding-bottom: 8px; }
+        .summary-controls { display: flex; align-items: center; gap: 8px; }
 
         .input-group { margin-bottom: 10px; }
         .input-group input, .input-group textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #333; color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; text-align: inherit; }
@@ -56,7 +57,7 @@
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #000; padding: 15px; z-index: 1000; display: none; border-top: 1px solid #333; }
         .final-btn { background: var(--green); color: #fff; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; text-align: center; width: 100%; }
 
-        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 80px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
+        .dev-footer { text-align: center; margin-top: 50px; padding: 30px 20px 140px 20px; border-top: 1px solid rgba(211, 173, 127, 0.2); background: rgba(14, 14, 18, 0.95); position: relative; z-index: 10; }
         .dev-icons { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
         .dev-icons a { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; background: #1a1a1a; border-radius: 50%; color: var(--primary); border: 1px solid var(--primary); text-decoration: none; }
         .dev-icons svg { width: 22px; height: 22px; fill: currentColor; }
@@ -73,7 +74,7 @@
     </div>
 
     <header>
-        <h1 id="shopName">در حال دریافت...</h1>
+        <h1 id="shopName">...</h1>
         <div id="shopStatus" class="status-badge">...</div>
     </header>
 
@@ -116,39 +117,32 @@
         let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'' };
 
         async function startApp() {
-    try {
-        const fetchCsv = async (sheet) => {
-            // اضافه کردن یک عدد تصادفی برای جلوگیری از خواندن نسخه قدیمی (Cache)
-            const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Math.random()}`);
-            const text = await r.text();
-            return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
-        };
-        const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
-        
-        console.log("داده‌های دریافت شده از Settings:", sRows); // این خط برای عیب‌یابی است
+            try {
+                const fetchCsv = async (sheet) => {
+                    const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Math.random()}`);
+                    const text = await r.text();
+                    return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
+                };
+                const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
+                
+                sRows.forEach(r => {
+                    let k = (r[0] || "").trim();
+                    let v = (r[1] || "").trim();
+                    if(k === 'Phone') config.phone = v;
+                    if(k === 'DeliveryPrice') config.deliveryPrice = parseInt(v) || 0;
+                    if(k === 'IsOpen') config.isOpen = v.toUpperCase() !== 'FALSE';
+                    if(k === 'PaymentLink') config.paymentLink = v;
+                });
 
-        sRows.forEach(r => {
-            let k = (r[0] || "").toString().toLowerCase().trim(); // تبدیل به حروف کوچک برای مقایسه راحت‌تر
-            let v = (r[1] || "").toString().trim();
-            
-            if(k === 'phone') config.phone = v;
-            if(k === 'deliveryprice') config.deliveryPrice = parseInt(v) || 0;
-            if(k === 'isopen') config.isOpen = v.toUpperCase() !== 'FALSE';
-            
-            // بررسی منعطف برای لینک پرداخت
-            if(k.includes('paymentlink')) {
-                config.paymentLink = v;
-                console.log("لینک پرداخت با موفقیت ذخیره شد:", v);
-            }
-        });
+                mRows.slice(1).forEach((r, i) => {
+                    if(r.length < 7) return;
+                    products.push({ id: i, cat: { fa: r[0], en: r[1], ar: r[2] }, title: { fa: r[3], en: r[4], ar: r[5] }, p: parseInt(r[6].replace(/,/g,'')), img: r[7], active: r[8]?.toUpperCase() !== 'FALSE' });
+                });
 
-        tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
-        setLang('fa');
-    } catch (e) { 
-        console.error("خطا در بارگذاری اطلاعات:", e);
-        alert("خطا در اتصال به گوگل‌شیت. لطفاً اینترنت و دسترسی شیت را چک کنید.");
-    }
-}
+                tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
+                setLang('fa');
+            } catch (e) { console.error(e); }
+        }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
 
@@ -156,6 +150,7 @@
             curLang = l;
             document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
+
             document.getElementById('shopName').innerText = getT('shopName');
             document.getElementById('revTitle').innerText = getT('review');
             document.getElementById('btn-table').innerText = getT('table');
@@ -167,9 +162,11 @@
             document.getElementById('tableNum').placeholder = getT('tNum');
             document.getElementById('userPhone').placeholder = getT('phone');
             document.getElementById('address').placeholder = getT('addr');
+
             const s = document.getElementById('shopStatus');
             s.innerText = config.isOpen ? getT('open') : getT('closed');
             s.className = "status-badge " + (config.isOpen ? "open" : "closed");
+
             renderMenu(currentCat);
         }
 
@@ -177,10 +174,12 @@
             currentCat = cat;
             const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
+            
             catsDiv.innerHTML = catSet.map(c => {
                 let label = (c === 'all') ? getT('all') : c;
                 return `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${label}</div>`;
             }).join('');
+            
             list.innerHTML = '';
             products.filter(p => cat === 'all' || p.cat[curLang] === cat).forEach(p => {
                 const count = cart[p.id] || 0;
@@ -217,41 +216,40 @@
         };
 
         window.processOrder = () => {
-    const det = document.getElementById('orderDetails');
-    if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
-    
-    let desc = ""; 
-    let finalPrice = 0;
-    for(let id in cart) {
-        desc += `${products[id].title[curLang]}(${cart[id]}) - `;
-        finalPrice += products[id].p * cart[id];
-    }
-    
-    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-    
-    if(!isDel) {
-        const n = document.getElementById('tableNum').value || "0";
-        window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
-    } else {
-        const totalText = document.getElementById('finalPayable').innerText;
-        let msg = getT('confirmMsg').replace('{amount}', totalText).replace(/\\n/g, '\n');
-        
-        if(confirm(msg)) {
-            finalPrice += config.deliveryPrice;
-            let payUrl = config.paymentLink;
+            const det = document.getElementById('orderDetails');
+            if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
             
-            // اگر لینک وجود داشت (حتی کوتاه)
-            if(payUrl && payUrl.length > 5) {
-                if(payUrl.includes('idpay.ir')) {
-                    payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalPrice + "0";
-                }
-                window.location.href = payUrl;
-            } else {
-                alert("لینک درگاه یافت نشد. مقدار ذخیره شده: " + payUrl);
+            let desc = ""; 
+            let finalAmount = 0;
+            for(let id in cart) {
+                desc += `${products[id].title[curLang]}(${cart[id]}) - `;
+                finalAmount += products[id].p * cart[id];
             }
-        }
-    }
-};
+            
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            
+            if(!isDel) {
+                const n = document.getElementById('tableNum').value || "0";
+                window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(getT('table') + " " + n + ": " + desc)}`);
+            } else {
+                finalAmount += config.deliveryPrice;
+                const totalText = document.getElementById('finalPayable').innerText;
+                let msg = getT('confirmMsg').replace('{amount}', totalText);
+                msg = msg.split('\\n').join('\n'); 
+                
+                if(confirm(msg)) {
+                    let payUrl = config.paymentLink;
+                    if(payUrl && payUrl.length > 5) {
+                        if(payUrl.includes('idpay.ir')) {
+                            payUrl += (payUrl.includes('?') ? '&' : '?') + "amount=" + finalAmount + "0";
+                        }
+                        window.location.href = payUrl;
+                    } else {
+                        alert("خطا: لینک درگاه در شیت Settings پیدا نشد. مطمئن شوید کلمه PaymentLink دقیقاً در ستون A نوشته شده است.");
+                    }
+                }
+            }
+        };
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); calcTotal(); };
         startApp();
