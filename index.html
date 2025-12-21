@@ -73,7 +73,7 @@
     </div>
 
     <header>
-        <h1 id="shopName">در حال دریافت...</h1>
+        <h1 id="shopName">...</h1>
         <div id="shopStatus" class="status-badge">...</div>
     </header>
 
@@ -147,9 +147,7 @@
             document.getElementById('mainHtml').dir = (l === 'en') ? 'ltr' : 'rtl';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.id === 'btn-'+l));
 
-            // اتصال نام فروشگاه به شیت Translations
             document.getElementById('shopName').innerText = getT('shopName');
-            
             document.getElementById('revTitle').innerText = getT('review');
             document.getElementById('btn-table').innerText = getT('table');
             document.getElementById('btn-delivery').innerText = getT('delivery');
@@ -158,6 +156,10 @@
             document.getElementById('devTitle').innerText = getT('dev');
             document.getElementById('userNote').placeholder = getT('note');
             document.getElementById('tableNum').placeholder = getT('tNum');
+            
+            // اصلاح جایگذاری متن شماره تماس و آدرس
+            document.getElementById('userPhone').placeholder = getT('phone');
+            document.getElementById('address').placeholder = getT('addr');
 
             const s = document.getElementById('shopStatus');
             s.innerText = config.isOpen ? getT('open') : getT('closed');
@@ -191,7 +193,6 @@
             let total = 0, count = 0, sumHtml = '';
             for(let id in cart) { 
                 const p = products[id]; total += p.p * cart[id]; count += cart[id];
-                // دکمه‌های مثبت و منفی در فاکتور
                 sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()}</span></div>`;
             }
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
