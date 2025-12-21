@@ -53,7 +53,7 @@
     </div>
 
     <header>
-        <h1 id="shopName">...</h1>
+        <h1 id="shopName">در حال دریافت...</h1>
         <div id="shopStatus" class="status-badge">...</div>
     </header>
 
@@ -96,39 +96,32 @@
 
         async function startApp() {
             try {
-                // دریافت اطلاعات Settings به صورت خام برای پردازش هوشمند
-                const fetchRaw = async (sheet) => {
+                // دریافت اطلاعات از گوگل شیت با پارامتر ضد کش
+                const fetchCsv = async (sheet) => {
                     const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now() + Math.random()}`);
-                    return await r.text();
+                    const text = await r.text();
+                    return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
-
-                const [menuCsv, setRaw, transCsv] = await Promise.all([fetchRaw('Menu'), fetchRaw('Settings'), fetchRaw('Translations')]);
-
-                // --- بخش هوشمند پردازش تنظیمات (Settings) ---
-                // این بخش خط به خط می‌خواند و اگر در خطی لینک پیدا کرد، آن را برمی‌دارد
-                // حتی اگر به کلمه PaymentLink چسبیده باشد.
-                const settingsLines = setRaw.split('\n');
-                settingsLines.forEach(line => {
-                    // حذف کوتیشن‌های اضافی
-                    let cleanLine = line.replace(/"/g, '').trim();
+                
+                const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
+                
+                // پردازش دقیق تنظیمات
+                sRows.forEach(r => {
+                    if(r.length < 2) return;
+                    let k = (r[0] || "").toString().toLowerCase().trim(); // کلید (ستون A)
+                    let v = (r[1] || "").toString().trim(); // مقدار (ستون B)
                     
-                    // تنظیمات عادی
-                    if(cleanLine.toLowerCase().startsWith('phone')) config.phone = cleanLine.split(',')[1] || cleanLine.substring(5);
-                    if(cleanLine.toLowerCase().startsWith('delivery')) config.deliveryPrice = parseInt(cleanLine.split(',')[1]) || 0;
-                    if(cleanLine.toLowerCase().startsWith('isopen')) config.isOpen = cleanLine.toUpperCase().includes('TRUE');
-
-                    // **جادوی استخراج لینک:**
-                    // جستجو برای الگوی http یا https در کل خط
-                    const urlMatch = cleanLine.match(/(https?:\/\/[^\s,]+)/);
-                    if (urlMatch && cleanLine.toLowerCase().includes('pay')) {
-                        config.paymentLink = urlMatch[0]; // اولین لینک پیدا شده را برمی‌دارد
-                        console.log("لینک پیدا شد:", config.paymentLink);
+                    if(k.includes('phone')) config.phone = v;
+                    if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
+                    if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
+                    
+                    // منطق جدید و دقیق برای پیدا کردن لینک پرداخت:
+                    // ۱. کلید باید کلمه payment داشته باشد (تا با عکس اشتباه نشود)
+                    // ۲. مقدار باید با http شروع شود (تا مطمئن شویم لینک است)
+                    if(k.includes('payment') && v.startsWith('http')) {
+                        config.paymentLink = v;
                     }
                 });
-                
-                // پردازش منو و ترجمه (استاندارد)
-                const mRows = menuCsv.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
-                const tRows = transCsv.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
 
                 mRows.slice(1).forEach((r, i) => {
                     if(r.length < 7) return;
@@ -137,7 +130,6 @@
 
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
                 setLang('fa');
-
             } catch (e) { console.error(e); }
         }
 
@@ -220,7 +212,7 @@
                     if(link && link.length > 5) {
                         if(link.includes('idpay.ir')) link += (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
                         window.location.href = link;
-                    } else { alert("لینک پرداخت در شیت Settings پیدا نشد. لطفاً بررسی کنید."); }
+                    } else { alert("لینک پرداخت یافت نشد. لطفاً شیت Settings را چک کنید."); }
                 }
             }
         };
