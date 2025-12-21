@@ -53,7 +53,7 @@
     </div>
 
     <header>
-        <h1 id="shopName">...</h1>
+        <h1 id="shopName">در حال دریافت...</h1>
         <div id="shopStatus" class="status-badge">...</div>
     </header>
 
@@ -91,34 +91,33 @@
     <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="processOrder()">...</div></div>
 
     <script>
+        // ==========================================
+        // لینک پرداخت ثابت شده
+        const FIXED_PAYMENT_LINK = "https://idpay.ir/"; 
+        // ==========================================
+
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
         let curLang='fa', products=[], cart={}, dictionary={}, config={ isOpen:true, paymentLink:'' };
 
         async function startApp() {
             try {
-                // افزودن پارامتر random برای جلوگیری از کش شدن اطلاعات قدیمی
+                // استفاده از لینک ثابت
+                config.paymentLink = FIXED_PAYMENT_LINK;
+
                 const fetchCsv = async (sheet) => {
-                    const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now() + Math.random()}`);
+                    const r = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}&cb=${Date.now()}`);
                     const text = await r.text();
                     return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
-                // خواندن تنظیمات از شیت
                 sRows.forEach(r => {
                     let k = (r[0] || "").toString().toLowerCase().trim();
                     let v = (r[1] || "").toString().trim();
                     if(k.includes('phone')) config.phone = v;
                     if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
                     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
-                    // خواندن لینک پرداخت (حساس به کلمه payment یا شروع با http)
-                    if(k.includes('payment') || v.startsWith('http')) config.paymentLink = v;
                 });
-
-                // --- بخش عیب‌یابی: نمایش پیامی که نشان می‌دهد چه چیزی خوانده شده ---
-                // بعد از اطمینان از صحت کارکرد، می‌توانید خط زیر را حذف کنید
-                // alert(`وضعیت اتصال به شیت:\nتلفن: ${config.phone}\nلینک پرداخت پیدا شده: ${config.paymentLink || "خالی (پیدا نشد)"}`);
-                // ----------------------------------------------------------------
 
                 mRows.slice(1).forEach((r, i) => {
                     if(r.length < 7) return;
@@ -127,10 +126,7 @@
 
                 tRows.slice(1).forEach(r => { if(r[0]) dictionary[r[0].trim()] = { fa:r[1], en:r[2], ar:r[3] }; });
                 setLang('fa');
-            } catch (e) { 
-                console.error(e);
-                alert("خطا در اتصال به گوگل شیت. لطفاً اینترنت و تنظیمات Share شیت را بررسی کنید.");
-            }
+            } catch (e) { console.error(e); }
         }
 
         const getT = (k) => (dictionary[k] && dictionary[k][curLang]) ? dictionary[k][curLang] : k;
@@ -209,11 +205,10 @@
                 if(confirm(msg)) {
                     finalAmt += config.deliveryPrice;
                     let link = config.paymentLink;
-                    // بررسی نهایی لینک
                     if(link && link.length > 5) {
                         if(link.includes('idpay.ir')) link += (link.includes('?') ? '&' : '?') + "amount=" + finalAmt + "0";
                         window.location.href = link;
-                    } else { alert(`لینک پرداخت در شیت پیدا نشد.\nاطلاعات خوانده شده: ${JSON.stringify(config)}`); }
+                    } else { alert("لینک پرداخت یافت نشد."); }
                 }
             }
         };
