@@ -138,7 +138,7 @@
     // اصلاح شده: قسمت "یا با http شروع شود" حذف شد تا با لینک عکس‌ها قاطی نشود
     if(k.includes('payment')) config.paymentLink = v;
 
-    // کدهای جدید شما
+    // کدهای جدید شما (تکرار هدر حذف شد)
     if(k.includes('themecolor')) document.documentElement.style.setProperty('--primary', v);
     if(k.includes('backgroundimage')) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
     if(k.includes('headerimage')) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
