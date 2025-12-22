@@ -113,10 +113,11 @@
 
     <script>
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
-        // *** این متغیر از کد اول اضافه شده است ***
         const hardcodedPaymentLink = "https://idpay.ir"; 
 
+        // تعریف متغیر پیش‌فرض روی ریال
         let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', currency: 'ریال' };
+        
         async function startApp() {
             try {
                 const fetchCsv = async (sheet) => {
@@ -127,27 +128,22 @@
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                                 
                 sRows.forEach(r => {
-    let k = (r[0] || "").toString().toLowerCase().trim();
-    let v = (r[1] || "").toString().trim();
+                    let k = (r[0] || "").toString().toLowerCase().trim();
+                    let v = (r[1] || "").toString().trim();
 
-    if(k.includes('phone')) config.phone = v;
-    if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
-    if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
-    
-    // درگاه پرداخت
-    if(k.includes('payment')) config.paymentLink = v;
+                    if(k.includes('phone')) config.phone = v;
+                    if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
+                    if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
+                    if(k.includes('payment')) config.paymentLink = v;
 
-    // کدهای ظاهری
-    if(k.includes('themecolor') && v) document.documentElement.style.setProperty('--primary', v);
-    if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
-    if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
-    
-    // اینجا چک میکنیم: اگر در اکسل چیزی نوشته بود، جایگزین 'ریال' کن
-    // اگر در اکسل خالی بود، همان 'ریال' که در بالا تعریف کردیم میماند
-    if(k.includes('currency') && v && v.length > 0) config.currency = v;
-});
-                               
-                // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
+                    if(k.includes('themecolor') && v) document.documentElement.style.setProperty('--primary', v);
+                    if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
+                    if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
+                    
+                    // اگر در اکسل واحد پول نوشته شده بود، آن را جایگزین ریال کن
+                    if(k.includes('currency') && v && v.length > 0) config.currency = v;
+                });
+                                
                 if(hardcodedPaymentLink) {
                     config.paymentLink = hardcodedPaymentLink;
                 }
@@ -186,59 +182,46 @@
         }
 
         function renderMenu(cat) {
-    currentCat = cat;
-    const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
-    
-    // ساخت دکمه‌های دسته بندی
-    const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
-    catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${(c === 'all') ? getT('all') : c}</div>`).join('');
-    
-    list.innerHTML = ''; // لیست را خالی میکنیم
+            currentCat = cat;
+            const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
+            
+            const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
+            catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${(c === 'all') ? getT('all') : c}</div>`).join('');
+            
+            list.innerHTML = ''; 
 
-    // حلقه محصولات
-    products.filter(p => cat === 'all' || p.cat[curLang] === cat).forEach(p => {
-        const count = cart[p.id] || 0;
-        const btn = !p.active ? `<span style="color:#e74c3c;">${getT('out')}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${getT('add')}</div>` : `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
-        
-        // خط مهم: نمایش قیمت به همراه واحد پول
-        list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()} <small style="font-size:0.7em">${config.currency}</small></span>${btn}</div></div></div>`;
-    });
-    calcTotal();
-}
+            products.filter(p => cat === 'all' || p.cat[curLang] === cat).forEach(p => {
+                const count = cart[p.id] || 0;
+                const btn = !p.active ? `<span style="color:#e74c3c;">${getT('out')}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${getT('add')}</div>` : `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
+                
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()} <small style="font-size:0.7em">${config.currency}</small></span>${btn}</div></div></div>`;
+            });
+            calcTotal();
+        }
+
         window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
 
         function calcTotal() {
-    let total = 0, count = 0, sumHtml = '';
-    
-    // ۱. حلقه روی سبد خرید (بخش کد شما)
-    for(let id in cart) { 
-        const p = products[id]; 
-        total += p.p * cart[id]; 
-        count += cart[id];
+            let total = 0, count = 0, sumHtml = '';
+            for(let id in cart) { 
+                const p = products[id]; 
+                total += p.p * cart[id]; 
+                count += cart[id];
+                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()} <small>${config.currency}</small></span></div>`;
+            }
+            
+            const isDel = document.getElementById('btn-delivery').classList.contains('selected');
+            const final = isDel ? total + config.deliveryPrice : total;
+            
+            document.getElementById('itemsTotal').innerText = total.toLocaleString();
+            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + config.currency;
+            document.getElementById('summaryList').innerHTML = sumHtml || "...";
+            
+            const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
+            bar.style.display = count > 0 ? 'block' : 'none';
+            document.getElementById('actionBtn').innerText = det.classList.contains('active') ? (isDel ? getT('payBtn') : getT('submitBtn')) : getT('viewBtn');
+        }
         
-        // ساخت لیست ریز اقلام با واحد پول
-        sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()} <small>${config.currency}</small></span></div>`;
-    }
-    
-    // ۲. محاسبه نهایی و هزینه پیک
-    const isDel = document.getElementById('btn-delivery').classList.contains('selected');
-    const final = isDel ? total + config.deliveryPrice : total;
-    
-    // ۳. نمایش اعداد روی صفحه
-    document.getElementById('itemsTotal').innerText = total.toLocaleString();
-    
-    // نمایش مبلغ قابل پرداخت نهایی همراه با واحد پول (مهم)
-    document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + config.currency;
-    
-    document.getElementById('summaryList').innerHTML = sumHtml || "...";
-    
-    // مدیریت نمایش نوار سبز پایین صفحه
-    const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
-    bar.style.display = count > 0 ? 'block' : 'none';
-    document.getElementById('actionBtn').innerText = det.classList.contains('active') ? (isDel ? getT('payBtn') : getT('submitBtn')) : getT('viewBtn');
-}
-    
- 
         window.setMode = (t) => {
             document.getElementById('btn-table').classList.toggle('selected', t==='table');
             document.getElementById('btn-delivery').classList.toggle('selected', t==='delivery');
@@ -249,11 +232,9 @@
 
         window.closeOrderWindow = () => { document.getElementById('orderDetails').classList.remove('active'); };
 
-        // *** در اینجا تابع processOrder کاملا جایگزین شده با منطق کد اول ***
         window.processOrder = () => {
             if(!config.isOpen) return alert('فروشگاه بسته است.');
             
-            // باز کردن پنل جزئیات اگر بسته است (مربوط به گرافیک کد دوم)
             const det = document.getElementById('orderDetails');
             if (!det.classList.contains('active')) { det.classList.add('active'); calcTotal(); return; }
             
@@ -267,13 +248,11 @@
             
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
 
-            // حالت سالن (منطق کد اول)
             if(!isDel) {
                 const tNum = document.getElementById('tableNum').value;
                 if(!tNum) return alert('شماره میز را وارد کنید');
                 window.open(`https://wa.me/${config.phone}?text=${encodeURIComponent(`سفارش سالن\nمیز: ${tNum}\n${desc}`)}`);
             } 
-            // حالت بیرون‌بر و پرداخت (منطق کد اول)
             else {
                 const ph = document.getElementById('userPhone').value;
                 const ad = document.getElementById('address').value;
@@ -288,14 +267,25 @@
                     return;
                 }
 
-                // پیام تایید اختصاصی کد اول
-                const confirmMsg = `مبلغ قابل پرداخت: ${(finalAmount * 10).toLocaleString()} ریال\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
+                // *** تغییر مهم و هوشمند: تعیین ضریب ***
+                // اگر واحد پول "ریال" باشد، ضریب ۱۰ می‌شود (تبدیل تومان به ریال)
+                // اگر هر چیز دیگری باشد، ضریب ۱ می‌شود.
+                const zarib = (config.currency === 'ریال') ? 10 : 1;
+                const finalPayable = finalAmount * zarib;
+
+                const confirmMsg = `مبلغ قابل پرداخت: ${finalPayable.toLocaleString()} ${config.currency}\n\n⚠️ توجه مهم:\nلطفا پس از اتمام پرداخت، حتما از صفحه رسید بانکی "اسکرین‌شات" بگیرید و آن را در واتس‌اپ برای ما ارسال کنید.\n\nآیا برای پرداخت آماده‌اید؟`;
 
                 if(confirm(confirmMsg)) {
                     let payUrl = config.paymentLink;
                     if(payUrl.includes('idpay.ir')) {
                         const separator = payUrl.includes('?') ? '&' : '?';
-                        payUrl += `${separator}amount=${finalAmount}0`; // تبدیل تومان به ریال
+                        // اینجا مبلغ محاسبه شده (با ضریب صحیح) ارسال می‌شود
+                        payUrl += `${separator}amount=${finalPayable}`; 
+                    }
+                    // برای درگاه‌های دیگر هم می‌توان همین لاجیک را استفاده کرد
+                    else {
+                         const separator = payUrl.includes('?') ? '&' : '?';
+                         payUrl += `${separator}amount=${finalPayable}`;
                     }
                     window.location.href = payUrl;
                 }
