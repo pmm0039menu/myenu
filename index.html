@@ -128,13 +128,21 @@
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
                 
                 sRows.forEach(r => {
-                    let k = (r[0] || "").toString().toLowerCase().trim();
-                    let v = (r[1] || "").toString().trim();
-                    if(k.includes('phone')) config.phone = v;
-                    if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
-                    if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
-                    if(k.includes('payment') || v.startsWith('http')) config.paymentLink = v;
-                });
+    let k = (r[0] || "").toString().toLowerCase().trim();
+    let v = (r[1] || "").toString().trim();
+
+    if(k.includes('phone')) config.phone = v;
+    if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
+    if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
+    
+    // اصلاح شده: قسمت "یا با http شروع شود" حذف شد تا با لینک عکس‌ها قاطی نشود
+    if(k.includes('payment')) config.paymentLink = v;
+
+    // کدهای جدید شما
+    if(k.includes('themecolor')) document.documentElement.style.setProperty('--primary', v);
+    if(k.includes('backgroundimage')) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
+    if(k.includes('headerimage')) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
+});
                 
                 // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
                 if(hardcodedPaymentLink) {
