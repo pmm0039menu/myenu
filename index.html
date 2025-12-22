@@ -115,7 +115,6 @@
         const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw";
         const hardcodedPaymentLink = "https://idpay.ir"; 
 
-        // تعریف متغیر پیش‌فرض روی ریال
         let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', currency: 'ریال' };
         
         async function startApp() {
@@ -140,7 +139,6 @@
                     if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
                     if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
                     
-                    // اگر در اکسل واحد پول نوشته شده بود، آن را جایگزین ریال کن
                     if(k.includes('currency') && v && v.length > 0) config.currency = v;
                 });
                                 
@@ -185,6 +183,9 @@
             currentCat = cat;
             const list = document.getElementById('list'), catsDiv = document.getElementById('cats');
             
+            // ضریب نمایش (فقط برای نمایش، اگر ریال باشد ۱۰ برابر میکند)
+            const zarib = (config.currency === 'ریال') ? 10 : 1;
+
             const catSet = ['all', ...new Set(products.map(p => p.cat[curLang]))];
             catsDiv.innerHTML = catSet.map(c => `<div class="cat-btn ${ (cat === c || (cat === 'all' && c === 'all')) ? 'active' : ''}" onclick="renderMenu('${c}')">${(c === 'all') ? getT('all') : c}</div>`).join('');
             
@@ -194,7 +195,8 @@
                 const count = cart[p.id] || 0;
                 const btn = !p.active ? `<span style="color:#e74c3c;">${getT('out')}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${getT('add')}</div>` : `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
                 
-                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()} <small style="font-size:0.7em">${config.currency}</small></span>${btn}</div></div></div>`;
+                // قیمت ضربدر ضریب میشود تا درست نمایش داده شود
+                list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${(p.p * zarib).toLocaleString()} <small style="font-size:0.7em">${config.currency}</small></span>${btn}</div></div></div>`;
             });
             calcTotal();
         }
@@ -203,18 +205,23 @@
 
         function calcTotal() {
             let total = 0, count = 0, sumHtml = '';
+            // ضریب نمایش
+            const zarib = (config.currency === 'ریال') ? 10 : 1;
+
             for(let id in cart) { 
                 const p = products[id]; 
                 total += p.p * cart[id]; 
                 count += cart[id];
-                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${(p.p * cart[id]).toLocaleString()} <small>${config.currency}</small></span></div>`;
+                // ضربدر ضریب
+                sumHtml += `<div class="summary-item"><span>${p.title[curLang]}</span><div class="qty-box"><div class="q-btn" onclick="upd(${id},-1)">-</div><span class="q-num">${cart[id]}</span><div class="q-btn" onclick="upd(${id},1)">+</div></div><span>${((p.p * cart[id]) * zarib).toLocaleString()} <small>${config.currency}</small></span></div>`;
             }
             
             const isDel = document.getElementById('btn-delivery').classList.contains('selected');
             const final = isDel ? total + config.deliveryPrice : total;
             
-            document.getElementById('itemsTotal').innerText = total.toLocaleString();
-            document.getElementById('finalPayable').innerText = final.toLocaleString() + " " + config.currency;
+            // ضربدر ضریب
+            document.getElementById('itemsTotal').innerText = (total * zarib).toLocaleString();
+            document.getElementById('finalPayable').innerText = (final * zarib).toLocaleString() + " " + config.currency;
             document.getElementById('summaryList').innerHTML = sumHtml || "...";
             
             const bar = document.getElementById('cartBar'), det = document.getElementById('orderDetails');
@@ -267,9 +274,7 @@
                     return;
                 }
 
-                // *** تغییر مهم و هوشمند: تعیین ضریب ***
-                // اگر واحد پول "ریال" باشد، ضریب ۱۰ می‌شود (تبدیل تومان به ریال)
-                // اگر هر چیز دیگری باشد، ضریب ۱ می‌شود.
+                // تعیین ضریب نهایی برای پرداخت
                 const zarib = (config.currency === 'ریال') ? 10 : 1;
                 const finalPayable = finalAmount * zarib;
 
@@ -279,10 +284,8 @@
                     let payUrl = config.paymentLink;
                     if(payUrl.includes('idpay.ir')) {
                         const separator = payUrl.includes('?') ? '&' : '?';
-                        // اینجا مبلغ محاسبه شده (با ضریب صحیح) ارسال می‌شود
                         payUrl += `${separator}amount=${finalPayable}`; 
                     }
-                    // برای درگاه‌های دیگر هم می‌توان همین لاجیک را استفاده کرد
                     else {
                          const separator = payUrl.includes('?') ? '&' : '?';
                          payUrl += `${separator}amount=${finalPayable}`;
