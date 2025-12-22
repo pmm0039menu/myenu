@@ -116,8 +116,7 @@
         // *** این متغیر از کد اول اضافه شده است ***
         const hardcodedPaymentLink = "https://idpay.ir"; 
 
-        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'' };
-
+        let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', currency: 'ریال' };
         async function startApp() {
             try {
                 const fetchCsv = async (sheet) => {
@@ -126,8 +125,7 @@
                     return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
-                config.currency = "";
-                
+                                
                 sRows.forEach(r => {
     let k = (r[0] || "").toString().toLowerCase().trim();
     let v = (r[1] || "").toString().trim();
@@ -139,13 +137,16 @@
     // درگاه پرداخت
     if(k.includes('payment')) config.paymentLink = v;
 
-    // کدهای ظاهری (فقط در صورت پر بودن مقدار v اعمال شوند)
+    // کدهای ظاهری
     if(k.includes('themecolor') && v) document.documentElement.style.setProperty('--primary', v);
     if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
     if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
-                    if(k.includes('currency') && v) config.currency = v;
+    
+    // اینجا چک میکنیم: اگر در اکسل چیزی نوشته بود، جایگزین 'ریال' کن
+    // اگر در اکسل خالی بود، همان 'ریال' که در بالا تعریف کردیم میماند
+    if(k.includes('currency') && v && v.length > 0) config.currency = v;
 });
-           config.currency = "ریال";                     
+                               
                 // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
                 if(hardcodedPaymentLink) {
                     config.paymentLink = hardcodedPaymentLink;
