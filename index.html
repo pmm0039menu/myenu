@@ -199,12 +199,11 @@
         const count = cart[p.id] || 0;
         const btn = !p.active ? `<span style="color:#e74c3c;">${getT('out')}</span>` : (count === 0 ? `<div class="add-btn" onclick="upd(${p.id},1)">${getT('add')}</div>` : `<div class="qty-box show"><div class="q-btn" onclick="upd(${p.id},1)">+</div><span class="q-num">${count}</span><div class="q-btn" onclick="upd(${p.id},-1)">-</div></div>`);
         
-        // نکته مهم: اینجا باید list.innerHTML باشد نه sumHtml
+        // خط مهم: نمایش قیمت به همراه واحد پول
         list.innerHTML += `<div class="item"><img src="${p.img}"><div style="flex:1"><h3>${p.title[curLang]}</h3><div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center;"><span class="price">${p.p.toLocaleString()} <small style="font-size:0.7em">${config.currency}</small></span>${btn}</div></div></div>`;
     });
     calcTotal();
 }
-
         window.upd = (id, n) => { if(!config.isOpen) return; cart[id] = (cart[id] || 0) + n; if(cart[id]<=0) delete cart[id]; renderMenu(currentCat); };
 
         function calcTotal() {
