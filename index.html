@@ -126,6 +126,7 @@
                     return text.split('\n').map(row => row.split(',').map(c => c.replace(/"/g,'').trim()));
                 };
                 const [mRows, sRows, tRows] = await Promise.all([fetchCsv('Menu'), fetchCsv('Settings'), fetchCsv('Translations')]);
+                config.currency = "";
                 
                 sRows.forEach(r => {
     let k = (r[0] || "").toString().toLowerCase().trim();
@@ -142,6 +143,7 @@
     if(k.includes('themecolor') && v) document.documentElement.style.setProperty('--primary', v);
     if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
     if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
+                    if(k.includes('currency') && v) config.currency = v;
 });
                 
                 // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
