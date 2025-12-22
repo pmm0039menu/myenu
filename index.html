@@ -145,8 +145,7 @@
     if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
                     if(k.includes('currency') && v) config.currency = v;
 });
-                alert("واحد پول خوانده شده: " + config.currency);
-                
+           config.currency = "ریال";                     
                 // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
                 if(hardcodedPaymentLink) {
                     config.paymentLink = hardcodedPaymentLink;
