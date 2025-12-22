@@ -135,13 +135,13 @@
     if(k.includes('price')) config.deliveryPrice = parseInt(v) || 0;
     if(k.includes('open')) config.isOpen = v.toUpperCase() !== 'FALSE';
     
-    // اصلاح شده: قسمت "یا با http شروع شود" حذف شد تا با لینک عکس‌ها قاطی نشود
+    // درگاه پرداخت
     if(k.includes('payment')) config.paymentLink = v;
 
-    // کدهای جدید شما (تکرار هدر حذف شد)
-    if(k.includes('themecolor')) document.documentElement.style.setProperty('--primary', v);
-    if(k.includes('backgroundimage')) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
-    if(k.includes('headerimage')) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
+    // کدهای ظاهری (فقط در صورت پر بودن مقدار v اعمال شوند)
+    if(k.includes('themecolor') && v) document.documentElement.style.setProperty('--primary', v);
+    if(k.includes('backgroundimage') && v) document.documentElement.style.setProperty('--bg-img', `url('${v}')`);
+    if(k.includes('headerimage') && v) document.documentElement.style.setProperty('--header-img', `url('${v}')`);
 });
                 
                 // *** اولویت با لینک هاردکد شده (منطق کد اول) ***
