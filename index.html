@@ -193,35 +193,165 @@
         body.style-restaurant .summary-item {
             color: #000000 !important; 
         }
-        /* --- استایل ۳: فست‌فود (رنگی + کارتی) --- */
+        /* --- استایل ۳: فانتزی (مخصوص بستنی و آبمیوه) --- */
         body.style-fastfood {
-            --bg: #fff5f5;      
+            /* پالت رنگی پاستلی و شاد */
+            --bg: linear-gradient(135deg, #ffdee9 0%, #b5fffc 100%);      
             --card: #ffffff;
-            --text: #2d3436;
-            --primary: #ff9f43; 
-            --input-bg: #ffeaa7;
-            --bg-img: none;
+            --text: #444;           /* خاکستری تیره برای خوانایی بهتر روی سفید */
+            --primary: #ff6b81;     /* رنگ اصلی: صورتی توت‌فرنگی */
+            --secondary: #2f3542;   /* رنگ دوم */
+            --input-bg: #fff;
+            --bg-img: none;         /* حذف عکس پس‌زمینه قدیمی */
         }
-        body.style-fastfood .menu-list { display: flex; flex-direction: column; gap: 20px; }
-        body.style-fastfood .item {
-            display: block; 
+
+        /* تنظیم پس‌زمینه گرادینت برای کل صفحه */
+        body.style-fastfood {
+            background: var(--bg);
+            background-attachment: fixed; /* گرادینت ثابت بماند */
+        }
+
+        body.style-fastfood .menu-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 35px; /* فاصله بیشتر بین کارت‌ها بخاطر بیرون‌زدگی عکس */
+            padding-top: 40px; /* فضای خالی بالا برای عکس اولین کارت */
+        }
+        
+        /* --- کد جدید را اینجا پیست کن --- */
+body.style-fastfood .item {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;    /* وسط‌چین کردن */
+    text-align: center;
+    
+    /* زمینه سفید */
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(10px);
+    
+    border-radius: 25px;
+    padding: 0 20px 20px 20px; /* پدینگ بالا 0 */
+    
+    /* --- استایل سه بعدی و برجسته --- */
+    border: 3px solid #fff;          /* دور سفید */
+    border-bottom: 12px solid #e6e6e6; /* ضخامت پایین (افکت سه بعدی) */
+    transform: translateY(-8px);     /* بالا کشیدن کارت */
+    
+    /* سایه پهن */
+    box-shadow: 0 20px 40px rgba(255, 107, 129, 0.25);
+    
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    overflow: visible; /* مهم برای بیرون زدگی عکس */
+    transition: all 0.2s ease;
+}
+
+/* افکت کلیک (فشرده شدن کارت) */
+body.style-fastfood .item:active {
+    transform: translateY(-2px);
+    border-bottom: 5px solid #e6e6e6;
+    box-shadow: 0 5px 15px rgba(255, 107, 129, 0.2);
+}
+        /* استایل عکس دایره‌ای و بیرون‌زده */
+        body.style-fastfood .item img { 
+            width: 110px; 
+            height: 110px; 
+            object-fit: cover; 
+            border-radius: 50%; /* دایره کامل */
+            
+            margin-top: -40px; /* تکنیک اصلی: بالا کشیدن عکس */
+            margin-bottom: 10px;
+            
+            border: 4px solid #fff; /* قاب سفید دور عکس */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* سایه زیر عکس */
+        }
+
+        /* تیتر بستنی */
+        body.style-fastfood .item h3 { 
+            height: auto; 
+            color: #2f3542; 
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        /* باکس دربرگیرنده متن (برای جلوگیری از تداخل) */
+        body.style-fastfood .item > div { 
+            padding: 0; 
+            width: 100%;
+        }
+
+        /* استایل قیمت (با فونت رنگی) */
+        body.style-fastfood .price {
+            color: var(--primary);
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+        }
+
+        /* دکمه افزودن (گرادینت کپسولی) */
+        body.style-fastfood .add-btn { 
+            width: 100%; 
+            float: none; /* حذف float قدیمی */
+            background: linear-gradient(45deg, #ff6b81, #ff9f43); /* گرادینت شاد */
+            color: #fff; 
+            border-radius: 50px; /* کپسولی */
+            padding: 10px 0;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        body.style-fastfood .add-btn:active {
+            transform: scale(0.95); /* افکت فشرده شدن */
+        }
+
+        /* استایل دکمه‌های شمارشگر (+ -) */
+        body.style-fastfood .qty-box { 
+            width: 100%; 
+            float: none;
             background: #fff;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(255, 159, 67, 0.2);
             border: 2px solid var(--primary);
-            padding: 0;
-            text-align: right;
+            border-radius: 50px;
+            justify-content: space-between;
+            padding: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        body.style-fastfood .item img { width: 100%; height: 180px; object-fit: cover; border-radius: 0; margin-bottom: 0; }
-        body.style-fastfood .item > div { padding: 15px; }
-        body.style-fastfood .item h3 { height: auto; color: #333; font-size: 1.2rem;}
-        body.style-fastfood .add-btn { width: auto; float: left; background: var(--primary); color: #000; }
-        body.style-fastfood .qty-box { width: auto; float: left; border-color: #000; background: #fff; }
-        body.style-fastfood .q-num { color: #000; }
-        body.style-fastfood .q-btn { color: #000; }
 
+        body.style-fastfood .q-num { 
+            color: #333 !important; /* رنگ عدد مشکی */
+            font-size: 1.2rem;
+        }
+        
+        body.style-fastfood .q-btn { 
+            color: #fff;
+            background: var(--primary);
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* --- اصلاح نهایی رنگ‌ها بر اساس ساختار دقیق قالب شما --- */
 
+/* ۱. اسم غذا (اسپرسو) که اولین نوشته است -> مشکی شود */
+body.style-fastfood .summary-item > span:first-child {
+    color: #000000 !important; /* مشکی خالص */
+    font-weight: 900 !important; /* ضخیم و خوانا */
+    font-size: 1rem !important;
+}
+
+/* ۲. قیمت غذا که آخرین نوشته است -> صورتی شود */
+body.style-fastfood .summary-item > span:last-child {
+    color: #ff6b81 !important; /* رنگ صورتی اصلی */
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+}
+
+/* ۳. اگر احیاناً باز هم دیده نشد، رنگ کل ردیف را مشکی کن */
+body.style-fastfood .summary-item {
+    color: #333 !important;
+}
         /* --- بخش‌های عمومی --- */
         .order-details { background: var(--card); padding: 15px; border-top: 2px solid var(--primary); position: fixed; bottom: 80px; left: 0; right: 0; z-index: 900; display: none; max-width: 600px; margin: 0 auto; border-radius: 15px 15px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); overflow-y: auto; max-height: 70vh; }
         .order-details.active { display: block; }
