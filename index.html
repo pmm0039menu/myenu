@@ -42,8 +42,8 @@
         .cat-btn.active { background: var(--primary); border-color: var(--primary); color: #000; font-weight: bold; }
 
         /* =========================================
-           مدیریت استایل‌ها (Layout System)
-           ========================================= */
+            مدیریت استایل‌ها (Layout System)
+            ========================================= */
 
         /* --- استایل پایه (پیش‌فرض / کافه) --- */
         .menu-list { 
@@ -95,10 +95,10 @@
 
        /* --- استایل ۲: رستوران (روشن + لیستی) --- */
         body.style-restaurant {
-            --bg: #f8f9fa;       
+            --bg: #f8f9fa;        
             --card: #ffffff;
-            --text: #2d3436;     
-            --primary: #c0392b;  
+            --text: #2d3436;      
+            --primary: #c0392b;   
             --input-bg: #e9ecef;
         }
         body.style-restaurant .menu-list { display: flex; flex-direction: column; }
@@ -143,10 +143,10 @@
         /* باکس متن */
         body.style-restaurant .item > div { 
             flex: 1; 
-            display: flex;             
-            flex-direction: column;    
-            justify-content: center;   
-            height: 100%;              
+            display: flex;              
+            flex-direction: column;     
+            justify-content: center;    
+            height: 100%;               
         } 
 
         /* --- دستور حرکت میلی‌متری (دکمه قرمز) --- */
@@ -196,7 +196,7 @@
         /* --- استایل ۳: فانتزی (مخصوص بستنی و آبمیوه) --- */
         body.style-fastfood {
             /* پالت رنگی پاستلی و شاد */
-            --bg: linear-gradient(135deg, #ffdee9 0%, #b5fffc 100%);      
+            --bg: linear-gradient(135deg, #ffdee9 0%, #b5fffc 100%);       
             --card: #ffffff;
             --text: #444;           /* خاکستری تیره برای خوانایی بهتر روی سفید */
             --primary: #ff6b81;     /* رنگ اصلی: صورتی توت‌فرنگی */
@@ -233,9 +233,9 @@ body.style-fastfood .item {
     padding: 0 20px 20px 20px; /* پدینگ بالا 0 */
     
     /* --- استایل سه بعدی و برجسته --- */
-    border: 3px solid #fff;          /* دور سفید */
+    border: 3px solid #fff;           /* دور سفید */
     border-bottom: 12px solid #e6e6e6; /* ضخامت پایین (افکت سه بعدی) */
-    transform: translateY(-8px);     /* بالا کشیدن کارت */
+    transform: translateY(-8px);      /* بالا کشیدن کارت */
     
     /* سایه پهن */
     box-shadow: 0 20px 40px rgba(255, 107, 129, 0.25);
@@ -429,9 +429,12 @@ body.style-fastfood .summary-item {
     <div class="cart-bar" id="cartBar"><div class="final-btn" id="actionBtn" onclick="processOrder()">...</div></div>
 
     <script>
-        // *** ID MOTEGHAYER *** // در فایل مادر، این ID را تغییر ندهید. وقتی برای مشتری کپی کردید، ID مشتری را بگذارید.
-        const sheetId = "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw"; 
+        // --- کد هوشمند برای خواندن ID از لینک ---
+        const urlParams = new URLSearchParams(window.location.search);
         
+        // اگر در لینک شناسه (id) بود، آن را بردار. اگر نبود، شناسه پیش‌فرض (کافه) را بگذار.
+        const sheetId = urlParams.get('id') || "1XoE-tWd9sor7HgqQe67z3JQCZyvt6G-IcSz9u1miRiw"; 
+
         const hardcodedPaymentLink = "https://idpay.ir"; 
 
         let curLang = 'fa', currentCat = 'all', products = [], cart = {}, dictionary = {}, config = { isOpen:true, paymentLink:'', currency: 'ریال' };
